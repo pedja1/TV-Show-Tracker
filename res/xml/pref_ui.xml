@@ -1,0 +1,21 @@
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+
+  	<ListPreference
+        android:defaultValue="name"
+        android:entries="@array/pref_sort_titles"
+        android:entryValues="@array/pref_sort_values"
+        android:key="sort"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Sort Order" />
+	<ListPreference
+        android:defaultValue="all"
+        android:entries="@array/pref_filter_titles"
+        android:entryValues="@array/pref_filter_values"
+        android:key="filter"
+        android:negativeButtonText="@null"
+        android:positiveButtonText="@null"
+        android:title="Filter Shows By" />
+   
+
+</PreferenceScreen>

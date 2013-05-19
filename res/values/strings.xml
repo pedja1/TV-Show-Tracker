@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">TV Show Tracker</string>
+    <string name="action_settings">Settings</string>
+    <string name="title_overview">Overview</string>
+    <string name="title_episodes">Episodes</string>
+    <string name="title_activity_main">MainActivity</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="no_shows_message"><b>Your collection is empty!</b>"\n"<i>press the magnifier to start adding shows</i></string>
+    <string name="search_hint">Add Show</string>
+    <string name="title_activity_details">DetailsActivity</string>
+
+    <color name="holo_blue_light">#ff33b5e5</color>
+
+    <string name="title_activity_agenda">Agenda</string>
+    <string name="title_activity_banner">Download Banner</string>
+
+</resources>

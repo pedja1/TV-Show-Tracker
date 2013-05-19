@@ -1,0 +1,80 @@
+package rs.pedjaapps.tvshowtracker;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
+import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.MenuItem;
+
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.view.Window;
+import android.widget.ListView;
+public class AgendaActivity extends SherlockActivity {
+
+	AgendaAdapter adapter;
+	ListView list;
+	DatabaseHandler db;
+	
+	@Override
+	protected void onCreate(Bundle savedInstanceState) {
+		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+		setContentView(R.layout.activity_agenda);
+		
+		db = new DatabaseHandler(this);
+	    list = (ListView)findViewById(R.id.list);
+		adapter = new AgendaAdapter(this);
+		
+		for(Agenda a : getItems()){
+			adapter.add(a);
+		}
+		list.setAdapter(adapter);
+	}
+
+	private List<Agenda> getItems(){
+		List<Agenda> a = new ArrayList<Agenda>();
+		List<Show> shows = db.getAllShows();
+		for(Show s : shows){
+			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"");
+			for(EpisodeItem e : episodes){
+				if(e.getSeason() != 0){
+					try{
+						Date firstAired = Constants.df.parse(e.getFirstAired());
+						if(new Date().before(firstAired) || (new Date().getTime() / (1000*60*60*24)) == (firstAired.getTime()/ (1000*60*60*24)))
+						{
+							a.add(new AgendaItem(e.getEpisodeName(), s.getBanner(), EpisodesAdapter.episode(e)));
+						}
+					}
+					catch(Exception ex){
+						
+					}
+				}
+			}
+		}
+		
+		
+		return a;
+	}
+
+	
+	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		switch (item.getItemId()) {
+		case android.R.id.home:
+			// This ID represents the Home or Up button. In the case of this
+			// activity, the Up button is shown. Use NavUtils to allow users
+			// to navigate up one level in the application structure. For
+			// more details, see the Navigation pattern on Android Design:
+			//
+			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
+			//
+			NavUtils.navigateUpFromSameTask(this);
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
+	}
+
+}
