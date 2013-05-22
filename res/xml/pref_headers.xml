@@ -13,11 +13,11 @@
         android:fragment="rs.pedjaapps.tvshowtracker.SettingsActivity$AboutPreferenceFragment"
         android:title="About"
         android:icon="@drawable/ic_action_about" />
-	<header
+	<!--  <header
 	    android:title="Backup/Restore"
 	    android:icon="@drawable/ic_action_backup">
 	    <intent android:action="rs.pedjaapps.tvshowtracker.BackupRestore" />
-	</header>
+	</header>-->
 	<header
 	    android:title="Profiles"
 	    android:icon="@drawable/ic_action_profiles">

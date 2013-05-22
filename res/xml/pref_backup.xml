@@ -1,10 +1,10 @@
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <PreferenceScreen
+    <!--  <PreferenceScreen
         android:title="Backup/Restore"
 	    android:icon="@drawable/ic_action_backup">
 	    <intent android:action="rs.pedjaapps.tvshowtracker.BackupRestore" />
-    </PreferenceScreen>
+    </PreferenceScreen>-->
 	<PreferenceScreen
         android:title="Profiles"
 	    android:icon="@drawable/ic_action_profiles">
