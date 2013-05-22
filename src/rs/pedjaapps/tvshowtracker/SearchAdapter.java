@@ -3,9 +3,6 @@ package rs.pedjaapps.tvshowtracker;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Locale;
-
-import android.app.*;
 import android.content.*;
 import android.view.*;
 import android.widget.*;
@@ -47,7 +44,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
 
 	private View getWorkingView(final View convertView)
 	{
-		View workingView = null;
+		View workingView;
 
 		if (null == convertView)
 		{
@@ -68,7 +65,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
 	private ViewHolder getViewHolder(final View workingView)
 	{
 		final Object tag = workingView.getTag();
-		ViewHolder viewHolder = null;
+		ViewHolder viewHolder;
 
 
 		if (null == tag || !(tag instanceof ViewHolder))

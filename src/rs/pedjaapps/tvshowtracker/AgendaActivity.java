@@ -16,6 +16,7 @@ public class AgendaActivity extends SherlockActivity {
 	AgendaAdapter adapter;
 	ListView list;
 	DatabaseHandler db;
+	String profile;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -26,7 +27,7 @@ public class AgendaActivity extends SherlockActivity {
 		db = new DatabaseHandler(this);
 	    list = (ListView)findViewById(R.id.list);
 		adapter = new AgendaAdapter(this);
-		
+		profile = getIntent().getStringExtra("profile");
 		for(Agenda a : getItems()){
 			adapter.add(a);
 		}
@@ -35,9 +36,9 @@ public class AgendaActivity extends SherlockActivity {
 
 	private List<Agenda> getItems(){
 		List<Agenda> a = new ArrayList<Agenda>();
-		List<Show> shows = db.getAllShows();
+		List<Show> shows = db.getAllShows("", profile);
 		for(Show s : shows){
-			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"");
+			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"", profile);
 			for(EpisodeItem e : episodes){
 				if(e.getSeason() != 0){
 					try{

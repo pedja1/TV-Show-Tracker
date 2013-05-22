@@ -4,11 +4,13 @@
 
    
     <string-array name="pref_sort_titles">
+        <item>Dont Sort</item>
         <item>Name</item>
         <item>Next Episode</item>
         <item>Unwatched Episodes</item>
     </string-array>
     <string-array name="pref_sort_values">
+        <item>default</item>
         <item>name</item>
         <item>next</item>
         <item>unwatched</item>

@@ -1,28 +1,32 @@
 package rs.pedjaapps.tvshowtracker;
 
 
-import android.content.*;
-import android.graphics.*;
-import android.view.*;
-import android.widget.*;
-import com.nostra13.universalimageloader.core.*;
+import android.content.Context;
+import android.graphics.Bitmap;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
-public final class ShowsAdapter extends ArrayAdapter<Show>
+public final class ActorsAdapter extends ArrayAdapter<Actor>
 {
 
 	private final int itemLayoutResource;
     DisplayImageOptions options;
 	protected ImageLoader imageLoader = ImageLoader.getInstance();
-	public ShowsAdapter(final Context context, final int itemLayoutResource)
+	public ActorsAdapter(final Context context, final int itemLayoutResource)
 	{
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
 		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage)
-			.showImageForEmptyUri(R.drawable.noimage)
-			.showImageOnFail(R.drawable.noimage)
+			.showStubImage(R.drawable.noimage_actor)
+			.showImageForEmptyUri(R.drawable.noimage_actor)
+			.showImageOnFail(R.drawable.noimage_actor)
 			.cacheInMemory()
-			
 			.bitmapConfig(Bitmap.Config.ARGB_8888)
 			.build();
 	}
@@ -33,18 +37,16 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final Show entry = getItem(position);
-
-		
-		viewHolder.progressView.setProgress(entry.getPrgWatched());
-		viewHolder.upcomingEpisodeView.setText(entry.getNextEpisode());
-		imageLoader.displayImage("file://"+entry.getBanner(), viewHolder.bannerView, options);
+		final Actor actor = getItem(position);
+		imageLoader.displayImage("file://"+actor.getImage(), viewHolder.imageView, options);
+        viewHolder.nameView.setText(actor.getName());
+        viewHolder.roleView.setText(actor.getRole());
 		return view;
 	}
 
 	private View getWorkingView(final View convertView)
 	{
-		View workingView = null;
+		View workingView;
 
 		if (null == convertView)
 		{
@@ -72,9 +74,9 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 		{
 			viewHolder = new ViewHolder();
 
-			viewHolder.progressView = (ProgressBar) workingView.findViewById(R.id.pgrWatched);
-			viewHolder.upcomingEpisodeView = (TextView) workingView.findViewById(R.id.txtUpcomingEpisode);
-			viewHolder.bannerView = (ImageView) workingView.findViewById(R.id.imgSeriesImage);
+			viewHolder.imageView = (ImageView) workingView.findViewById(R.id.image);
+            viewHolder.nameView = (TextView) workingView.findViewById(R.id.name);
+            viewHolder.roleView = (TextView) workingView.findViewById(R.id.role);
 			
 			workingView.setTag(viewHolder);
 
@@ -89,9 +91,9 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 
 	 class ViewHolder
 	{
-		public ProgressBar progressView;
-		public TextView upcomingEpisodeView;
-		public ImageView bannerView;
+		public ImageView imageView;
+        public TextView nameView;
+        public TextView roleView;
 
 	}
 

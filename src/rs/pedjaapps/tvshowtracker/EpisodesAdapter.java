@@ -38,7 +38,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 				@Override
 				public void onClick(View v) {
 					for(int i = 0; i < EpisodesAdapter.this.getCount(); i++){
-						if(getItem(i).isSection()==false){
+						if(!getItem(i).isSection()){
 						EpisodeItem ei = (EpisodeItem)getItem(i);
 						if(ei.getSeason() == es.getSeason()){
 							((CheckBox)EpisodesAdapter.this.getView(i, convertView, parent).findViewById(R.id.chkWatched)).setChecked(true);
@@ -64,9 +64,8 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 				@Override
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					DatabaseHandler db = new DatabaseHandler(getContext());
-					EpisodeItem newEi = ei;
-					ei.setWatched(isChecked);
-					db.updateEpisode(newEi, ei.getEpisodeId()+"", seriesId);
+                    ei.setWatched(isChecked);
+					db.updateEpisode(ei, ei.getEpisodeId()+"", seriesId);
 					
 				}
 			});
@@ -81,14 +80,14 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 		StringBuilder b = new StringBuilder();
 		b.append("S");
 		if(e.getSeason()<=10){
-			b.append("0"+e.getSeason());
+			b.append("0").append(e.getSeason());
 		}
 		else{
 			b.append(e.getSeason());
 		}
 		b.append("E");
 		if(e.getEpisode()<=10){
-			b.append("0"+e.getEpisode());
+			b.append("0").append(e.getEpisode());
 		}
 		else{
 			b.append(e.getEpisode());
@@ -100,10 +99,10 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 				b.append(" | Airs today");
 			}
 			else if(new Date().before(firstAired)){
-				b.append(" | Airs "+Constants.df2.format(firstAired));
+				b.append(" | Airs ").append(Constants.df2.format(firstAired));
 			}
 			else if(new Date().after(firstAired)){
-				b.append(" | Aired "+Constants.df2.format(firstAired));
+				b.append(" | Aired ").append(Constants.df2.format(firstAired));
 			}
 		} catch (ParseException e1) {
 		}

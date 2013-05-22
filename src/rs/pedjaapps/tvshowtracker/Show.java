@@ -18,6 +18,7 @@ public class Show {
     private boolean hide;
     private String updated;
     private String nextEpisode;
+    private int nextEpisodeDays;
     private int prgWatched;
     private String actors;
     
@@ -39,11 +40,13 @@ public class Show {
 		this.firstAired = firstAired;
 	}
 
-	public Show(String banner, String nextEpisode, int prgWatched, int seriesId){
-    	this.banner = banner;
+	public Show(String seriesName, String banner, String nextEpisode, int prgWatched, int seriesId, int nextEpisodeDays){
+    	this.seriesName = seriesName;
+		this.banner = banner;
     	this.nextEpisode = nextEpisode;
     	this.prgWatched = prgWatched;
     	this.seriesId= seriesId;
+    	this.nextEpisodeDays = nextEpisodeDays;
     }
     
 	public Show(int id, String seriesName, String firstAired, String imdbId,
@@ -245,6 +248,14 @@ public class Show {
 
 	public void setActors(String actors) {
 		this.actors = actors;
+	}
+
+	public int getNextEpisodeDays() {
+		return nextEpisodeDays;
+	}
+
+	public void setNextEpisodeDays(int nextEpisodeDays) {
+		this.nextEpisodeDays = nextEpisodeDays;
 	}
     
 	

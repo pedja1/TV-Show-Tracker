@@ -18,6 +18,7 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.GridView;
+import android.widget.Toast;
 
 public class BannerActivity extends SherlockActivity {
 
@@ -26,10 +27,16 @@ public class BannerActivity extends SherlockActivity {
 	DatabaseHandler db;
 	String extStorage = Environment.getExternalStorageDirectory().toString();
 	String seriesId;
+	String profile;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+		
+		if(Tools.isNetworkAvailable(this)){
+			Toast.makeText(this, "No Internet Connection!\nPlease connect to internet and try again!", Toast.LENGTH_LONG).show();
+			finish();
+		}
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_banner);
 		adapter = new BannersAdapter(this, R.layout.banner_row);
@@ -38,13 +45,14 @@ public class BannerActivity extends SherlockActivity {
 		db = new DatabaseHandler(this);
 		seriesId = getIntent().getStringExtra("seriesId");
 		String type = getIntent().getStringExtra("type");
-		new GetBanners().execute(new String[] {seriesId, type});
+		profile = getIntent().getStringExtra("profile");
+		new GetBanners().execute(seriesId, type);
 		list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				new DownloadBanner().execute(new Integer[]{position});
+				new DownloadBanner().execute(position);
 				}
 		});
 	}
@@ -111,8 +119,8 @@ public class BannerActivity extends SherlockActivity {
 		protected String doInBackground(Integer... args)
 		{
 			
-			Show show = db.getShow(seriesId);
-			SearchResults.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()));
+			Show show = db.getShow(seriesId, profile);
+			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()));
 			
 			return "";
 		}

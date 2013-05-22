@@ -7,14 +7,21 @@
         android:title="@string/pref_header_general" />-->
     <header
         android:fragment="rs.pedjaapps.tvshowtracker.SettingsActivity$UiPreferenceFragment"
-        android:title="UI" />
+        android:title="UI"
+        android:icon="@drawable/ic_action_ui" />
     <header
         android:fragment="rs.pedjaapps.tvshowtracker.SettingsActivity$AboutPreferenceFragment"
-        android:title="About" />
+        android:title="About"
+        android:icon="@drawable/ic_action_about" />
 	<header
 	    android:title="Backup/Restore"
 	    android:icon="@drawable/ic_action_backup">
 	    <intent android:action="rs.pedjaapps.tvshowtracker.BackupRestore" />
+	</header>
+	<header
+	    android:title="Profiles"
+	    android:icon="@drawable/ic_action_profiles">
+	    <intent android:action="rs.pedjaapps.tvshowtracker.ProfilesActivity" />
 	</header>
 </preference-headers>
 <!-- intent android:action="android.intent.action.VIEW"

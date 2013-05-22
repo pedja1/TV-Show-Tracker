@@ -42,6 +42,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 	ViewPager mViewPager;
 	static DatabaseHandler db;
 	static int seriesId;
+	static String profile;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,8 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		// Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
+		seriesId = getIntent().getIntExtra("seriesId", 0);
+		profile =  getIntent().getStringExtra("profile");
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
 		mSectionsPagerAdapter = new SectionsPagerAdapter(
@@ -59,9 +62,30 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		// Set up the ViewPager with the sections adapter.
 		mViewPager = (ViewPager) findViewById(R.id.pager);
 		mViewPager.setAdapter(mSectionsPagerAdapter);
-		seriesId = getIntent().getIntExtra("seriesId", 0);
 		db = new DatabaseHandler(this);
-		
+		mViewPager.setCurrentItem(1, true);
+		mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener(){
+
+			@Override
+			public void onPageScrollStateChanged(int arg0) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageScrolled(int arg0, float arg1, int arg2) {
+				// TODO Auto-generated method stub
+				
+			}
+
+			@Override
+			public void onPageSelected(int position) {
+				if(position == 1)
+				{
+					OverviewFragment.setProgress();
+				}
+				
+			}});
 
 	}
 	@Override
@@ -87,7 +111,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case 0:
-			startActivity(new Intent(this, BannerActivity.class).putExtra("seriesId", seriesId+"").putExtra("type", "banner"));
+			startActivity(new Intent(this, BannerActivity.class).putExtra("seriesId", seriesId+"").putExtra("type", "banner").putExtra("profile", profile));
 			return true;
 		case 1:
 			startActivity(new Intent(this, BannerActivity.class).putExtra("seriesId", seriesId+"").putExtra("type", "fanart"));
@@ -96,6 +120,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		return super.onOptionsItemSelected(item);
 	}
 
+	
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
 	 * one of the sections/tabs/pages.
@@ -114,11 +139,14 @@ public class DetailsActivity extends SherlockFragmentActivity {
 			Fragment fragment = null;
 			switch(position){
 				case 0:
-					fragment= new OverviewFragment();
+					fragment= new ActorsFragment();
 					break;
 				case 1:
-					fragment = new EpisodesFragment();
+					fragment = new OverviewFragment();
 					break;
+                case 2:
+                    fragment = new EpisodesFragment();
+                    break;
 			}
 			return fragment;
 		}
@@ -126,7 +154,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		@Override
 		public int getCount() {
 			// Show 3 total pages.
-			return 2;
+			return 3;
 		}
 
 		@Override
@@ -134,14 +162,41 @@ public class DetailsActivity extends SherlockFragmentActivity {
 			Locale l = Locale.getDefault();
 			switch (position) {
 			case 0:
-				return getString(R.string.title_overview).toUpperCase(l);
+				return getString(R.string.title_actors).toUpperCase(l);
 			case 1:
-				return getString(R.string.title_episodes).toUpperCase(l);
+				return getString(R.string.title_overview).toUpperCase(l);
+            case 2:
+                return getString(R.string.title_episodes).toUpperCase(l);
 			}
 			return null;
 		}
 	}
 
+    public static class ActorsFragment extends SherlockFragment {
+
+        public static ActorsAdapter adapter;
+        public ActorsFragment() {
+        }
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.details_actors,
+                    container, false);
+            adapter = new ActorsAdapter(this.getActivity(), R.layout.details_actors_row);
+            ListView list = (ListView)rootView.findViewById(R.id.list);
+            List<Actor> actors = db.getAllActors(seriesId+"", profile);
+            for(Actor a : actors){
+
+                    adapter.add(new Actor(a.getActorId(), a.getName(), a.getRole(), a.getImage(), profile));
+
+            }
+            
+            list.setAdapter(adapter);
+
+            return rootView;
+        }
+    }
 	
 	public static class EpisodesFragment extends SherlockFragment {
 		
@@ -156,17 +211,17 @@ public class DetailsActivity extends SherlockFragmentActivity {
 					container, false);
 			adapter = new EpisodesAdapter(this.getActivity(), seriesId+"");
 			ListView list = (ListView)rootView.findViewById(R.id.list);
-			List<EpisodeItem> e = db.getAllEpisodes(seriesId+"");
+			List<EpisodeItem> e = db.getAllEpisodes(seriesId+"", profile);
 			Collections.reverse(e);
 			List<Integer> seasons = new ArrayList<Integer>();
 			for(EpisodeItem i : e){
 				if(i.getSeason()!=0){
-				if(seasons.contains(i.getSeason())==false){
+				if(!seasons.contains(i.getSeason())){
 					adapter.add(new EpisodeSection(i.getSeason()));
 					seasons.add(i.getSeason());
 				}
 				adapter.add(new EpisodeItem(i.getEpisodeName(), i.getEpisode(),
-						i.getSeason(), i.getFirstAired(), i.getImdbId(), i.getOverview(), i.getRating(), i.isWatched(), i.getEpisodeId()));
+						i.getSeason(), i.getFirstAired(), i.getImdbId(), i.getOverview(), i.getRating(), i.isWatched(), i.getEpisodeId(), profile));
 				}
 			}
 			
@@ -201,10 +256,24 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		}
 	}
 	public static class OverviewFragment extends SherlockFragment {
-		
+		static ProgressBar prgWatched;
+		static TextView watchedText;
 		public OverviewFragment() {
 		}
 
+		private static void setProgress(){
+			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId+"", profile);
+			int episodeCount = db.getEpisodesCount(seriesId+"", profile);
+			int watched = 0;
+			for(EpisodeItem e : episodes){
+				if(e.isWatched()){
+					watched++;
+				}
+			}
+			prgWatched.setProgress((int)((double)watched/(double)episodeCount*100.0));
+			watchedText.setText(watched+"/"+episodeCount);
+		}
+		
 		@Override
 		public View onCreateView(LayoutInflater inflater, ViewGroup container,
 				Bundle savedInstanceState) {
@@ -214,8 +283,8 @@ public class DetailsActivity extends SherlockFragmentActivity {
 			TextView name = (TextView)rootView.findViewById(R.id.txtSeriesName);
 			TextView status = (TextView)rootView.findViewById(R.id.txtSeriesStatus);
 			TextView rating = (TextView)rootView.findViewById(R.id.txtSeriesRating);
-			ProgressBar prgWatched = (ProgressBar)rootView.findViewById(R.id.pgrWatched);
-			TextView watchedText = (TextView)rootView.findViewById(R.id.txtWatched);
+			prgWatched = (ProgressBar)rootView.findViewById(R.id.pgrWatched);
+			watchedText = (TextView)rootView.findViewById(R.id.txtWatched);
 			TextView lastAiredHeader = (TextView)rootView.findViewById(R.id.txtLastAired);
 			TextView lastAiredTitle = (TextView)rootView.findViewById(R.id.txtLastAiredTitle);
 			TextView lastAiredEpisode = (TextView)rootView.findViewById(R.id.txtLastAiredEpisodeNumber);
@@ -228,10 +297,10 @@ public class DetailsActivity extends SherlockFragmentActivity {
 			Button imdb = (Button)rootView.findViewById(R.id.btnOpenImdb);
 			RelativeLayout lastAiredLayout = (RelativeLayout)rootView.findViewById(R.id.rllHeader1);
 			RelativeLayout nextLayout = (RelativeLayout)rootView.findViewById(R.id.rllHeader2);
-			final Show s = db.getShow(seriesId+"");
+			final Show s = db.getShow(seriesId+"", profile);
 			getSherlockActivity().getSupportActionBar().setTitle(s.getSeriesName());
 			getSherlockActivity().getSupportActionBar().setSubtitle(s.getNetwork());
-			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId+"");
+			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId+"", profile);
 			DisplayImageOptions options = new DisplayImageOptions.Builder()
 			.showStubImage(R.drawable.noimage_large)
 			.showImageForEmptyUri(R.drawable.noimage_large)
@@ -248,15 +317,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 			summary.setText(s.getOverview());
 			actors.setText(s.getActors());
 			
-			int episodeCount = db.getEpisodesCount(seriesId+"");
-			int watched = 0;
-			for(EpisodeItem e : episodes){
-				if(e.isWatched()){
-					watched++;
-				}
-			}
-			prgWatched.setProgress((int)((double)watched/(double)episodeCount*100.0));
-			watchedText.setText(watched+"/"+episodeCount);
+			setProgress();
 			final int lePos = getLastAiredEpisodePosition(episodes);
 			int nePos = getNextEpisodePosition(episodes);
 			
@@ -318,24 +379,20 @@ public class DetailsActivity extends SherlockFragmentActivity {
 		}
 		private static int getNextEpisodePosition(List<EpisodeItem> episodeItems){
 			int n = 0;
-			
-			for(int i = 0; i<episodeItems.size(); i++){
-				try
-				{
-					Date firstAired = Constants.df.parse(episodeItems.get(i).getFirstAired());
-					if(new Date().before(firstAired) || (new Date().getTime() / (1000*60*60*24)) == (firstAired.getTime()/ (1000*60*60*24))){
-						return n;
-					}
-					else{
-						n++;
-					}
-					
-				}
-				catch(Exception ex)
-				{
-					n++;
-				}
-		    }
+
+            for (EpisodeItem episodeItem : episodeItems) {
+                try {
+                    Date firstAired = Constants.df.parse(episodeItem.getFirstAired());
+                    if (new Date().before(firstAired) || (new Date().getTime() / (1000 * 60 * 60 * 24)) == (firstAired.getTime() / (1000 * 60 * 60 * 24))) {
+                        return n;
+                    } else {
+                        n++;
+                    }
+
+                } catch (Exception ex) {
+                    n++;
+                }
+            }
 			return -1;			
 		}
 }

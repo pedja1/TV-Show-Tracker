@@ -82,6 +82,19 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
         </activity>
+        <activity
+            android:name="rs.pedjaapps.tvshowtracker.ProfilesActivity"
+            android:label="@string/title_activity_profiles"
+            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
+            <intent-filter>
+                <action android:name="rs.pedjaapps.tvshowtracker.ProfilesActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

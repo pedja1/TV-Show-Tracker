@@ -12,11 +12,12 @@ public class EpisodeItem implements Episode{
     private double rating;
     private boolean watched;
     private int episodeId;
+    private String profile;
     
    
 	public EpisodeItem(String episodeName, int episode, int season,
 			String firstAired, String imdbId, String overview, double rating,
-			boolean watched, int episodeId) {
+			boolean watched, int episodeId, String profile) {
 		super();
 		this.episodeName = episodeName;
 		this.episode = episode;
@@ -27,11 +28,12 @@ public class EpisodeItem implements Episode{
 		this.rating = rating;
 		this.watched = watched;
 		this.episodeId = episodeId;
+		this.profile = profile;
 	}
 
 	public EpisodeItem(int id, String episodeName, int episode, int season,
 			String firstAired, String imdbId, String overview, double rating,
-			boolean watched, int episodeId) {
+			boolean watched, int episodeId, String profile) {
 		super();
 		this.id = id;
 		this.episodeName = episodeName;
@@ -43,6 +45,7 @@ public class EpisodeItem implements Episode{
 		this.rating = rating;
 		this.watched = watched;
 		this.episodeId = episodeId;
+		this.profile = profile;
 	}
 
 	public EpisodeItem(){
@@ -132,6 +135,14 @@ public class EpisodeItem implements Episode{
 	@Override
 	public boolean isSection() {
 		return false;
+	}
+
+	public String getProfile() {
+		return profile;
+	}
+
+	public void setProfile(String profile) {
+		this.profile = profile;
 	}
     
     

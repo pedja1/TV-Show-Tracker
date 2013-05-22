@@ -1,29 +1,27 @@
 package rs.pedjaapps.tvshowtracker;
 
 
-import android.content.*;
-import android.graphics.*;
-import android.view.*;
-import android.widget.*;
-import com.nostra13.universalimageloader.core.*;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.preference.PreferenceManager;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-public final class BannersAdapter extends ArrayAdapter<Show>
+public final class ProfilesAdapter extends ArrayAdapter<Profile>
 {
 
 	private final int itemLayoutResource;
-    DisplayImageOptions options;
-	protected ImageLoader imageLoader = ImageLoader.getInstance();
-	public BannersAdapter(final Context context, final int itemLayoutResource)
+	String profile;
+	public ProfilesAdapter(final Context context, final int itemLayoutResource)
 	{
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
-		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage)
-			.showImageForEmptyUri(R.drawable.noimage)
-			.showImageOnFail(R.drawable.noimage)
-			.cacheOnDisc()
-			.bitmapConfig(Bitmap.Config.ARGB_8888)
-			.build();
+		SharedPreferences p = PreferenceManager.getDefaultSharedPreferences(context);
+		profile = p.getString("profile", "Default");
 	}
 
 	@Override
@@ -32,8 +30,14 @@ public final class BannersAdapter extends ArrayAdapter<Show>
 
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final Show entry = getItem(position);
-		imageLoader.displayImage("http://thetvdb.com/banners/"+entry.getBanner(), viewHolder.bannerView, options);
+		Profile p = getItem(position);
+		viewHolder.nameView.setText(p.getName());
+		if(p.isActive()){
+			viewHolder.activeView.setVisibility(View.VISIBLE);
+		}
+		else{
+			viewHolder.activeView.setVisibility(View.GONE);
+		}
 		return view;
 	}
 
@@ -67,8 +71,9 @@ public final class BannersAdapter extends ArrayAdapter<Show>
 		{
 			viewHolder = new ViewHolder();
 
-			viewHolder.bannerView = (ImageView) workingView.findViewById(R.id.banner);
-			
+			viewHolder.activeView = (ImageView) workingView.findViewById(R.id.active);
+            viewHolder.nameView = (TextView) workingView.findViewById(R.id.name);
+           
 			workingView.setTag(viewHolder);
 
 		}
@@ -82,7 +87,8 @@ public final class BannersAdapter extends ArrayAdapter<Show>
 
 	 class ViewHolder
 	{
-		public ImageView bannerView;
+		public ImageView activeView;
+        public TextView nameView;
 
 	}
 
