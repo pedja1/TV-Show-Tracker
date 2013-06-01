@@ -140,7 +140,7 @@ public class SearchResults extends SherlockActivity {
 				e = (Element) nl.item(i);
 				String image = "";
 				try{
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "Image"), extStorage+"/TVST/actors"+parser.getValue(e, "Image").substring(parser.getValue(e, "Image").lastIndexOf("/")));
+					image = Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "Image"), extStorage+"/TVST/actors"+parser.getValue(e, "Image").substring(parser.getValue(e, "Image").lastIndexOf("/")));
 				}
 				catch(Exception ex){
 				}
