@@ -232,6 +232,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 				public void onItemClick(AdapterView<?> arg0, View arg1,
 						int position, long arg3) {
 					
+						if(adapter.getItem(position) instanceof EpisodeItem){
 						AlertDialog.Builder builder = new AlertDialog.Builder(getSherlockActivity());
 						
 						builder.setTitle(((EpisodeItem)adapter.getItem(position)).getEpisodeName());
@@ -248,6 +249,7 @@ public class DetailsActivity extends SherlockFragmentActivity {
 						AlertDialog alert = builder.create();
 
 						alert.show();
+						}
 				}
 					
 				
