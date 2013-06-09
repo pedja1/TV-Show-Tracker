@@ -8,4 +8,7 @@ public class Constants {
 	public static final SimpleDateFormat df2 = new SimpleDateFormat("dd MMM yyyy");
 	public static final int SHOW_DOWNLOAD_CODE = 000;
 	public static final int SHOW_UPDATE_CODE = 111;
+	public static final int UI_CODE_PRELOAD = 0;
+	public static final int UI_CODE_AFTERLOAD = 1;
+	public static final int LIST_HANDLER_UPDATE_LIST = 1001;
 }

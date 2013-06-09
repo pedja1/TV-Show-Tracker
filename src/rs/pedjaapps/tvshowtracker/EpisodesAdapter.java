@@ -54,10 +54,14 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 		else{
 			view  = inflater.inflate(R.layout.details_episodes_row, null);
 			final EpisodeItem ei = (EpisodeItem)e;
-			((TextView)view.findViewById(R.id.txtEpisodeNumber)).setText(episode(ei));
+			String[] episode = episode(ei);
+			((TextView)view.findViewById(R.id.txtEpisodeNumber)).setText(episode[0]);
 			((TextView)view.findViewById(R.id.txtTitle)).setText(ei.getEpisodeName());
 			CheckBox mark = (CheckBox)view.findViewById(R.id.chkWatched);
 			mark.setChecked(ei.isWatched());
+			if(episode[1].equals("1")){
+				mark.setVisibility(View.GONE);
+			}
 			
 			mark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
 				
@@ -76,9 +80,10 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 
 	
 
-	public static String episode(EpisodeItem e){
+	public static String[] episode(EpisodeItem e){
 		StringBuilder b = new StringBuilder();
 		b.append("S");
+		String s = "0";
 		if(e.getSeason()<=10){
 			b.append("0").append(e.getSeason());
 		}
@@ -100,14 +105,17 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 			}
 			else if(new Date().before(firstAired)){
 				b.append(" | Airs ").append(Constants.df2.format(firstAired));
+				s = "1";
 			}
 			else if(new Date().after(firstAired)){
 				b.append(" | Aired ").append(Constants.df2.format(firstAired));
 			}
 		} catch (ParseException e1) {
+			b.append(" | TBD");
+			s = "1";
 		}
 		
-		return b.toString();
+		return new String[] {b.toString(), s};
 	}
 	
 }

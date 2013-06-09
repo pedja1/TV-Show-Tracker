@@ -45,7 +45,7 @@ public class AgendaActivity extends SherlockActivity {
 						Date firstAired = Constants.df.parse(e.getFirstAired());
 						if(new Date().before(firstAired) || (new Date().getTime() / (1000*60*60*24)) == (firstAired.getTime()/ (1000*60*60*24)))
 						{
-							a.add(new AgendaItem(e.getEpisodeName(), s.getBanner(), EpisodesAdapter.episode(e)));
+							a.add(new AgendaItem(e.getEpisodeName(), s.getBanner(), EpisodesAdapter.episode(e)[0]));
 						}
 					}
 					catch(Exception ex){
