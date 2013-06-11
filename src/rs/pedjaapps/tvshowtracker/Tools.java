@@ -17,6 +17,18 @@ import android.util.Log;
 
 public class Tools {
 	
+	private static boolean isRefresh = true;
+	
+	public static boolean isRefresh()
+	{
+		return isRefresh;
+	}
+
+	public static void setRefresh(boolean refresh)
+	{
+		isRefresh = refresh;
+	}
+
 	public static String DownloadFromUrl(String imageURL, String fileName) {  //this is the downloader method
         try {
         	File mdbDir = new File(Environment.getExternalStorageDirectory() + "/MDb/posters");

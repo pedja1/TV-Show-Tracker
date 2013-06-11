@@ -176,6 +176,7 @@ public class SearchResults extends SherlockActivity {
 			pd.setCanceledOnTouchOutside(false);
 			pd.setTitle("Downloading Show Info");
 			pd.show();
+			
 		}
 		
 		@Override
@@ -183,6 +184,7 @@ public class SearchResults extends SherlockActivity {
 		{
 			pd.dismiss();
 			finish();
+			Tools.setRefresh(true);
 			
 		}
 	}	

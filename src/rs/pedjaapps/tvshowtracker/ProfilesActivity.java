@@ -102,6 +102,7 @@ public class ProfilesActivity extends SherlockActivity {
 				editor.apply();
 				updateList();
 				ProfilesActivity.this.name.setText("");
+				Tools.setRefresh(true);
 			}
 		});
 	builder.setNegativeButton(getResources().getString(android.R.string.cancel), new DialogInterface.OnClickListener() {

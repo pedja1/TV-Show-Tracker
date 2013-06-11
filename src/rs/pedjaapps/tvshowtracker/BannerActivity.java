@@ -33,7 +33,7 @@ public class BannerActivity extends SherlockActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		if(Tools.isNetworkAvailable(this)){
+		if(!Tools.isNetworkAvailable(this)){
 			Toast.makeText(this, "No Internet Connection!\nPlease connect to internet and try again!", Toast.LENGTH_LONG).show();
 			finish();
 		}
@@ -53,6 +53,7 @@ public class BannerActivity extends SherlockActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				new DownloadBanner().execute(position);
+				Tools.setRefresh(true);
 				}
 		});
 	}

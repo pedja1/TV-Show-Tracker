@@ -44,6 +44,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 							((CheckBox)EpisodesAdapter.this.getView(i, convertView, parent).findViewById(R.id.chkWatched)).setChecked(true);
 							//ei.setWatched(true);
 							//db.updateEpisode(ei, ei.getEpisodeId()+"", seriesId);
+							Tools.setRefresh(true);
 						}
 						}
 					}
@@ -70,7 +71,8 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 					DatabaseHandler db = new DatabaseHandler(getContext());
                     ei.setWatched(isChecked);
 					db.updateEpisode(ei, ei.getEpisodeId()+"", seriesId);
-					
+					if(!Tools.isRefresh())
+					Tools.setRefresh(true);
 				}
 			});
 		}

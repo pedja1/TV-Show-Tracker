@@ -106,12 +106,14 @@ public class MainActivity extends SherlockActivity
 				return true;
 			}
 		});
-
+		Tools.setRefresh(true);
 	}
 
 	@Override
 	protected void onResume()
 	{
+		if(Tools.isRefresh())
+		{
 		profile = prefs.getString("profile", "Default");
 		sort = prefs.getString("sort", "default");
 		StringBuilder b = new StringBuilder();
@@ -130,6 +132,8 @@ public class MainActivity extends SherlockActivity
 		}
 		getSupportActionBar().setSubtitle(b.toString());
 		new LoadShows().execute();
+		Tools.setRefresh(false);
+		}
 		super.onResume();
 	}
 
