@@ -14,6 +14,16 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import rs.pedjaapps.tvshowtracker.adapter.SearchAdapter;
+import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.SuggestionProvider;
+import rs.pedjaapps.tvshowtracker.utils.Tools;
+import rs.pedjaapps.tvshowtracker.utils.XMLParser;
+
 import com.actionbarsherlock.app.SherlockActivity;
 
 
@@ -95,6 +105,7 @@ public class SearchResults extends SherlockActivity {
 		@Override
 		protected String doInBackground(String... args)
 		{
+			Tools.setKeepScreenOn(SearchResults.this, true);
 			publishProgress(new Integer[] {0,0});
 			
 			
@@ -114,8 +125,8 @@ public class SearchResults extends SherlockActivity {
 					parser.getValue(e, "IMDB_ID"), parser.getValue(e, "Overview"),
 					Tools.parseRating(parser.getValue(e, "Rating")), Integer.parseInt(parser.getValue(e, "id")),
 					parser.getValue(e, "Language"), 
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "banner"), extStorage+"/TVST"+parser.getValue(e, "banner").substring(parser.getValue(e, "banner").lastIndexOf("/"))), 
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/"))), 
+					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "banner"), extStorage+"/TVST"+parser.getValue(e, "banner").substring(parser.getValue(e, "banner").lastIndexOf("/")), true), 
+					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/")), true), 
 					parser.getValue(e, "Network"), Tools.parseInt(parser.getValue(e, "Runtime")), 
 					parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors")), profile);
 			
@@ -140,7 +151,7 @@ public class SearchResults extends SherlockActivity {
 				e = (Element) nl.item(i);
 				String image = "";
 				try{
-					image = Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "Image"), extStorage+"/TVST/actors"+parser.getValue(e, "Image").substring(parser.getValue(e, "Image").lastIndexOf("/")));
+					image = Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "Image"), extStorage+"/TVST/actors"+parser.getValue(e, "Image").substring(parser.getValue(e, "Image").lastIndexOf("/")), true);
 				}
 				catch(Exception ex){
 				}
@@ -185,7 +196,7 @@ public class SearchResults extends SherlockActivity {
 			pd.dismiss();
 			finish();
 			Tools.setRefresh(true);
-			
+			Tools.setKeepScreenOn(SearchResults.this, false);
 		}
 	}	
 	

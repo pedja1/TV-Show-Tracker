@@ -1,8 +1,12 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.R.id;
+import rs.pedjaapps.tvshowtracker.model.Show;
 import android.content.*;
 import android.view.*;
 import android.widget.*;

@@ -6,6 +6,15 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
+import rs.pedjaapps.tvshowtracker.adapter.ActorsAdapter;
+import rs.pedjaapps.tvshowtracker.adapter.EpisodesAdapter;
+import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;

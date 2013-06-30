@@ -1,7 +1,17 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.adapter;
 
 import java.text.ParseException;
 import java.util.Date;
+
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.R.id;
+import rs.pedjaapps.tvshowtracker.R.layout;
+import rs.pedjaapps.tvshowtracker.model.Episode;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.Tools;
 
 import android.content.*;
 import android.view.*;

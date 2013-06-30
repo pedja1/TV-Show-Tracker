@@ -1,4 +1,4 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.utils;
 
 import java.text.SimpleDateFormat;
 
@@ -10,5 +10,6 @@ public class Constants {
 	public static final int SHOW_UPDATE_CODE = 111;
 	public static final int UI_CODE_PRELOAD = 0;
 	public static final int UI_CODE_AFTERLOAD = 1;
-	public static final int LIST_HANDLER_UPDATE_LIST = 1001;
+	public static final int REFRESH_HANDLER_UPDATE_LIST = 1001;
+	public static final String LOG_TAG = "tvst";
 }

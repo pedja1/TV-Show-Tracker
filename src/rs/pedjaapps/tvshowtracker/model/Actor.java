@@ -1,4 +1,4 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.model;
 
 /**
  * Created by pedja on 5/21/13.

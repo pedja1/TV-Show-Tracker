@@ -1,4 +1,4 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.utils;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -10,10 +10,12 @@ import java.net.URLConnection;
 
 import org.apache.http.util.ByteArrayBuffer;
 
+import android.app.Activity;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.os.Environment;
 import android.util.Log;
+import android.view.WindowManager;
 
 public class Tools {
 	
@@ -28,8 +30,19 @@ public class Tools {
 	{
 		isRefresh = refresh;
 	}
+	
+	public static void setKeepScreenOn(Activity activity, boolean keepScreenOn) {
+	    if(keepScreenOn) {
+	      activity.getWindow().
+	        addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	    } else {
+	      activity.getWindow().
+	        clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+	    }
+	  }
 
-	public static String DownloadFromUrl(String imageURL, String fileName) {  //this is the downloader method
+
+	public static String DownloadFromUrl(String imageURL, String fileName, boolean useCached) {  //this is the downloader method
         try {
         	File mdbDir = new File(Environment.getExternalStorageDirectory() + "/MDb/posters");
 		      if(!mdbDir.exists()){
@@ -37,8 +50,10 @@ public class Tools {
 		      }
                 URL url = new URL(imageURL);
                 File file = new File(fileName);
+                if(useCached){
                 if(file.exists()){
                 	return fileName;
+                }
                 }
                 
                /* Open a connection to that URL. */

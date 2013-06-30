@@ -1,6 +1,9 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.adapter;
 
 
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.R.id;
+import rs.pedjaapps.tvshowtracker.model.Profile;
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.preference.PreferenceManager;

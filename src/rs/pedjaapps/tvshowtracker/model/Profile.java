@@ -1,4 +1,4 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.model;
 
 public class Profile {
 	private String name;

@@ -1,4 +1,4 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.model;
 
 public class AgendaSection implements Agenda{
 

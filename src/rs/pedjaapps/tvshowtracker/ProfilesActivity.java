@@ -1,5 +1,11 @@
 package rs.pedjaapps.tvshowtracker;
 
+import rs.pedjaapps.tvshowtracker.adapter.ProfilesAdapter;
+import rs.pedjaapps.tvshowtracker.model.Profile;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.Tools;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 

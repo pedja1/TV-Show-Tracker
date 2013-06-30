@@ -11,6 +11,14 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
+import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.Tools;
+import rs.pedjaapps.tvshowtracker.utils.XMLParser;
 import android.annotation.SuppressLint;
 import android.app.ProgressDialog;
 import android.app.SearchManager;
@@ -18,11 +26,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
 import android.os.Parcelable;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.GridView;
@@ -112,27 +120,27 @@ public class MainActivity extends SherlockActivity
 	@Override
 	protected void onResume()
 	{
-		if(Tools.isRefresh())
+		if (Tools.isRefresh())
 		{
-		profile = prefs.getString("profile", "Default");
-		sort = prefs.getString("sort", "default");
-		StringBuilder b = new StringBuilder();
-		b.append(profile);
-		if (sort.equals("name"))
-		{
-			b.append(" | Sorted by Name");
-		}
-		else if (sort.equals("next"))
-		{
-			b.append(" | Sorted by Next Episode");
-		}
-		else if (sort.equals("unwatched"))
-		{
-			b.append(" | Sorted by Unwatched Episodes");
-		}
-		getSupportActionBar().setSubtitle(b.toString());
-		new LoadShows().execute();
-		Tools.setRefresh(false);
+			profile = prefs.getString("profile", "Default");
+			sort = prefs.getString("sort", "default");
+			StringBuilder b = new StringBuilder();
+			b.append(profile);
+			if (sort.equals("name"))
+			{
+				b.append(" | Sorted by Name");
+			}
+			else if (sort.equals("next"))
+			{
+				b.append(" | Sorted by Next Episode");
+			}
+			else if (sort.equals("unwatched"))
+			{
+				b.append(" | Sorted by Unwatched Episodes");
+			}
+			getSupportActionBar().setSubtitle(b.toString());
+			new LoadShows().execute();
+			Tools.setRefresh(false);
 		}
 		super.onResume();
 	}
@@ -160,23 +168,23 @@ public class MainActivity extends SherlockActivity
 
 		if (code == Constants.UI_CODE_PRELOAD)
 		{
-			menuDisable = true;
-			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+			//menuDisable = true;
+			/*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 			{
 				this.invalidateOptionsMenu();
-			}
-			list.setEnabled(false);
+			}*/
+			//list.setEnabled(false);
 			listEmpty.setVisibility(View.GONE);
-			loading.setVisibility(View.VISIBLE);
+			//loading.setVisibility(View.VISIBLE);
 		}
 		else if (code == Constants.UI_CODE_AFTERLOAD)
 		{
-			menuDisable = false;
-			if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
+			//menuDisable = false;
+			/*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
 			{
 				this.invalidateOptionsMenu();
-			}
-			list.setEnabled(true);
+			}*/
+			//list.setEnabled(true);
 			if (adapter.isEmpty())
 			{
 				listEmpty.setVisibility(View.VISIBLE);
@@ -193,17 +201,22 @@ public class MainActivity extends SherlockActivity
 
 	private List<Show> getShows()
 	{
+		long startTime = System.currentTimeMillis();
 		List<Show> shows = new ArrayList<Show>();
 		List<Show> dbShows = db.getAllShows(prefs.getString("filter", "all"),
 				profile);
+
 		for (Show s : dbShows)
 		{
-			String[] ue = upcomingEpisode(s.getSeriesId() + "", s.getStatus());
+			List<EpisodeItem> episodeItems = db.getAllEpisodes(s.getSeriesId()+"",
+					profile);
+			int episodeCount = db.getEpisodesCount(s.getSeriesId()+"", profile);
+			String[] ue = upcomingEpisode(episodeItems, s.getStatus());
 			shows.add(new Show(s.getSeriesName(), s.getBanner(), ue[0],
-					watchedPercent(s.getSeriesId() + ""), s.getSeriesId(),
+					watchedPercent(episodeItems, episodeCount), s.getSeriesId(),
 					Integer.parseInt(ue[1])));
 		}
-
+		
 		if (sort.equals("name"))
 		{
 			Collections.sort(shows, new SortByName());
@@ -216,7 +229,10 @@ public class MainActivity extends SherlockActivity
 		{
 			Collections.sort(shows, new SortByUnwatched());
 		}
-
+		Log.d(Constants.LOG_TAG,
+				"MainActivity.java > getShows(): "
+						+ (System.currentTimeMillis() - startTime) + "ms");
+		
 		return shows;
 	}
 
@@ -267,12 +283,16 @@ public class MainActivity extends SherlockActivity
 		@Override
 		protected List<Show> doInBackground(String... args)
 		{
+			Tools.setKeepScreenOn(MainActivity.this, true);
+			long startTime = System.currentTimeMillis();
 			List<Show> entry = new ArrayList<Show>();
 			for (Show s : getShows())
 			{
 				entry.add(s);
 			}
-
+			Log.d(Constants.LOG_TAG,
+					"MainActivity.java > LoadShows > doInBackground: "
+							+ (System.currentTimeMillis() - startTime) + "ms");
 			return entry;
 		}
 
@@ -292,11 +312,13 @@ public class MainActivity extends SherlockActivity
 			}
 			adapter.notifyDataSetChanged();
 			setUI(Constants.UI_CODE_AFTERLOAD);
+			Tools.setKeepScreenOn(MainActivity.this, false);
 		}
 	}
 
-	private String[] upcomingEpisode(String seriesId, String status)
+	private String[] upcomingEpisode(List<EpisodeItem> episodeItems, String status)
 	{
+		long startTime = System.currentTimeMillis();
 		StringBuilder b = new StringBuilder();
 		long days = 999999999;
 		// ^workaround for sorting.
@@ -308,8 +330,7 @@ public class MainActivity extends SherlockActivity
 		}
 		else
 		{
-			List<EpisodeItem> episodeItems = db.getAllEpisodes(seriesId,
-					profile);
+			
 			for (EpisodeItem e : episodeItems)
 			{
 				// date is in format "yyyy-MM-dd"
@@ -361,14 +382,15 @@ public class MainActivity extends SherlockActivity
 				b.append("NO INFORMATION ABOUT NEXT EPISODE");
 			}
 		}
+		Log.d(Constants.LOG_TAG,
+				"MainActivity.java > upcomingEpisode(): "
+						+ (System.currentTimeMillis() - startTime) + "ms");
+		
 		return new String[] { b.toString(), days + "" };
 	}
 
-	private int watchedPercent(String seriesId)
+	private int watchedPercent(List<EpisodeItem> episodeItems, int episodeCount)
 	{
-
-		List<EpisodeItem> episodeItems = db.getAllEpisodes(seriesId, profile);
-		int episodeCount = db.getEpisodesCount(seriesId, profile);
 		int watched = 0;
 		for (EpisodeItem e : episodeItems)
 		{
@@ -377,7 +399,6 @@ public class MainActivity extends SherlockActivity
 				watched++;
 			}
 		}
-
 		return (int) ((double) watched / (double) episodeCount * 100.0);
 	}
 
@@ -385,7 +406,7 @@ public class MainActivity extends SherlockActivity
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
 		System.out.println("onCreateOptionsMenu");
-		this.menu = menu;
+		//this.menu = menu;
 		menu.add(0, 0, 0, "Add")
 				.setIcon(R.drawable.ic_action_search)
 				.setActionView(searchView)
@@ -416,7 +437,7 @@ public class MainActivity extends SherlockActivity
 		case 3:
 			if (Tools.isNetworkAvailable(this))
 			{
-				new UpdateShow().execute(db.getAllShows("", profile));
+				new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile));
 			}
 			else
 			{
@@ -520,6 +541,7 @@ public class MainActivity extends SherlockActivity
 		@Override
 		protected String doInBackground(List<Show>... args)
 		{
+			Tools.setKeepScreenOn(MainActivity.this, true);
 			for (int n = 0; n < args[0].size(); n++)
 			{
 				publishProgress(new String[] { n + 1 + "",
@@ -541,7 +563,35 @@ public class MainActivity extends SherlockActivity
 				Element e = (Element) nl.item(0);
 				String date = Constants.df.format(new Date());
 				String seriesId = parser.getValue(e, "id");
-
+				String banner ="";
+				String fanart = "";
+				try {
+					banner = Tools.DownloadFromUrl(
+							"http://thetvdb.com/banners/"
+									+ parser.getValue(e, "banner"),
+							extStorage
+									+ "/TVST"
+									+ parser.getValue(e, "banner")
+											.substring(
+													parser.getValue(
+															e,
+															"banner")
+															.lastIndexOf(
+																	"/")), true);
+					fanart = Tools.DownloadFromUrl(
+							"http://thetvdb.com/banners/"
+									+ parser.getValue(e, "fanart"),
+							extStorage
+									+ "/TVST"
+									+ parser.getValue(e, "fanart")
+											.substring(
+													parser.getValue(
+															e,
+															"fanart")
+															.lastIndexOf(
+																	"/")), true);
+				}
+				catch(Exception exc){}
 				db.updateShow(
 						new Show(
 								parser.getValue(e, "SeriesName"),
@@ -551,30 +601,8 @@ public class MainActivity extends SherlockActivity
 								Tools.parseRating(parser.getValue(e, "Rating")),
 								Integer.parseInt(parser.getValue(e, "id")),
 								parser.getValue(e, "Language"),
-								Tools.DownloadFromUrl(
-										"http://thetvdb.com/banners/"
-												+ parser.getValue(e, "banner"),
-										extStorage
-												+ "/TVST"
-												+ parser.getValue(e, "banner")
-														.substring(
-																parser.getValue(
-																		e,
-																		"banner")
-																		.lastIndexOf(
-																				"/"))),
-								Tools.DownloadFromUrl(
-										"http://thetvdb.com/banners/"
-												+ parser.getValue(e, "fanart"),
-										extStorage
-												+ "/TVST"
-												+ parser.getValue(e, "fanart")
-														.substring(
-																parser.getValue(
-																		e,
-																		"fanart")
-																		.lastIndexOf(
-																				"/"))),
+								banner,
+								fanart,
 								parser.getValue(e, "Network"),
 								Tools.parseInt(parser.getValue(e, "Runtime")),
 								parser.getValue(e, "Status"), false, false,
@@ -635,30 +663,38 @@ public class MainActivity extends SherlockActivity
 				nl = doc.getElementsByTagName("Actor");
 				for (int i = 0; i < nl.getLength(); i++)
 				{
+					String image = "";
+					try{
+					image = Tools.DownloadFromUrl(
+							"http://thetvdb.com/banners/"
+									+ parser.getValue(e,
+											"Image"),
+							extStorage
+									+ "/TVST/actors"
+									+ parser.getValue(e,
+											"Image")
+											.substring(
+													parser.getValue(
+															e,
+															"Image")
+															.lastIndexOf(
+																	"/")), true);
+					}
+					catch(Exception ex){
+						
+					}
 					e = (Element) nl.item(i);
 					if (!db.actorExists(seriesId, parser.getValue(e, "id"),
 							profile))
 					{
-
+						
+						
 						db.addActor(
 								new Actor(
 										parser.getValue(e, "id"),
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
-										Tools.DownloadFromUrl(
-												"http://thetvdb.com/banners/"
-														+ parser.getValue(e,
-																"Image"),
-												extStorage
-														+ "/TVST/actors"
-														+ parser.getValue(e,
-																"Image")
-																.substring(
-																		parser.getValue(
-																				e,
-																				"Image")
-																				.lastIndexOf(
-																						"/"))),
+										image,
 										profile), seriesId);
 					}
 					else
@@ -668,20 +704,7 @@ public class MainActivity extends SherlockActivity
 										parser.getValue(e, "id"),
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
-										Tools.DownloadFromUrl(
-												"http://thetvdb.com/banners/"
-														+ parser.getValue(e,
-																"Image"),
-												extStorage
-														+ "/TVST/actors"
-														+ parser.getValue(e,
-																"Image")
-																.substring(
-																		parser.getValue(
-																				e,
-																				"Image")
-																				.lastIndexOf(
-																						"/"))),
+										image,
 										profile), parser.getValue(e, "id"),
 								seriesId);
 					}
@@ -715,11 +738,19 @@ public class MainActivity extends SherlockActivity
 		protected void onPostExecute(String result)
 		{
 			pd.dismiss();
-
+			new LoadShows().execute();
+			Tools.setKeepScreenOn(MainActivity.this, false);
 		}
 	}
 
 	@Override
+	protected void onDestroy()
+	{
+		Tools.setKeepScreenOn(MainActivity.this, false);
+		super.onDestroy();
+	}
+
+	/*@Override
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		if (menu != null)
@@ -733,6 +764,6 @@ public class MainActivity extends SherlockActivity
 			}
 		}
 		return super.onPrepareOptionsMenu(menu);
-	}
+	}*/
 
 }

@@ -1,9 +1,15 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.utils;
 
 import android.content.*;
 import android.database.*;
 import android.database.sqlite.*;
+import android.util.Log;
+
 import java.util.*;
+
+import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.Show;
 
 public class DatabaseHandler extends SQLiteOpenHelper
 {
@@ -84,7 +90,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * All CRUD(Create, Read, Update, Delete) Operations
 	 */
 
-	public void createEpisodeTable(String seriesId)
+	public synchronized void createEpisodeTable(String seriesId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		String CREATE_EPISODE_TABLE = "CREATE TABLE IF NOT EXISTS episodes_"
@@ -100,7 +106,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public void createActorsTable(String seriesId)
+	public synchronized void createActorsTable(String seriesId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		String CREATE_ACTORS_TABLE = "CREATE TABLE IF NOT EXISTS actors_"
@@ -113,7 +119,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public void addProfile(String profileName)
+	public synchronized void addProfile(String profileName)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -125,7 +131,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close(); // Closing database connection
 	}
 
-	public void addShow(Show s, String profile)
+	public synchronized void addShow(Show s, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -155,7 +161,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		createActorsTable(s.getSeriesId() + "");
 	}
 
-	public int updateShow(Show s, String seriesId, String profile)
+	public synchronized int updateShow(Show s, String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -188,8 +194,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * @param filter
 	 *            Can be either all, continuing, or ended
 	 */
-	public List<Show> getAllShows(String filter, String profile)
+	public synchronized List<Show> getAllShows(String filter, String profile)
 	{
+		long startTime = System.currentTimeMillis();
 		List<Show> shows = new ArrayList<Show>();
 		// Select All Query
 		StringBuilder builder = new StringBuilder();
@@ -246,10 +253,13 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		// return list
 		db.close();
 		cursor.close();
+		Log.d(Constants.LOG_TAG,
+				"DatabaseHandler.java > getAllShows(): "
+						+ (System.currentTimeMillis() - startTime) + "ms");
 		return shows;
 	}
 
-	public boolean showExists(String seriesName, String profile)
+	public synchronized boolean showExists(String seriesName, String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -262,7 +272,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return exists;
 	}
 
-	public void deleteSeries(String seriesId, String profile)
+	public synchronized void deleteSeries(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_SERIES, show_filds[2]
@@ -274,7 +284,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public void deleteEpisodes(String seriesId, String profile)
+	public synchronized void deleteEpisodes(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete("episodes_" + seriesId, "profile_name = ?",
@@ -282,7 +292,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public void deleteActors(String seriesId, String profile)
+	public synchronized void deleteActors(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete("actors_" + seriesId, "profile_name = ?",
@@ -290,7 +300,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public void deleteProfile(String profile)
+	public synchronized void deleteProfile(String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_PROFILES, profile_filds[1] + " = ?",
@@ -299,7 +309,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public Show getShow(String seriesId, String profile)
+	public synchronized Show getShow(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -321,7 +331,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return e;
 	}
 
-	public void addEpisode(EpisodeItem e, String seriesId)
+	public synchronized void addEpisode(EpisodeItem e, String seriesId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -341,7 +351,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close(); // Closing database connection
 	}
 
-	public void addActor(Actor a, String seriesId)
+	public synchronized void addActor(Actor a, String seriesId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -356,7 +366,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close(); // Closing database connection
 	}
 
-	public EpisodeItem getEpisode(String seriesId, String episodeId,
+	public synchronized EpisodeItem getEpisode(String seriesId, String episodeId,
 			String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -379,7 +389,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return e;
 	}
 
-	public Actor getActor(String seriesId, String actorId, String profile)
+	public synchronized Actor getActor(String seriesId, String actorId, String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -399,7 +409,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return a;
 	}
 
-	public List<String> getAllProfiles()
+	public synchronized List<String> getAllProfiles()
 	{
 		List<String> profiles = new ArrayList<String>();
 		// Select All Query
@@ -424,7 +434,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return profiles;
 	}
 
-	public List<EpisodeItem> getAllEpisodes(String seriesId, String profile)
+	public synchronized List<EpisodeItem> getAllEpisodes(String seriesId, String profile)
 	{
 		List<EpisodeItem> episodeItems = new ArrayList<EpisodeItem>();
 		// Select All Query
@@ -462,7 +472,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return episodeItems;
 	}
 
-	public List<Actor> getAllActors(String seriesId, String profile)
+	public synchronized List<Actor> getAllActors(String seriesId, String profile)
 	{
 		List<Actor> actors = new ArrayList<Actor>();
 		// Select All Query
@@ -504,7 +514,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * db.close(); }
 	 */
 
-	public boolean episodeExists(String seriesId, String episodeId,
+	public synchronized boolean episodeExists(String seriesId, String episodeId,
 			String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
@@ -519,7 +529,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return exists;
 	}
 
-	public boolean actorExists(String seriesId, String actorId, String profile)
+	public synchronized boolean actorExists(String seriesId, String actorId, String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -533,7 +543,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return exists;
 	}
 
-	public int updateEpisode(EpisodeItem e, String episodeId, String seriesId)
+	public synchronized int updateEpisode(EpisodeItem e, String episodeId, String seriesId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -556,7 +566,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return count;
 	}
 
-	public int updateActor(Actor a, String actorId, String seriesId)
+	public synchronized int updateActor(Actor a, String actorId, String seriesId)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -574,7 +584,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return count;
 	}
 
-	public int getEpisodesCount(String seriesId, String profile)
+	public synchronized int getEpisodesCount(String seriesId, String profile)
 	{
 		String countQuery = "SELECT  * FROM episodes_" + seriesId
 				+ " WHERE profile_name LIKE \"%" + profile + "%\"";

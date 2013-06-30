@@ -1,6 +1,13 @@
-package rs.pedjaapps.tvshowtracker;
+package rs.pedjaapps.tvshowtracker.adapter;
 
 
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.R.drawable;
+import rs.pedjaapps.tvshowtracker.R.id;
+import rs.pedjaapps.tvshowtracker.R.layout;
+import rs.pedjaapps.tvshowtracker.model.Agenda;
+import rs.pedjaapps.tvshowtracker.model.AgendaItem;
+import rs.pedjaapps.tvshowtracker.model.AgendaSection;
 import android.content.*;
 import android.graphics.*;
 import android.view.*;

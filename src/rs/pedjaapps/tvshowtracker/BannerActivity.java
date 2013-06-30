@@ -7,6 +7,13 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
+import rs.pedjaapps.tvshowtracker.adapter.BannersAdapter;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.Tools;
+import rs.pedjaapps.tvshowtracker.utils.XMLParser;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
@@ -53,7 +60,7 @@ public class BannerActivity extends SherlockActivity {
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
 				new DownloadBanner().execute(position);
-				Tools.setRefresh(true);
+				
 				}
 		});
 	}
@@ -121,7 +128,7 @@ public class BannerActivity extends SherlockActivity {
 		{
 			
 			Show show = db.getShow(seriesId, profile);
-			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()));
+			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
 			
 			return "";
 		}
@@ -136,6 +143,7 @@ public class BannerActivity extends SherlockActivity {
 		{
 			 setProgressBarIndeterminateVisibility(false);
 			 finish();
+			 Tools.setRefresh(true);
 		}
 	}
 	

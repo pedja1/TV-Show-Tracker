@@ -4,6 +4,15 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import rs.pedjaapps.tvshowtracker.adapter.AgendaAdapter;
+import rs.pedjaapps.tvshowtracker.adapter.EpisodesAdapter;
+import rs.pedjaapps.tvshowtracker.model.Agenda;
+import rs.pedjaapps.tvshowtracker.model.AgendaItem;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+
 import com.actionbarsherlock.app.SherlockActivity;
 import com.actionbarsherlock.view.MenuItem;
 
