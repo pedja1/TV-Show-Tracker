@@ -283,7 +283,6 @@ public class MainActivity extends SherlockActivity
 		@Override
 		protected List<Show> doInBackground(String... args)
 		{
-			Tools.setKeepScreenOn(MainActivity.this, true);
 			long startTime = System.currentTimeMillis();
 			List<Show> entry = new ArrayList<Show>();
 			for (Show s : getShows())
@@ -312,7 +311,6 @@ public class MainActivity extends SherlockActivity
 			}
 			adapter.notifyDataSetChanged();
 			setUI(Constants.UI_CODE_AFTERLOAD);
-			Tools.setKeepScreenOn(MainActivity.this, false);
 		}
 	}
 
@@ -541,7 +539,7 @@ public class MainActivity extends SherlockActivity
 		@Override
 		protected String doInBackground(List<Show>... args)
 		{
-			Tools.setKeepScreenOn(MainActivity.this, true);
+			
 			for (int n = 0; n < args[0].size(); n++)
 			{
 				publishProgress(new String[] { n + 1 + "",
@@ -726,6 +724,7 @@ public class MainActivity extends SherlockActivity
 		@Override
 		protected void onPreExecute()
 		{
+			Tools.setKeepScreenOn(MainActivity.this, true);
 			pd = new ProgressDialog(MainActivity.this);
 			pd.setIndeterminate(true);
 			pd.setCancelable(false);

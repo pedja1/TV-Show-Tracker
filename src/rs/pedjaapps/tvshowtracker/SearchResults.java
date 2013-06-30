@@ -105,7 +105,7 @@ public class SearchResults extends SherlockActivity {
 		@Override
 		protected String doInBackground(String... args)
 		{
-			Tools.setKeepScreenOn(SearchResults.this, true);
+			
 			publishProgress(new Integer[] {0,0});
 			
 			
@@ -181,6 +181,7 @@ public class SearchResults extends SherlockActivity {
 		
 		@Override
 		protected void onPreExecute(){
+			Tools.setKeepScreenOn(SearchResults.this, true);
 			pd = new ProgressDialog(SearchResults.this);
 			pd.setIndeterminate(true);
 			pd.setCancelable(false);
