@@ -12,11 +12,19 @@ import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 public class TVShowTracker extends Application {
-	
-	@Override
+
+    private static Context context;
+
+    public static Context getAppContext()
+    {
+        return TVShowTracker.context;
+    }
+
+    @Override
 	public void onCreate() {
 		super.onCreate();
 		initImageLoader(getApplicationContext());
+        context = getApplicationContext();
 	}
 
 	public static void initImageLoader(Context context) {

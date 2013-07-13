@@ -5,29 +5,30 @@ import android.content.*;
 import android.os.*;
 import android.preference.PreferenceManager;
 import android.provider.*;
-import android.view.*;
+import android.view.View;
 import android.widget.*;
 import android.widget.AdapterView.*;
-import java.io.*;
+
 import java.util.*;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
 
 import rs.pedjaapps.tvshowtracker.adapter.SearchAdapter;
 import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.ActorsList;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.model.SearchResults;
+import rs.pedjaapps.tvshowtracker.model.Series;
+import rs.pedjaapps.tvshowtracker.model.SeriesData;
 import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.Internet;
 import rs.pedjaapps.tvshowtracker.utils.SuggestionProvider;
 import rs.pedjaapps.tvshowtracker.utils.Tools;
-import rs.pedjaapps.tvshowtracker.utils.XMLParser;
 
 import com.actionbarsherlock.app.SherlockActivity;
+import com.actionbarsherlock.view.Window;
+import com.google.gson.Gson;
 
 
-public class SearchResults extends SherlockActivity {
+public class SearchResultsActivity extends SherlockActivity {
 
 	
 	ListView searchListView;
@@ -66,7 +67,7 @@ public class SearchResults extends SherlockActivity {
 				if(!db.showExists(searchAdapter.getItem(position).getSeriesName(), profile))
 					new DownloadShowInfo().execute(searchAdapter.getItem(position).getSeriesId()+"", searchAdapter.getItem(position).getLanguage());
 				else
-					Toast.makeText(SearchResults.this, "Show Exists!\nSelect Another", Toast.LENGTH_LONG).show();
+					Toast.makeText(SearchResultsActivity.this, "Show Exists!\nSelect Another", Toast.LENGTH_LONG).show();
 			}
 			
 		});
@@ -106,7 +107,7 @@ public class SearchResults extends SherlockActivity {
 		protected String doInBackground(String... args)
 		{
 			
-			publishProgress(new Integer[] {0,0});
+			/*publishProgress(new Integer[] {0,0});
 			
 			
 			if(!new File(extStorage+"/TVST/actors").exists()){
@@ -121,7 +122,7 @@ public class SearchResults extends SherlockActivity {
 			Element e = (Element) nl.item(0);
 			String date = Constants.df.format(new Date());
 			String seriesId = parser.getValue(e, "id");
-			db.addShow(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "FirstAired"), 
+			db.addShow(new Series(parser.getValue(e, "SeriesName"), parser.getValue(e, "FirstAired"),
 					parser.getValue(e, "IMDB_ID"), parser.getValue(e, "Overview"),
 					Tools.parseRating(parser.getValue(e, "Rating")), Integer.parseInt(parser.getValue(e, "id")),
 					parser.getValue(e, "Language"), 
@@ -161,7 +162,38 @@ public class SearchResults extends SherlockActivity {
 						image, profile), seriesId);
 				}
 				publishProgress(new Integer[]{2,i,nl.getLength()});
-			}
+			}*/
+            publishProgress(new Integer[] {0,0});
+            Gson gson = new Gson();
+            String seriesJson = Internet.httpGet("http://pedjaapps.in.rs/tvst/api/series.php?seriesid="+args[0]);
+            SeriesData data = gson.fromJson(seriesJson, SeriesData.class);
+            Series s = data.getData().getSeries();
+            db.addShow(s, profile);
+            List<EpisodeItem> episodes = data.getData().getEpisodes();
+            for(int i = 0; i < episodes.size(); i++)
+            {
+                EpisodeItem e = episodes.get(i);
+                e.setProfile(profile);
+                if(e.getEpisode()!=0 && !db.episodeExists(s.getSeriesId()+"", e.getEpisodeId()+"", profile)){
+                    db.addEpisode(e, s.getSeriesId()+"");
+                }
+                publishProgress(new Integer[]{1,i,episodes.size()});
+            }
+            String actorsJson = Internet.httpGet("http://pedjaapps.in.rs/tvst/api/actors.php?seriesid="+args[0]);
+            ActorsList data2 = gson.fromJson(actorsJson, ActorsList.class);
+            List<Actor> actors = data2.getActorsObject().getActorsList();
+            for(int i = 0; i < actors.size(); i++)
+            {
+                Actor a = actors.get(i);
+                a.setProfile(profile);
+                if(!db.actorExists(s.getSeriesId()+"", a.getActorId(), profile)){
+                    db.addActor(a, s.getSeriesId()+"");
+                }
+                publishProgress(new Integer[]{2,i,actors.size()});
+            }
+
+
+
 			return "";
 			
 		}
@@ -181,8 +213,8 @@ public class SearchResults extends SherlockActivity {
 		
 		@Override
 		protected void onPreExecute(){
-			Tools.setKeepScreenOn(SearchResults.this, true);
-			pd = new ProgressDialog(SearchResults.this);
+			Tools.setKeepScreenOn(SearchResultsActivity.this, true);
+			pd = new ProgressDialog(SearchResultsActivity.this);
 			pd.setIndeterminate(true);
 			pd.setCancelable(false);
 			pd.setCanceledOnTouchOutside(false);
@@ -197,48 +229,40 @@ public class SearchResults extends SherlockActivity {
 			pd.dismiss();
 			finish();
 			Tools.setRefresh(true);
-			Tools.setKeepScreenOn(SearchResults.this, false);
+			Tools.setKeepScreenOn(SearchResultsActivity.this, false);
 		}
 	}	
 	
-	public class TitleSearchParser extends AsyncTask<String, Void, List<Show>>
+	public class TitleSearchParser extends AsyncTask<String, Void, List<SearchResults.SearchResult>>
 	{
 
 		@Override
-		protected List<Show> doInBackground(String... args)
+		protected List<SearchResults.SearchResult> doInBackground(String... args)
 		{
-			List<Show> entry = new ArrayList<Show>();
-			
-			XMLParser parser = new XMLParser();
-			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/GetSeries.php?seriesname="+args[0]); // getting XML
-			Document doc = parser.getDomElement(xml); // getting DOM element
-			 
-			NodeList nl = doc.getElementsByTagName("Series");
-			     
-			for (int i = 0; i < nl.getLength(); i++) {
-				Element e = (Element) nl.item(i);
-				entry.add(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "Overview"),
-						Integer.parseInt(parser.getValue(e, "seriesid")),
-						parser.getValue(e, "language"), parser.getValue(e, "Network"), parser.getValue(e, "FirstAired")));
-			  }
+			List<SearchResults.SearchResult> entry;
+
+            String json = Internet.httpGet("http://pedjaapps.in.rs/tvst/api/search.php?seriesname="+args[0]);
+            Gson gson = new Gson();
+            SearchResults obj = gson.fromJson(json, SearchResults.class);
+            entry = obj.getData().getSeries();
 			
 			return entry;
 		}
 
 		@Override
 		protected void onPreExecute(){
-			setProgressBarIndeterminateVisibility(true);
+			setSupportProgressBarIndeterminateVisibility(true);
 			 }
 		
 		@Override
-		protected void onPostExecute(List<Show> result)
+		protected void onPostExecute(List<SearchResults.SearchResult> result)
 		{
+            setSupportProgressBarIndeterminateVisibility(false);
 			searchAdapter.clear();
-			for (Show entry : result) {
+			for (SearchResults.SearchResult entry : result) {
 				searchAdapter.add(entry);
 			}
 			searchAdapter.notifyDataSetChanged();
-			 setProgressBarIndeterminateVisibility(false);
 		}
 	}	
 

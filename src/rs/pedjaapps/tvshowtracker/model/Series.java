@@ -1,36 +1,39 @@
 package rs.pedjaapps.tvshowtracker.model;
 
-public class Show {
-	private int id;
-	private String seriesName;
-    private String firstAired;
-    private String imdbId;
-    private String overview;
-    private double rating;
-    private int seriesId;
-    private String language;
-    private String banner;
-    private String fanart;
-    private String network;
-    private int runtime;
-    private String status;
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
+public class Series {
+	@Expose private int id;
+	@Expose @SerializedName("SeriesName") private String seriesName;
+    @Expose @SerializedName("FirstAired") private String firstAired;
+    @Expose @SerializedName("IMDB_ID") private String imdbId;
+    @Expose @SerializedName("Overview") private String overview;
+    @Expose @SerializedName("Rating") private String rating;
+    @Expose @SerializedName("SeriesID") private int seriesId;
+    @Expose @SerializedName("Language") private String language;
+    @Expose private String banner;
+    @Expose private String fanart;
+    @Expose @SerializedName("Network") private String network;
+    @Expose @SerializedName("Runtime") private int runtime;
+    @Expose @SerializedName("Status") private String status;
     private boolean ignore;
     private boolean hide;
     private String updated;
     private String nextEpisode;
     private int nextEpisodeDays;
     private int prgWatched;
-    private String actors;
+    @Expose @SerializedName("Actors") private String actors;
     
     
     
-    public Show(String banner) {
+    public Series(String banner) {
 		super();
 		this.banner = banner;
 	}
 
-	public Show(String seriesName, String overview, int seriesId,
-			String language, String network, String firstAired) {
+	public Series(String seriesName, String overview, int seriesId,
+                  String language, String network, String firstAired) {
 		super();
 		this.seriesName = seriesName;
 		this.overview = overview;
@@ -40,7 +43,7 @@ public class Show {
 		this.firstAired = firstAired;
 	}
 
-	public Show(String seriesName, String banner, String nextEpisode, int prgWatched, int seriesId, int nextEpisodeDays){
+	public Series(String seriesName, String banner, String nextEpisode, int prgWatched, int seriesId, int nextEpisodeDays){
     	this.seriesName = seriesName;
 		this.banner = banner;
     	this.nextEpisode = nextEpisode;
@@ -49,10 +52,10 @@ public class Show {
     	this.nextEpisodeDays = nextEpisodeDays;
     }
     
-	public Show(int id, String seriesName, String firstAired, String imdbId,
-			String overview, double rating, int seriesId, String language,
-			String banner, String fanart, String network, int runtime,
-			String status, boolean ignore, boolean hide, String updated, String actors) {
+	public Series(int id, String seriesName, String firstAired, String imdbId,
+                  String overview, String rating, int seriesId, String language,
+                  String banner, String fanart, String network, int runtime,
+                  String status, boolean ignore, boolean hide, String updated, String actors) {
 		this.id = id;
 		this.seriesName = seriesName;
 		this.firstAired = firstAired;
@@ -72,10 +75,10 @@ public class Show {
 		this.actors = actors;
 	}
 	
-	public Show(String seriesName, String firstAired, String imdbId,
-			String overview, double rating, int seriesId, String language,
-			String banner, String fanart, String network, int runtime,
-			String status, boolean ignore, boolean hide, String updated, String actors) {
+	public Series(String seriesName, String firstAired, String imdbId,
+                  String overview, String rating, int seriesId, String language,
+                  String banner, String fanart, String network, int runtime,
+                  String status, boolean ignore, boolean hide, String updated, String actors) {
 		this.seriesName = seriesName;
 		this.firstAired = firstAired;
 		this.imdbId = imdbId;
@@ -94,7 +97,7 @@ public class Show {
 		this.actors = actors;
 	}
 
-	public Show(){
+	public Series(){
 		
 	}
 	
@@ -138,11 +141,11 @@ public class Show {
 		this.overview = overview;
 	}
 
-	public double getRating() {
+	public String getRating() {
 		return rating;
 	}
 
-	public void setRating(double rating) {
+	public void setRating(String rating) {
 		this.rating = rating;
 	}
 

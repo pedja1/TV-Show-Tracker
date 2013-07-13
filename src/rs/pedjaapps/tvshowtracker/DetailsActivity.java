@@ -11,7 +11,7 @@ import rs.pedjaapps.tvshowtracker.adapter.EpisodesAdapter;
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.Series;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
 
@@ -379,7 +379,7 @@ public class DetailsActivity extends SherlockFragmentActivity
 					.findViewById(R.id.rllHeader1);
 			RelativeLayout nextLayout = (RelativeLayout) rootView
 					.findViewById(R.id.rllHeader2);
-			final Show s = db.getShow(seriesId + "", profile);
+			final Series s = db.getShow(seriesId + "", profile);
 			getSherlockActivity().getSupportActionBar().setTitle(
 					s.getSeriesName());
 			getSherlockActivity().getSupportActionBar().setSubtitle(

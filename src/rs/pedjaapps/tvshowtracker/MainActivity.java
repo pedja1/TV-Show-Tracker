@@ -14,7 +14,7 @@ import org.w3c.dom.NodeList;
 import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.Series;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
 import rs.pedjaapps.tvshowtracker.utils.Tools;
@@ -199,47 +199,47 @@ public class MainActivity extends SherlockActivity
 
 	}
 
-	private List<Show> getShows()
+	private List<Series> getShows()
 	{
 		long startTime = System.currentTimeMillis();
-		List<Show> shows = new ArrayList<Show>();
-		List<Show> dbShows = db.getAllShows(prefs.getString("filter", "all"),
+		List<Series> serieses = new ArrayList<Series>();
+		List<Series> dbSerieses = db.getAllShows(prefs.getString("filter", "all"),
 				profile);
 
-		for (Show s : dbShows)
+		for (Series s : dbSerieses)
 		{
 			List<EpisodeItem> episodeItems = db.getAllEpisodes(s.getSeriesId()+"",
 					profile);
 			int episodeCount = db.getEpisodesCount(s.getSeriesId()+"", profile);
 			String[] ue = upcomingEpisode(episodeItems, s.getStatus());
-			shows.add(new Show(s.getSeriesName(), s.getBanner(), ue[0],
+			serieses.add(new Series(s.getSeriesName(), s.getBanner(), ue[0],
 					watchedPercent(episodeItems, episodeCount), s.getSeriesId(),
 					Integer.parseInt(ue[1])));
 		}
 		
 		if (sort.equals("name"))
 		{
-			Collections.sort(shows, new SortByName());
+			Collections.sort(serieses, new SortByName());
 		}
 		else if (sort.equals("next"))
 		{
-			Collections.sort(shows, new SortByNextEpisode());
+			Collections.sort(serieses, new SortByNextEpisode());
 		}
 		else if (sort.equals("unwatched"))
 		{
-			Collections.sort(shows, new SortByUnwatched());
+			Collections.sort(serieses, new SortByUnwatched());
 		}
 		Log.d(Constants.LOG_TAG,
 				"MainActivity.java > getShows(): "
 						+ (System.currentTimeMillis() - startTime) + "ms");
 		
-		return shows;
+		return serieses;
 	}
 
-	static class SortByName implements Comparator<Show>
+	static class SortByName implements Comparator<Series>
 	{
 		@Override
-		public int compare(Show s1, Show s2)
+		public int compare(Series s1, Series s2)
 		{
 			String sub1 = s1.getSeriesName();
 			String sub2 = s2.getSeriesName();
@@ -248,10 +248,10 @@ public class MainActivity extends SherlockActivity
 
 	}
 
-	static class SortByNextEpisode implements Comparator<Show>
+	static class SortByNextEpisode implements Comparator<Series>
 	{
 		@Override
-		public int compare(Show p1, Show p2)
+		public int compare(Series p1, Series p2)
 		{
 			if (p1.getNextEpisodeDays() > p2.getNextEpisodeDays())
 				return 1;
@@ -263,10 +263,10 @@ public class MainActivity extends SherlockActivity
 
 	}
 
-	static class SortByUnwatched implements Comparator<Show>
+	static class SortByUnwatched implements Comparator<Series>
 	{
 		@Override
-		public int compare(Show p1, Show p2)
+		public int compare(Series p1, Series p2)
 		{
 			if (p1.getPrgWatched() < p2.getPrgWatched())
 				return -1;
@@ -277,15 +277,15 @@ public class MainActivity extends SherlockActivity
 
 	}
 
-	public class LoadShows extends AsyncTask<String, Void, List<Show>>
+	public class LoadShows extends AsyncTask<String, Void, List<Series>>
 	{
 
 		@Override
-		protected List<Show> doInBackground(String... args)
+		protected List<Series> doInBackground(String... args)
 		{
 			long startTime = System.currentTimeMillis();
-			List<Show> entry = new ArrayList<Show>();
-			for (Show s : getShows())
+			List<Series> entry = new ArrayList<Series>();
+			for (Series s : getShows())
 			{
 				entry.add(s);
 			}
@@ -302,10 +302,10 @@ public class MainActivity extends SherlockActivity
 		}
 
 		@Override
-		protected void onPostExecute(List<Show> result)
+		protected void onPostExecute(List<Series> result)
 		{
 			adapter.clear();
-			for (Show s : result)
+			for (Series s : result)
 			{
 				adapter.add(s);
 			}
@@ -510,7 +510,7 @@ public class MainActivity extends SherlockActivity
 			case 1:
 				if (Tools.isNetworkAvailable(MainActivity.this))
 				{
-					List<Show> list = new ArrayList<Show>();
+					List<Series> list = new ArrayList<Series>();
 					list.add(db.getShow(adapter.getItem(position).getSeriesId()
 							+ "", profile));
 					new UpdateShow().execute(list);
@@ -531,13 +531,13 @@ public class MainActivity extends SherlockActivity
 
 	}
 
-	public class UpdateShow extends AsyncTask<List<Show>, String[], String>
+	public class UpdateShow extends AsyncTask<List<Series>, String[], String>
 	{
 
 		ProgressDialog pd;
 
 		@Override
-		protected String doInBackground(List<Show>... args)
+		protected String doInBackground(List<Series>... args)
 		{
 			
 			for (int n = 0; n < args[0].size(); n++)
@@ -545,7 +545,7 @@ public class MainActivity extends SherlockActivity
 				publishProgress(new String[] { n + 1 + "",
 						args[0].get(n).getSeriesName(), args[0].size() + "" });
 
-				Show s = args[0].get(n);
+				Series s = args[0].get(n);
 				if (!new File(extStorage + "/TVST/actors").exists())
 				{
 					new File(extStorage + "/TVST/actors").mkdirs();
@@ -591,12 +591,12 @@ public class MainActivity extends SherlockActivity
 				}
 				catch(Exception exc){}
 				db.updateShow(
-						new Show(
+						new Series(
 								parser.getValue(e, "SeriesName"),
 								parser.getValue(e, "FirstAired"),
 								parser.getValue(e, "IMDB_ID"),
 								parser.getValue(e, "Overview"),
-								Tools.parseRating(parser.getValue(e, "Rating")),
+								Tools.parseRating(parser.getValue(e, "Rating"))+"",
 								Integer.parseInt(parser.getValue(e, "id")),
 								parser.getValue(e, "Language"),
 								banner,
@@ -628,7 +628,7 @@ public class MainActivity extends SherlockActivity
 											.getValue(e, "IMDB_ID"), parser
 											.getValue(e, "Overview"), Tools
 											.parseRating(parser.getValue(e,
-													"Rating")), false,
+													"Rating"))+"", false,
 											Tools.parseInt(parser.getValue(e,
 													"id")), profile), seriesId);
 						}
@@ -645,7 +645,7 @@ public class MainActivity extends SherlockActivity
 											.getValue(e, "IMDB_ID"), parser
 											.getValue(e, "Overview"), Tools
 											.parseRating(parser.getValue(e,
-													"Rating")), db.getEpisode(
+													"Rating"))+"", db.getEpisode(
 											seriesId, parser.getValue(e, "id"),
 											profile).isWatched(),
 											Tools.parseInt(parser.getValue(e,

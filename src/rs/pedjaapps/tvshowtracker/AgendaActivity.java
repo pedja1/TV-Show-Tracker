@@ -9,7 +9,7 @@ import rs.pedjaapps.tvshowtracker.adapter.EpisodesAdapter;
 import rs.pedjaapps.tvshowtracker.model.Agenda;
 import rs.pedjaapps.tvshowtracker.model.AgendaItem;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.Series;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
 
@@ -45,8 +45,8 @@ public class AgendaActivity extends SherlockActivity {
 
 	private List<Agenda> getItems(){
 		List<Agenda> a = new ArrayList<Agenda>();
-		List<Show> shows = db.getAllShows("", profile);
-		for(Show s : shows){
+		List<Series> serieses = db.getAllShows("", profile);
+		for(Series s : serieses){
 			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"", profile);
 			for(EpisodeItem e : episodes){
 				if(e.getSeason() != 0){

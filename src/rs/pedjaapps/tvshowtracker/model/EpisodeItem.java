@@ -1,22 +1,26 @@
 package rs.pedjaapps.tvshowtracker.model;
 
+
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 public class EpisodeItem implements Episode{
 	
-	private int id;
-	private String episodeName;
-    private int episode;
-    private int season;
-    private String firstAired;
-    private String imdbId;
-    private String overview;
-    private double rating;
+	@Expose private int id;
+	@Expose @SerializedName("EpisodeName") private String episodeName;
+    @Expose @SerializedName("EpisodeNumber") private int episode;
+    @Expose @SerializedName("SeasonNumber") private int season;
+    @Expose @SerializedName("FirstAired") private String firstAired;
+    @Expose @SerializedName("IMDB_ID") private String imdbId;
+    @Expose @SerializedName("Overview") private String overview;
+    @Expose @SerializedName("Rating") private String rating;
     private boolean watched;
-    private int episodeId;
+    @Expose private int episodeId;
     private String profile;
     
    
 	public EpisodeItem(String episodeName, int episode, int season,
-			String firstAired, String imdbId, String overview, double rating,
+			String firstAired, String imdbId, String overview, String rating,
 			boolean watched, int episodeId, String profile) {
 		super();
 		this.episodeName = episodeName;
@@ -32,7 +36,7 @@ public class EpisodeItem implements Episode{
 	}
 
 	public EpisodeItem(int id, String episodeName, int episode, int season,
-			String firstAired, String imdbId, String overview, double rating,
+			String firstAired, String imdbId, String overview, String rating,
 			boolean watched, int episodeId, String profile) {
 		super();
 		this.id = id;
@@ -108,11 +112,11 @@ public class EpisodeItem implements Episode{
 		this.overview = overview;
 	}
 
-	public double getRating() {
+	public String getRating() {
 		return rating;
 	}
 
-	public void setRating(double rating) {
+	public void setRating(String rating) {
 		this.rating = rating;
 	}
 

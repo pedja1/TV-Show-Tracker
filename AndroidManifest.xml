@@ -35,10 +35,10 @@
 
             <meta-data
                 android:name="android.app.default_searchable"
-                android:value=".SearchResults" />
+                android:value=".SearchResultsActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.SearchResults"
+            android:name=".SearchResultsActivity"
             android:exported="false"
             android:label="Search Results"
             android:launchMode="singleTop" >

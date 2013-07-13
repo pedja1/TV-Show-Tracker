@@ -8,7 +8,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 import rs.pedjaapps.tvshowtracker.adapter.BannersAdapter;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.Series;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
 import rs.pedjaapps.tvshowtracker.utils.Tools;
@@ -65,13 +65,13 @@ public class BannerActivity extends SherlockActivity {
 		});
 	}
 
-	public class GetBanners extends AsyncTask<String, Void, List<Show>>
+	public class GetBanners extends AsyncTask<String, Void, List<Series>>
 	{
 
 		@Override
-		protected List<Show> doInBackground(String... args)
+		protected List<Series> doInBackground(String... args)
 		{
-			List<Show> entry = new ArrayList<Show>();
+			List<Series> entry = new ArrayList<Series>();
 			
 			XMLParser parser = new XMLParser();
 			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/"+Constants.apiKey+"/series/"+args[0]+"/banners.xml"); // getting XML
@@ -83,7 +83,7 @@ public class BannerActivity extends SherlockActivity {
 				Element e = (Element) nl.item(i);
 					if(parser.getValue(e, "BannerType").equals("series"))
 					{
-						entry.add(new Show(parser.getValue(e, "BannerPath")));
+						entry.add(new Series(parser.getValue(e, "BannerPath")));
 					}
 				
 				
@@ -94,7 +94,7 @@ public class BannerActivity extends SherlockActivity {
 					Element e = (Element) nl.item(i);
 						if(parser.getValue(e, "BannerType").equals("fanart"))
 						{
-							entry.add(new Show(parser.getValue(e, "BannerPath")));
+							entry.add(new Series(parser.getValue(e, "BannerPath")));
 						}
 					
 					
@@ -109,10 +109,10 @@ public class BannerActivity extends SherlockActivity {
 			 }
 		
 		@Override
-		protected void onPostExecute(List<Show> result)
+		protected void onPostExecute(List<Series> result)
 		{
 			adapter.clear();
-			for (Show entry : result) {
+			for (Series entry : result) {
 				adapter.add(entry);
 			}
 			adapter.notifyDataSetChanged();
@@ -127,8 +127,8 @@ public class BannerActivity extends SherlockActivity {
 		protected String doInBackground(Integer... args)
 		{
 			
-			Show show = db.getShow(seriesId, profile);
-			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
+			Series series = db.getShow(seriesId, profile);
+			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+ series.getBanner().substring(series.getBanner().lastIndexOf("/"), series.getBanner().length()), false);
 			
 			return "";
 		}

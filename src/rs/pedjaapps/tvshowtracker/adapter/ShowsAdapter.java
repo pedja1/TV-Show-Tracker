@@ -2,16 +2,15 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.drawable;
-import rs.pedjaapps.tvshowtracker.R.id;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.Series;
+
 import android.content.*;
 import android.graphics.*;
 import android.view.*;
 import android.widget.*;
 import com.nostra13.universalimageloader.core.*;
 
-public final class ShowsAdapter extends ArrayAdapter<Show>
+public final class ShowsAdapter extends ArrayAdapter<Series>
 {
 
 	private final int itemLayoutResource;
@@ -37,7 +36,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final Show entry = getItem(position);
+		final Series entry = getItem(position);
 
 		
 		viewHolder.progressView.setProgress(entry.getPrgWatched());

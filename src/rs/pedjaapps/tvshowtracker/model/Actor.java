@@ -1,22 +1,25 @@
 package rs.pedjaapps.tvshowtracker.model;
 
+import com.google.gson.annotations.Expose;
+import com.google.gson.annotations.SerializedName;
+
 /**
  * Created by pedja on 5/21/13.
  */
 public class Actor {
-	private int id;
-	private String actorId;
-    private String name;
-    private String role;
-    private String image;
+	private int _id;
+	@Expose @SerializedName("id") private String actorId;
+    @Expose @SerializedName("Name")private String name;
+    @Expose @SerializedName("Role")private String role;
+    @Expose @SerializedName("Image") private String image;
     private String profile;
 
     public Actor(){
     	
     }
     
-    public Actor(int id, String actorId, String name, String role, String image, String profile) {
-    	this.id = id;
+    public Actor(int _id, String actorId, String name, String role, String image, String profile) {
+    	this._id = _id;
     	this.actorId = actorId;
         this.name = name;
         this.role = role;
@@ -54,12 +57,12 @@ public class Actor {
         this.image = image;
     }
 
-	public int getId() {
-		return id;
+	public int get_id() {
+		return _id;
 	}
 
-	public void setId(int id) {
-		this.id = id;
+	public void set_id(int _id) {
+		this._id = _id;
 	}
 
 	public String getActorId() {

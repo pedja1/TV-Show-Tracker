@@ -9,7 +9,7 @@ import java.util.*;
 
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.Series;
 
 public class DatabaseHandler extends SQLiteOpenHelper
 {
@@ -131,7 +131,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close(); // Closing database connection
 	}
 
-	public synchronized void addShow(Show s, String profile)
+	public synchronized void addShow(Series s, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -161,7 +161,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		createActorsTable(s.getSeriesId() + "");
 	}
 
-	public synchronized int updateShow(Show s, String seriesId, String profile)
+	public synchronized int updateShow(Series s, String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -194,10 +194,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * @param filter
 	 *            Can be either all, continuing, or ended
 	 */
-	public synchronized List<Show> getAllShows(String filter, String profile)
+	public synchronized List<Series> getAllShows(String filter, String profile)
 	{
 		long startTime = System.currentTimeMillis();
-		List<Show> shows = new ArrayList<Show>();
+		List<Series> serieses = new ArrayList<Series>();
 		// Select All Query
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT  * FROM " + TABLE_SERIES + " WHERE");
@@ -226,26 +226,26 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		{
 			do
 			{
-				Show show = new Show();
-				show.setId(Integer.parseInt(cursor.getString(0)));
-				show.setSeriesName(cursor.getString(1));
-				show.setSeriesId(cursor.getInt(2));
-				show.setLanguage(cursor.getString(3));
-				show.setBanner(cursor.getString(4));
-				show.setNetwork(cursor.getString(5));
-				show.setFirstAired(cursor.getString(6));
-				show.setImdbId(cursor.getString(7));
-				show.setOverview(cursor.getString(8));
-				show.setRating(cursor.getDouble(9));
-				show.setRuntime(cursor.getInt(10));
-				show.setStatus(cursor.getString(11));
-				show.setFanart(cursor.getString(12));
-				show.setIgnore(intToBool(cursor.getInt(13)));
-				show.setHide(intToBool(cursor.getInt(14)));
-				show.setUpdated(cursor.getString(15));
-				show.setActors(cursor.getString(16));
+				Series series = new Series();
+				series.setId(Integer.parseInt(cursor.getString(0)));
+				series.setSeriesName(cursor.getString(1));
+				series.setSeriesId(cursor.getInt(2));
+				series.setLanguage(cursor.getString(3));
+				series.setBanner(cursor.getString(4));
+				series.setNetwork(cursor.getString(5));
+				series.setFirstAired(cursor.getString(6));
+				series.setImdbId(cursor.getString(7));
+				series.setOverview(cursor.getString(8));
+				series.setRating(cursor.getDouble(9)+"");
+				series.setRuntime(cursor.getInt(10));
+				series.setStatus(cursor.getString(11));
+				series.setFanart(cursor.getString(12));
+				series.setIgnore(intToBool(cursor.getInt(13)));
+				series.setHide(intToBool(cursor.getInt(14)));
+				series.setUpdated(cursor.getString(15));
+				series.setActors(cursor.getString(16));
 
-				shows.add(show);
+				serieses.add(series);
 			}
 			while (cursor.moveToNext());
 		}
@@ -256,7 +256,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		Log.d(Constants.LOG_TAG,
 				"DatabaseHandler.java > getAllShows(): "
 						+ (System.currentTimeMillis() - startTime) + "ms");
-		return shows;
+		return serieses;
 	}
 
 	public synchronized boolean showExists(String seriesName, String profile)
@@ -309,7 +309,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close();
 	}
 
-	public synchronized Show getShow(String seriesId, String profile)
+	public synchronized Series getShow(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
@@ -318,9 +318,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				new String[] { seriesId }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
-		Show e = new Show(cursor.getInt(0), cursor.getString(1),
+		Series e = new Series(cursor.getInt(0), cursor.getString(1),
 				cursor.getString(6), cursor.getString(7), cursor.getString(8),
-				cursor.getDouble(9), cursor.getInt(2), cursor.getString(3),
+				cursor.getDouble(9)+"", cursor.getInt(2), cursor.getString(3),
 				cursor.getString(4), cursor.getString(12), cursor.getString(5),
 				cursor.getInt(10), cursor.getString(11),
 				intToBool(cursor.getInt(13)), intToBool(cursor.getInt(14)),
@@ -381,7 +381,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		EpisodeItem e = new EpisodeItem(Integer.parseInt(cursor.getString(0)),
 				cursor.getString(1), cursor.getInt(2), cursor.getInt(3),
 				cursor.getString(4), cursor.getString(5), cursor.getString(6),
-				cursor.getDouble(7), intToBool(cursor.getInt(8)),
+				cursor.getDouble(7)+"", intToBool(cursor.getInt(8)),
 				cursor.getInt(9), cursor.getString(10));
 		// return list
 		db.close();
@@ -456,7 +456,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				episodeItem.setFirstAired(cursor.getString(4));
 				episodeItem.setImdbId(cursor.getString(5));
 				episodeItem.setOverview(cursor.getString(6));
-				episodeItem.setRating(cursor.getDouble(7));
+				episodeItem.setRating(cursor.getDouble(7)+"");
 				episodeItem.setWatched(intToBool(cursor.getInt(8)));
 				episodeItem.setEpisodeId(cursor.getInt(9));
 
@@ -487,7 +487,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			do
 			{
 				Actor actor = new Actor();
-				actor.setId(Integer.parseInt(cursor.getString(0)));
+				actor.set_id(Integer.parseInt(cursor.getString(0)));
 				actor.setActorId(cursor.getString(1));
 				actor.setName(cursor.getString(2));
 				actor.setRole(cursor.getString(3));

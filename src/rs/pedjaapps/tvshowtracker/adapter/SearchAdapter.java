@@ -1,17 +1,16 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.id;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.SearchResults;
+
 import android.content.*;
 import android.view.*;
 import android.widget.*;
 
-public final class SearchAdapter extends ArrayAdapter<Show>
+public final class SearchAdapter extends ArrayAdapter<SearchResults.SearchResult>
 {
 
 	private final int itemLayoutResource;
@@ -30,7 +29,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
 
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final Show entry = getItem(position);
+		final SearchResults.SearchResult entry = getItem(position);
 
 		
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd");
@@ -39,7 +38,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
 		viewHolder.networkView.setText(entry.getNetwork());
 		try {
 			viewHolder.yearView.setText(df2.format(df.parse(entry.getFirstAired())));
-		} catch (ParseException e) {
+		} catch (Exception e) {
 			viewHolder.yearView.setText("");
 		}
 		viewHolder.plotView.setText(entry.getOverview());
