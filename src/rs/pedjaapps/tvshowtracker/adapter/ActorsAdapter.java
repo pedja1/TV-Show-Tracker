@@ -2,37 +2,25 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.drawable;
-import rs.pedjaapps.tvshowtracker.R.id;
 import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.utils.ImageManager;
+
 import android.content.Context;
-import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public final class ActorsAdapter extends ArrayAdapter<Actor>
 {
 
 	private final int itemLayoutResource;
-    DisplayImageOptions options;
-	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	public ActorsAdapter(final Context context, final int itemLayoutResource)
 	{
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
-		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage_actor)
-			.showImageForEmptyUri(R.drawable.noimage_actor)
-			.showImageOnFail(R.drawable.noimage_actor)
-			.cacheInMemory()
-			.bitmapConfig(Bitmap.Config.ARGB_8888)
-			.build();
 	}
 
 	@Override
@@ -42,7 +30,10 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
 		final Actor actor = getItem(position);
-		imageLoader.displayImage("file://"+actor.getImage(), viewHolder.imageView, options);
+        ImageManager.ImageReference imageReference = new ImageManager.ImageReference(
+                actor.getImage(), viewHolder.imageView);
+        imageReference.getImageView().setTag(imageReference.getImageName());
+        ImageManager.getInstance().getWebImage(imageReference);
         viewHolder.nameView.setText(actor.getName());
         viewHolder.roleView.setText(actor.getRole());
 		return view;

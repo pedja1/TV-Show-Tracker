@@ -14,13 +14,12 @@ import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
+import rs.pedjaapps.tvshowtracker.utils.ImageManager;
 
 import com.actionbarsherlock.app.SherlockFragment;
 import com.actionbarsherlock.app.SherlockFragmentActivity;
 import com.actionbarsherlock.view.Menu;
 import com.actionbarsherlock.view.MenuItem;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -386,14 +385,10 @@ public class DetailsActivity extends SherlockFragmentActivity
 					s.getNetwork());
 			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId + "",
 					profile);
-			DisplayImageOptions options = new DisplayImageOptions.Builder()
-					.showStubImage(R.drawable.noimage_large)
-					.showImageForEmptyUri(R.drawable.noimage_large)
-					.showImageOnFail(R.drawable.noimage_large).cacheInMemory()
-					.bitmapConfig(Bitmap.Config.ARGB_8888).build();
-			ImageLoader imageLoader = ImageLoader.getInstance();
-			imageLoader
-					.displayImage("file://" + s.getFanart(), header, options);
+            ImageManager.ImageReference imageReference = new ImageManager.ImageReference(
+                    s.getFanart(), header);
+            imageReference.getImageView().setTag(imageReference.getImageName());
+            ImageManager.getInstance().getWebImage(imageReference);
 
 			name.setText(s.getSeriesName());
 			status.setText(s.getStatus().toUpperCase());

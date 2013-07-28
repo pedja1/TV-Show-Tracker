@@ -1,34 +1,20 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
-
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.drawable;
-import rs.pedjaapps.tvshowtracker.R.id;
 import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.ImageManager;
+
 import android.content.*;
-import android.graphics.*;
 import android.view.*;
 import android.widget.*;
-import com.nostra13.universalimageloader.core.*;
-
 public final class ShowsAdapter extends ArrayAdapter<Show>
 {
 
 	private final int itemLayoutResource;
-    DisplayImageOptions options;
-	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	public ShowsAdapter(final Context context, final int itemLayoutResource)
 	{
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
-		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage)
-			.showImageForEmptyUri(R.drawable.noimage)
-			.showImageOnFail(R.drawable.noimage)
-			.cacheInMemory()
-			
-			.bitmapConfig(Bitmap.Config.ARGB_8888)
-			.build();
 	}
 
 	@Override
@@ -42,7 +28,12 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 		
 		viewHolder.progressView.setProgress(entry.getPrgWatched());
 		viewHolder.upcomingEpisodeView.setText(entry.getNextEpisode());
-		imageLoader.displayImage("file://"+entry.getBanner(), viewHolder.bannerView, options);
+
+        ImageManager.ImageReference imageReference = new ImageManager.ImageReference(
+                entry.getBanner(), viewHolder.bannerView);
+        imageReference.getImageView().setTag(imageReference.getImageName());
+        ImageManager.getInstance().getWebImage(imageReference);
+
 		return view;
 	}
 

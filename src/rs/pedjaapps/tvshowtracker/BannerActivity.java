@@ -128,8 +128,9 @@ public class BannerActivity extends SherlockActivity {
 		{
 			
 			Show show = db.getShow(seriesId, profile);
-			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
-			
+            show.setBanner("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner());
+            db.updateShow(show, seriesId, profile);
+
 			return "";
 		}
 

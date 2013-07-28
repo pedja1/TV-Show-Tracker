@@ -546,10 +546,6 @@ public class MainActivity extends SherlockActivity
 						args[0].get(n).getSeriesName(), args[0].size() + "" });
 
 				Show s = args[0].get(n);
-				if (!new File(extStorage + "/TVST/actors").exists())
-				{
-					new File(extStorage + "/TVST/actors").mkdirs();
-				}
 				XMLParser parser = new XMLParser();
 				String xml = parser.getXmlFromUrl("http://thetvdb.com/api/"
 						+ Constants.apiKey + "/series/" + s.getSeriesId()
@@ -561,35 +557,7 @@ public class MainActivity extends SherlockActivity
 				Element e = (Element) nl.item(0);
 				String date = Constants.df.format(new Date());
 				String seriesId = parser.getValue(e, "id");
-				String banner ="";
-				String fanart = "";
-				try {
-					banner = Tools.DownloadFromUrl(
-							"http://thetvdb.com/banners/"
-									+ parser.getValue(e, "banner"),
-							extStorage
-									+ "/TVST"
-									+ parser.getValue(e, "banner")
-											.substring(
-													parser.getValue(
-															e,
-															"banner")
-															.lastIndexOf(
-																	"/")), true);
-					fanart = Tools.DownloadFromUrl(
-							"http://thetvdb.com/banners/"
-									+ parser.getValue(e, "fanart"),
-							extStorage
-									+ "/TVST"
-									+ parser.getValue(e, "fanart")
-											.substring(
-													parser.getValue(
-															e,
-															"fanart")
-															.lastIndexOf(
-																	"/")), true);
-				}
-				catch(Exception exc){}
+
 				db.updateShow(
 						new Show(
 								parser.getValue(e, "SeriesName"),
@@ -599,8 +567,8 @@ public class MainActivity extends SherlockActivity
 								Tools.parseRating(parser.getValue(e, "Rating")),
 								Integer.parseInt(parser.getValue(e, "id")),
 								parser.getValue(e, "Language"),
-								banner,
-								fanart,
+                                "http://thetvdb.com/banners/"+ parser.getValue(e, "banner"),
+                                "http://thetvdb.com/banners/"+ parser.getValue(e, "fanart"),
 								parser.getValue(e, "Network"),
 								Tools.parseInt(parser.getValue(e, "Runtime")),
 								parser.getValue(e, "Status"), false, false,
@@ -661,38 +629,19 @@ public class MainActivity extends SherlockActivity
 				nl = doc.getElementsByTagName("Actor");
 				for (int i = 0; i < nl.getLength(); i++)
 				{
-					String image = "";
-					try{
-					image = Tools.DownloadFromUrl(
-							"http://thetvdb.com/banners/"
-									+ parser.getValue(e,
-											"Image"),
-							extStorage
-									+ "/TVST/actors"
-									+ parser.getValue(e,
-											"Image")
-											.substring(
-													parser.getValue(
-															e,
-															"Image")
-															.lastIndexOf(
-																	"/")), true);
-					}
-					catch(Exception ex){
-						
-					}
+
 					e = (Element) nl.item(i);
 					if (!db.actorExists(seriesId, parser.getValue(e, "id"),
 							profile))
 					{
-						
-						
 						db.addActor(
 								new Actor(
 										parser.getValue(e, "id"),
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
-										image,
+                                        "http://thetvdb.com/banners/"
+                                                + parser.getValue(e,
+                                                "Image"),
 										profile), seriesId);
 					}
 					else
@@ -702,7 +651,9 @@ public class MainActivity extends SherlockActivity
 										parser.getValue(e, "id"),
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
-										image,
+                                        "http://thetvdb.com/banners/"
+                                                + parser.getValue(e,
+                                                "Image"),
 										profile), parser.getValue(e, "id"),
 								seriesId);
 					}
@@ -715,10 +666,8 @@ public class MainActivity extends SherlockActivity
 		@Override
 		protected void onProgressUpdate(String[]... progress)
 		{
-
 			pd.setMessage("Updating " + (progress[0])[1] + " - "
 					+ (progress[0])[0] + "/" + (progress[0])[2]);
-
 		}
 
 		@Override

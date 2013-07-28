@@ -43,6 +43,7 @@ public class SearchResults extends SherlockActivity {
 		
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
 		
 		setContentView(R.layout.search_result);
 		db = new DatabaseHandler(this);
@@ -109,9 +110,7 @@ public class SearchResults extends SherlockActivity {
 			publishProgress(new Integer[] {0,0});
 			
 			
-			if(!new File(extStorage+"/TVST/actors").exists()){
-				new File(extStorage+"/TVST/actors").mkdirs();
-			}
+
 			XMLParser parser = new XMLParser();
 			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/"+Constants.apiKey+"/series/"+args[0]+"/all/"+args[1]+".xml"); 
 			
@@ -125,8 +124,8 @@ public class SearchResults extends SherlockActivity {
 					parser.getValue(e, "IMDB_ID"), parser.getValue(e, "Overview"),
 					Tools.parseRating(parser.getValue(e, "Rating")), Integer.parseInt(parser.getValue(e, "id")),
 					parser.getValue(e, "Language"), 
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "banner"), extStorage+"/TVST"+parser.getValue(e, "banner").substring(parser.getValue(e, "banner").lastIndexOf("/")), true), 
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/")), true), 
+					"http://thetvdb.com/banners/"+parser.getValue(e, "banner"),
+					"http://thetvdb.com/banners/"+parser.getValue(e, "fanart"),
 					parser.getValue(e, "Network"), Tools.parseInt(parser.getValue(e, "Runtime")), 
 					parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors")), profile);
 			
@@ -149,16 +148,11 @@ public class SearchResults extends SherlockActivity {
 			nl = doc.getElementsByTagName("Actor");
 			for(int i =0; i < nl.getLength(); i++){
 				e = (Element) nl.item(i);
-				String image = "";
-				try{
-					image = Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "Image"), extStorage+"/TVST/actors"+parser.getValue(e, "Image").substring(parser.getValue(e, "Image").lastIndexOf("/")), true);
-				}
-				catch(Exception ex){
-				}
-				if(!db.episodeExists(seriesId, parser.getValue(e, "id"), profile))
+
+				if(!db.actorExists(seriesId, parser.getValue(e, "id"), profile))
 				{
-				db.addActor(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"), 
-						image, profile), seriesId);
+				db.addActor(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"),
+                        "http://thetvdb.com/banners/"+parser.getValue(e, "Image"), profile), seriesId);
 				}
 				publishProgress(new Integer[]{2,i,nl.getLength()});
 			}
