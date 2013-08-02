@@ -1,26 +1,15 @@
 package rs.pedjaapps.tvshowtracker;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
-import rs.pedjaapps.tvshowtracker.adapter.AgendaAdapter;
-import rs.pedjaapps.tvshowtracker.adapter.EpisodesAdapter;
-import rs.pedjaapps.tvshowtracker.model.Agenda;
-import rs.pedjaapps.tvshowtracker.model.AgendaItem;
-import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
-
-import android.os.Bundle;
-import android.support.v4.app.NavUtils;
-import android.view.Window;
-import android.widget.ListView;
-public class AgendaActivity extends SherlockActivity {
+import android.app.*;
+import android.os.*;
+import android.support.v4.app.*;
+import android.view.*;
+import android.widget.*;
+import java.util.*;
+import rs.pedjaapps.tvshowtracker.adapter.*;
+import rs.pedjaapps.tvshowtracker.model.*;
+import rs.pedjaapps.tvshowtracker.utils.*;
+public class AgendaActivity extends Activity {
 
 	AgendaAdapter adapter;
 	ListView list;

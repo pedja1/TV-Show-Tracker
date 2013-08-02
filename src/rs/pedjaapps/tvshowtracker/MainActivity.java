@@ -1,50 +1,21 @@
 package rs.pedjaapps.tvshowtracker;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Date;
-import java.util.List;
+import android.annotation.*;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.preference.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import java.io.*;
+import java.util.*;
+import org.w3c.dom.*;
+import rs.pedjaapps.tvshowtracker.adapter.*;
+import rs.pedjaapps.tvshowtracker.model.*;
+import rs.pedjaapps.tvshowtracker.utils.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
-import rs.pedjaapps.tvshowtracker.model.Actor;
-import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
-import rs.pedjaapps.tvshowtracker.utils.Tools;
-import rs.pedjaapps.tvshowtracker.utils.XMLParser;
-import android.annotation.SuppressLint;
-import android.app.ProgressDialog;
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
-import android.content.SharedPreferences;
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.os.Parcelable;
-import android.preference.PreferenceManager;
-import android.util.Log;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.ProgressBar;
-import android.widget.TextView;
-import android.widget.Toast;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.ActionMode;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.actionbarsherlock.widget.SearchView;
-
-public class MainActivity extends SherlockActivity
+public class MainActivity extends Activity
 {
 
 	ShowsAdapter adapter;
@@ -70,7 +41,7 @@ public class MainActivity extends SherlockActivity
 		db = new DatabaseHandler(this);
 
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-		searchView = new SearchView(getSupportActionBar().getThemedContext());
+		searchView = new SearchView(getActionBar().getThemedContext());
 		searchView.setQueryHint("Add new Movie");
 		searchView.setSearchableInfo(searchManager
 				.getSearchableInfo(getComponentName()));
@@ -138,7 +109,7 @@ public class MainActivity extends SherlockActivity
 			{
 				b.append(" | Sorted by Unwatched Episodes");
 			}
-			getSupportActionBar().setSubtitle(b.toString());
+			getActionBar().setSubtitle(b.toString());
 			new LoadShows().execute();
 			Tools.setRefresh(false);
 		}

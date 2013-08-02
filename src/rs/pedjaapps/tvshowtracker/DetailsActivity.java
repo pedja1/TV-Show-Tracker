@@ -1,50 +1,24 @@
 package rs.pedjaapps.tvshowtracker;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import android.app.*;
+import android.content.*;
+import android.graphics.*;
+import android.net.*;
+import android.os.*;
+import android.support.v4.app.*;
+import android.support.v4.view.*;
+import android.view.*;
+import android.widget.*;
+import com.nostra13.universalimageloader.core.*;
+import java.util.*;
+import rs.pedjaapps.tvshowtracker.adapter.*;
+import rs.pedjaapps.tvshowtracker.model.*;
+import rs.pedjaapps.tvshowtracker.utils.*;
 
-import rs.pedjaapps.tvshowtracker.adapter.ActorsAdapter;
-import rs.pedjaapps.tvshowtracker.adapter.EpisodesAdapter;
-import rs.pedjaapps.tvshowtracker.model.Actor;
-import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
-import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
-
-import com.actionbarsherlock.app.SherlockFragment;
-import com.actionbarsherlock.app.SherlockFragmentActivity;
-import com.actionbarsherlock.view.Menu;
-import com.actionbarsherlock.view.MenuItem;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.net.Uri;
-import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.NavUtils;
-import android.support.v4.view.ViewPager;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.ProgressBar;
-import android.widget.RelativeLayout;
-import android.widget.TextView;
 
-public class DetailsActivity extends SherlockFragmentActivity
+public class DetailsActivity extends FragmentActivity
 {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
@@ -60,7 +34,7 @@ public class DetailsActivity extends SherlockFragmentActivity
 		setContentView(R.layout.activity_details);
 
 		// Show the Up button in the action bar.
-		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+		getActionBar().setDisplayHomeAsUpEnabled(true);
 
 		seriesId = getIntent().getIntExtra("seriesId", 0);
 		profile = getIntent().getStringExtra("profile");
@@ -203,7 +177,7 @@ public class DetailsActivity extends SherlockFragmentActivity
 		}
 	}
 
-	public static class ActorsFragment extends SherlockFragment
+	public static class ActorsFragment extends Fragment
 	{
 
 		public static ActorsAdapter adapter;
@@ -236,7 +210,7 @@ public class DetailsActivity extends SherlockFragmentActivity
 		}
 	}
 
-	public static class EpisodesFragment extends SherlockFragment
+	public static class EpisodesFragment extends Fragment
 	{
 
 		public static EpisodesAdapter adapter;
@@ -284,7 +258,7 @@ public class DetailsActivity extends SherlockFragmentActivity
 					if (adapter.getItem(position) instanceof EpisodeItem)
 					{
 						AlertDialog.Builder builder = new AlertDialog.Builder(
-								getSherlockActivity());
+								getActivity());
 
 						builder.setTitle(((EpisodeItem) adapter
 								.getItem(position)).getEpisodeName());
@@ -314,7 +288,7 @@ public class DetailsActivity extends SherlockFragmentActivity
 		}
 	}
 
-	public static class OverviewFragment extends SherlockFragment
+	public static class OverviewFragment extends Fragment
 	{
 		static ProgressBar prgWatched;
 		static TextView watchedText;
@@ -380,9 +354,9 @@ public class DetailsActivity extends SherlockFragmentActivity
 			RelativeLayout nextLayout = (RelativeLayout) rootView
 					.findViewById(R.id.rllHeader2);
 			final Show s = db.getShow(seriesId + "", profile);
-			getSherlockActivity().getSupportActionBar().setTitle(
+			getActivity().getActionBar().setTitle(
 					s.getSeriesName());
-			getSherlockActivity().getSupportActionBar().setSubtitle(
+			getActivity().getActionBar().setSubtitle(
 					s.getNetwork());
 			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId + "",
 					profile);

@@ -1,33 +1,17 @@
 package rs.pedjaapps.tvshowtracker;
 
-import java.util.ArrayList;
-import java.util.List;
+import android.app.*;
+import android.os.*;
+import android.support.v4.app.*;
+import android.view.*;
+import android.widget.*;
+import java.util.*;
+import org.w3c.dom.*;
+import rs.pedjaapps.tvshowtracker.adapter.*;
+import rs.pedjaapps.tvshowtracker.model.*;
+import rs.pedjaapps.tvshowtracker.utils.*;
 
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.NodeList;
-
-import rs.pedjaapps.tvshowtracker.adapter.BannersAdapter;
-import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
-import rs.pedjaapps.tvshowtracker.utils.Tools;
-import rs.pedjaapps.tvshowtracker.utils.XMLParser;
-
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
-
-import android.os.AsyncTask;
-import android.os.Bundle;
-import android.os.Environment;
-import android.support.v4.app.NavUtils;
-import android.view.View;
-import android.view.Window;
-import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.Toast;
-
-public class BannerActivity extends SherlockActivity {
+public class BannerActivity extends Activity {
 
 	BannersAdapter adapter;
 	GridView list;

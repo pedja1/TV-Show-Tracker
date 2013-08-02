@@ -1,29 +1,18 @@
 package rs.pedjaapps.tvshowtracker;
 
-import rs.pedjaapps.tvshowtracker.adapter.ProfilesAdapter;
-import rs.pedjaapps.tvshowtracker.model.Profile;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
-import rs.pedjaapps.tvshowtracker.utils.Tools;
+import android.app.*;
+import android.content.*;
+import android.os.*;
+import android.preference.*;
+import android.support.v4.app.*;
+import android.text.*;
+import android.view.*;
+import android.widget.*;
+import rs.pedjaapps.tvshowtracker.adapter.*;
+import rs.pedjaapps.tvshowtracker.model.*;
+import rs.pedjaapps.tvshowtracker.utils.*;
 
-import com.actionbarsherlock.app.SherlockActivity;
-import com.actionbarsherlock.view.MenuItem;
-
-import android.app.AlertDialog;
-import android.content.DialogInterface;
-import android.content.SharedPreferences;
-import android.os.Bundle;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-import android.text.Editable;
-import android.text.TextWatcher;
-import android.view.View;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.EditText;
-import android.widget.ListView;
-
-public class ProfilesActivity extends SherlockActivity {
+public class ProfilesActivity extends Activity {
 	DatabaseHandler db;
 	ProfilesAdapter adapter;
 	SharedPreferences prefs;

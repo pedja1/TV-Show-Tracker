@@ -24,10 +24,7 @@ import rs.pedjaapps.tvshowtracker.utils.SuggestionProvider;
 import rs.pedjaapps.tvshowtracker.utils.Tools;
 import rs.pedjaapps.tvshowtracker.utils.XMLParser;
 
-import com.actionbarsherlock.app.SherlockActivity;
-
-
-public class SearchResults extends SherlockActivity {
+public class SearchResults extends Activity {
 
 	
 	ListView searchListView;
@@ -88,7 +85,7 @@ public class SearchResults extends SherlockActivity {
 		if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
 		    String query = intent.getStringExtra(SearchManager.QUERY);
 		    suggestions.saveRecentQuery(query, null);
-			getSupportActionBar().setTitle("Searching for "+query);
+			getActionBar().setTitle("Searching for "+query);
 			if(Tools.isNetworkAvailable(this))
 				new TitleSearchParser().execute(query.replaceAll(" ", "%20"));
 			else

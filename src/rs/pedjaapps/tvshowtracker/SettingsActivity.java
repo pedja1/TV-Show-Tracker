@@ -1,25 +1,14 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.annotation.TargetApi;
-import android.content.Context;
-import android.content.res.Configuration;
-import android.os.Build;
-import android.os.Bundle;
-import android.preference.ListPreference;
-import android.preference.Preference;
-import android.preference.PreferenceActivity;
-import android.preference.PreferenceCategory;
-import android.preference.PreferenceFragment;
-import android.preference.PreferenceManager;
-import android.support.v4.app.NavUtils;
-
-import java.util.List;
-
-import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.Tools;
-
-import com.actionbarsherlock.app.SherlockPreferenceActivity;
-import com.actionbarsherlock.view.MenuItem;
+import android.annotation.*;
+import android.content.*;
+import android.content.res.*;
+import android.os.*;
+import android.preference.*;
+import android.support.v4.app.*;
+import android.view.*;
+import java.util.*;
+import rs.pedjaapps.tvshowtracker.utils.*;
 
 /**
  * A {@link PreferenceActivity} that presents a set of application settings. On
@@ -32,7 +21,7 @@ import com.actionbarsherlock.view.MenuItem;
  * href="http://developer.android.com/guide/topics/ui/settings.html">Settings
  * API Guide</a> for more information on developing a Settings UI.
  */
-public class SettingsActivity extends SherlockPreferenceActivity {
+public class SettingsActivity extends PreferenceActivity {
 	/**
 	 * Determines whether to always show the simplified settings UI, where
 	 * settings are presented in a single list. When false, settings are shown
