@@ -3,8 +3,11 @@ package rs.pedjaapps.tvshowtracker;
 import android.annotation.*;
 import android.app.*;
 import android.content.*;
+import android.content.res.*;
 import android.os.*;
 import android.preference.*;
+import android.support.v4.app.*;
+import android.support.v4.widget.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
@@ -31,6 +34,11 @@ public class MainActivity extends Activity
 	String sort;
 	Menu menu;
 	boolean menuDisable;
+	
+	private DrawerLayout mDrawerLayout;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -85,9 +93,52 @@ public class MainActivity extends Activity
 				return true;
 			}
 		});
+		mTitle = mDrawerTitle = getTitle();
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
+												  R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_closed) {
+
+            /** Called when a drawer has settled in a completely closed state. */
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            /** Called when a drawer has settled in a completely open state. */
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+
+        // Set the drawer toggle as the DrawerListener
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+		
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+		
+		ListView drawerList = (ListView)findViewById(R.id.left_drawer);
+		DrawerAdapter dAdapter = new DrawerAdapter(this, R.layout.drawer_menu_item);
+		dAdapter.add(new DrawerItem("Agenda", R.drawable.ic_action_agenda));
+		dAdapter.add(new DrawerItem("Settings", R.drawable.ic_action_settings));
+		drawerList.setAdapter(dAdapter);
+		
 		Tools.setRefresh(true);
 	}
 
+	@Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+	
 	@Override
 	protected void onResume()
 	{
@@ -374,6 +425,7 @@ public class MainActivity extends Activity
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
+		
 		System.out.println("onCreateOptionsMenu");
 		//this.menu = menu;
 		menu.add(0, 0, 0, "Add")
@@ -390,10 +442,21 @@ public class MainActivity extends Activity
 				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
 	}
+	
+	/*@Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }*/
 
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
+			return true;
+        }
 		switch (item.getItemId())
 		{
 		case 1:
@@ -632,32 +695,26 @@ public class MainActivity extends Activity
 				nl = doc.getElementsByTagName("Actor");
 				for (int i = 0; i < nl.getLength(); i++)
 				{
+					e = (Element) nl.item(i);
 					String image = "";
-					try{
+					try
+					{
+						String url =parser.getValue(e, "Image");
 					image = Tools.DownloadFromUrl(
 							"http://thetvdb.com/banners/"
-									+ parser.getValue(e,
-											"Image"),
+									+ url,
 							extStorage
 									+ "/TVST/actors"
-									+ parser.getValue(e,
-											"Image")
-											.substring(
-													parser.getValue(
-															e,
-															"Image")
-															.lastIndexOf(
-																	"/")), true);
+									+ url.substring(url.lastIndexOf("/")), true);
 					}
-					catch(Exception ex){
-						
+					catch(Exception ex)
+					{
+						ex.printStackTrace();
 					}
-					e = (Element) nl.item(i);
+					
 					if (!db.actorExists(seriesId, parser.getValue(e, "id"),
 							profile))
 					{
-						
-						
 						db.addActor(
 								new Actor(
 										parser.getValue(e, "id"),
@@ -676,6 +733,7 @@ public class MainActivity extends Activity
 										image,
 										profile), parser.getValue(e, "id"),
 								seriesId);
+						System.out.println("actor update"+i+parser.getValue(e, "id")+" "+image);
 					}
 				}
 			}

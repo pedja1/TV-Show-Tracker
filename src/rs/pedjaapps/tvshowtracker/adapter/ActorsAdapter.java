@@ -31,7 +31,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
 			.showImageForEmptyUri(R.drawable.noimage_actor)
 			.showImageOnFail(R.drawable.noimage_actor)
 			.cacheInMemory()
-			.bitmapConfig(Bitmap.Config.ARGB_8888)
+			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 	}
 

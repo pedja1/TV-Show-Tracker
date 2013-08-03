@@ -152,7 +152,7 @@ public class SearchResults extends Activity {
 				}
 				catch(Exception ex){
 				}
-				if(!db.episodeExists(seriesId, parser.getValue(e, "id"), profile))
+				if(!db.actorExists(seriesId, parser.getValue(e, "id"), profile))
 				{
 				db.addActor(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"), 
 						image, profile), seriesId);

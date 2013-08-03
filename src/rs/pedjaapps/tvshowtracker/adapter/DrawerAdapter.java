@@ -10,24 +10,17 @@ import android.graphics.*;
 import android.view.*;
 import android.widget.*;
 import com.nostra13.universalimageloader.core.*;
+import rs.pedjaapps.tvshowtracker.model.*;
 
-public final class ShowsAdapter extends ArrayAdapter<Show>
+public final class DrawerAdapter extends ArrayAdapter<DrawerItem>
 {
 
 	private final int itemLayoutResource;
-    DisplayImageOptions options;
-	protected ImageLoader imageLoader = ImageLoader.getInstance();
-	public ShowsAdapter(final Context context, final int itemLayoutResource)
+	
+	public DrawerAdapter(final Context context, final int itemLayoutResource)
 	{
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
-		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage)
-			.showImageForEmptyUri(R.drawable.noimage)
-			.showImageOnFail(R.drawable.noimage)
-			.cacheInMemory()
-			.bitmapConfig(Bitmap.Config.RGB_565)
-			.build();
 	}
 
 	@Override
@@ -36,12 +29,10 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final Show entry = getItem(position);
+		final DrawerItem entry = getItem(position);
 
-		
-		viewHolder.progressView.setProgress(entry.getPrgWatched());
-		viewHolder.upcomingEpisodeView.setText(entry.getNextEpisode());
-		imageLoader.displayImage("file://"+entry.getBanner(), viewHolder.bannerView, options);
+		viewHolder.textView.setText(entry.getText());
+		viewHolder.iconView.setImageResource(entry.getResId());
 		return view;
 	}
 
@@ -74,10 +65,9 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 		if (null == tag || !(tag instanceof ViewHolder))
 		{
 			viewHolder = new ViewHolder();
-
-			viewHolder.progressView = (ProgressBar) workingView.findViewById(R.id.pgrWatched);
-			viewHolder.upcomingEpisodeView = (TextView) workingView.findViewById(R.id.txtUpcomingEpisode);
-			viewHolder.bannerView = (ImageView) workingView.findViewById(R.id.imgSeriesImage);
+        
+		    viewHolder.textView = (TextView) workingView.findViewById(R.id.text);
+			viewHolder.iconView = (ImageView) workingView.findViewById(R.id.icon);
 			
 			workingView.setTag(viewHolder);
 
@@ -92,10 +82,8 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
 
 	 class ViewHolder
 	{
-		public ProgressBar progressView;
-		public TextView upcomingEpisodeView;
-		public ImageView bannerView;
-
+		public TextView textView;
+		public ImageView iconView;
 	}
 
 }

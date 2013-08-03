@@ -80,7 +80,7 @@ public class Tools {
                 fos.close();
 			return fileName;
 
-        } catch (IOException e) {
+        } catch (Exception e) {
                 Log.e("error saving image", e.getMessage());
         	return "";
 		}

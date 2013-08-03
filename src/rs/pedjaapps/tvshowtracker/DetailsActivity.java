@@ -364,7 +364,7 @@ public class DetailsActivity extends FragmentActivity
 					.showStubImage(R.drawable.noimage_large)
 					.showImageForEmptyUri(R.drawable.noimage_large)
 					.showImageOnFail(R.drawable.noimage_large).cacheInMemory()
-					.bitmapConfig(Bitmap.Config.ARGB_8888).build();
+					.bitmapConfig(Bitmap.Config.RGB_565).build();
 			ImageLoader imageLoader = ImageLoader.getInstance();
 			imageLoader
 					.displayImage("file://" + s.getFanart(), header, options);
