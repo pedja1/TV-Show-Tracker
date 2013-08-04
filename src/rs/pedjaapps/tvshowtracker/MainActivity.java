@@ -117,7 +117,7 @@ public class MainActivity extends Activity
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 		
-		ListView drawerList = (ListView)findViewById(R.id.left_drawer);
+		ListView drawerList = (ListView)findViewById(R.id.drawer_list);
 		DrawerAdapter dAdapter = new DrawerAdapter(this, R.layout.drawer_menu_item);
 		dAdapter.add(new DrawerItem("Agenda", R.drawable.ic_action_agenda));
 		dAdapter.add(new DrawerItem("Settings", R.drawable.ic_action_settings));

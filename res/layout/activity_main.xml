@@ -36,14 +36,40 @@
 
 	</RelativeLayout>
     <!-- The navigation drawer -->
-    <ListView android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="#e6e6e6"
-        android:dividerHeight="0.5dp"
-        android:background="#333333"/>
+	<LinearLayout
+		android:id="@+id/left_drawer"
+		android:layout_width="240dp"
+		android:layout_height="match_parent"
+		android:layout_gravity="start"
+		android:background="#333333"
+		android:orientation="vertical">
+		<Spinner
+			style="@style/Spinner"
+			android:id="@+id/profile"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="5dp"/>
+		<Spinner
+			style="@style/Spinner"
+			android:id="@+id/sort"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="5dp"/>
+		<Spinner
+			style="@style/Spinner"
+			android:id="@+id/filter"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:padding="5dp"/>
+		<ListView android:id="@+id/drawer_list"
+			android:layout_width="match_parent"
+			android:layout_height="match_parent"
+			android:choiceMode="singleChoice"
+			android:divider="#e6e6e6"
+			android:dividerHeight="0.5dp"
+			android:padding="5dp"/>
+		
+	</LinearLayout>
 </android.support.v4.widget.DrawerLayout>
 
 
