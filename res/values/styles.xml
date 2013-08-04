@@ -18,6 +18,5 @@
     </style>
 
 	<style name="Spinner" parent="android:style/Widget.Holo.Spinner">
-        <!-- All customizations that are NOT specific to a particular API-level can go here. -->
     </style>
 </resources>

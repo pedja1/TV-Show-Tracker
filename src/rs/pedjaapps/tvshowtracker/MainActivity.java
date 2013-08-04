@@ -4,6 +4,7 @@ import android.annotation.*;
 import android.app.*;
 import android.content.*;
 import android.content.res.*;
+import android.net.Uri;
 import android.os.*;
 import android.preference.*;
 import android.support.v4.app.*;
@@ -119,10 +120,61 @@ public class MainActivity extends Activity
 		
 		ListView drawerList = (ListView)findViewById(R.id.drawer_list);
 		DrawerAdapter dAdapter = new DrawerAdapter(this, R.layout.drawer_menu_item);
-		dAdapter.add(new DrawerItem("Agenda", R.drawable.ic_action_agenda));
-		dAdapter.add(new DrawerItem("Settings", R.drawable.ic_action_settings));
+		dAdapter.add(new DrawerItem("Calendar", R.drawable.ic_action_agenda));
+        dAdapter.add(new DrawerItem("Backlog", R.drawable.ic_action_backlog));
+        dAdapter.add(new DrawerItem("Preferences", R.drawable.ic_action_settings));
+		dAdapter.add(new DrawerItem("About", R.drawable.ic_action_about));
 		drawerList.setAdapter(dAdapter);
-		
+        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            {
+                switch(i)
+                {
+                    case 0:
+                        startActivity(new Intent(MainActivity.this, AgendaActivity.class).putExtra(
+                                "profile", profile));
+                        break;
+                    case 1:
+                        //startActivity(new Intent(MainActivity.this, AgendaActivity.class).putExtra(
+                                //"profile", profile));
+                        Toast.makeText(MainActivity.this, "TODO: backlog", Toast.LENGTH_LONG).show();
+                        break;
+                    case 2:
+                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
+                        break;
+                    case 3:
+                        //startActivity(new Intent(MainActivity.this, AgendaActivity.class).putExtra(
+                               // "profile", profile));
+                        Toast.makeText(MainActivity.this, "TODO: about", Toast.LENGTH_LONG).show();
+                        break;
+                }
+            }
+        });
+
+        ((LinearLayout)findViewById(R.id.poweredBy)).setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View view)
+            {
+                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse("http://thetvdb.com")));
+            }
+        });
+
+        Spinner profiles = (Spinner)findViewById(R.id.profile);
+        ArrayAdapter<String> profilesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item);
+        profilesAdapter.addAll(db.getAllProfiles());
+        profiles.setAdapter(profilesAdapter);
+        profiles.setSelection(profilesAdapter.getPosition(prefs.getString("profile", "Default")));
+
+        Spinner sort = (Spinner)findViewById(R.id.sort);
+        ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, getResources().getStringArray(R.array.pref_sort_titles));
+        sort.setAdapter(sortAdapter);
+
+        Spinner filter = (Spinner)findViewById(R.id.filter);
+        ArrayAdapter<String> filterAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, getResources().getStringArray(R.array.pref_filter_titles));
+        filter.setAdapter(filterAdapter);
 		Tools.setRefresh(true);
 	}
 
@@ -434,10 +486,10 @@ public class MainActivity extends Activity
 				.setShowAsAction(
 						MenuItem.SHOW_AS_ACTION_IF_ROOM
 								| MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-		menu.add(0, 1, 1, "Agenda").setIcon(R.drawable.ic_action_agenda)
-				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-		menu.add(0, 2, 2, "Preferences").setIcon(R.drawable.ic_action_settings)
-				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		/*menu.add(0, 1, 1, "Agenda").setIcon(R.drawable.ic_action_agenda)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
+		/*menu.add(0, 2, 2, "Preferences").setIcon(R.drawable.ic_action_settings)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
 		menu.add(0, 3, 3, "Update All").setIcon(R.drawable.ic_action_update)
 				.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 		return true;
