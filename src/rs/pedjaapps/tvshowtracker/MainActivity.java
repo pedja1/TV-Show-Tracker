@@ -35,11 +35,20 @@ public class MainActivity extends Activity
 	String sort;
 	Menu menu;
 	boolean menuDisable;
+	ArrayAdapter<String> profilesAdapter;
+	Spinner profiles;
+	Spinner sortSpinner;
+	Spinner filter;
+	
+	boolean profileFirstSelect = true;
+	boolean sortFirstSelect = true;
+	boolean filterFirstSelect = true;
 	
 	private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
+    //private CharSequence mDrawerTitle;
+    //private CharSequence mTitle;
+	private RelativeLayout drawerContent;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -94,20 +103,21 @@ public class MainActivity extends Activity
 				return true;
 			}
 		});
-		mTitle = mDrawerTitle = getTitle();
+		//mTitle = mDrawerTitle = getTitle();
+		drawerContent = (RelativeLayout)findViewById(R.id.left_drawer);
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
 												  R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_closed) {
 
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
-                getActionBar().setTitle(mTitle);
+               // getActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
-                getActionBar().setTitle(mDrawerTitle);
+                //getActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -125,6 +135,7 @@ public class MainActivity extends Activity
         dAdapter.add(new DrawerItem("Preferences", R.drawable.ic_action_settings));
 		dAdapter.add(new DrawerItem("About", R.drawable.ic_action_about));
 		drawerList.setAdapter(dAdapter);
+		Tools.setListViewHeightBasedOnChildren(drawerList);
         drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
@@ -150,6 +161,7 @@ public class MainActivity extends Activity
                         Toast.makeText(MainActivity.this, "TODO: about", Toast.LENGTH_LONG).show();
                         break;
                 }
+				closeDrawer();
             }
         });
 
@@ -162,22 +174,113 @@ public class MainActivity extends Activity
             }
         });
 
-        Spinner profiles = (Spinner)findViewById(R.id.profile);
-        ArrayAdapter<String> profilesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item);
-        profilesAdapter.addAll(db.getAllProfiles());
+        profiles = (Spinner)findViewById(R.id.profile);
+        profilesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item);
         profiles.setAdapter(profilesAdapter);
-        profiles.setSelection(profilesAdapter.getPosition(prefs.getString("profile", "Default")));
+		profiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 
-        Spinner sort = (Spinner)findViewById(R.id.sort);
+				public void onItemSelected(AdapterView<?> p1, View p2, int pos, long p4)
+				{
+					if(profileFirstSelect)
+					{
+						profileFirstSelect = false;
+					}
+					else
+					{
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putString("profile", profilesAdapter.getItem(pos));
+					editor.apply();
+					closeDrawer();
+					refreshShows();
+					}
+				}
+
+				public void onNothingSelected(AdapterView<?> p1)
+				{
+					// TODO: Implement this method
+				}
+			}
+		);
+        
+        sortSpinner = (Spinner)findViewById(R.id.sort);
         ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, getResources().getStringArray(R.array.pref_sort_titles));
-        sort.setAdapter(sortAdapter);
+        sortSpinner.setAdapter(sortAdapter);
+		sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
 
-        Spinner filter = (Spinner)findViewById(R.id.filter);
+				public void onItemSelected(AdapterView<?> p1, View p2, int pos, long p4)
+				{
+					if(sortFirstSelect)
+					{
+						sortFirstSelect = false;
+					}
+					else
+					{
+					List<String> sortOptions = Arrays.asList(getResources().getStringArray(R.array.pref_sort_values));
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putString("sort", sortOptions.get(pos));
+					editor.apply();
+					closeDrawer();
+					refreshShows();
+					}
+				}
+
+				public void onNothingSelected(AdapterView<?> p1)
+				{
+					// TODO: Implement this method
+				}
+			}
+		);
+
+        filter = (Spinner)findViewById(R.id.filter);
         ArrayAdapter<String> filterAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, getResources().getStringArray(R.array.pref_filter_titles));
         filter.setAdapter(filterAdapter);
+		filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener(){
+
+				public void onItemSelected(AdapterView<?> p1, View p2, int pos, long p4)
+				{
+					if(filterFirstSelect)
+					{
+						filterFirstSelect = false;
+					}
+					else
+					{
+					List<String> filterOptions = Arrays.asList(getResources().getStringArray(R.array.pref_filter_values));
+					SharedPreferences.Editor editor = prefs.edit();
+					editor.putString("filter", filterOptions.get(pos));
+					editor.apply();
+					closeDrawer();
+					refreshShows();
+					}
+				}
+
+				public void onNothingSelected(AdapterView<?> p1)
+				{
+					// TODO: Implement this method
+				}
+			}
+		);
+		
 		Tools.setRefresh(true);
 	}
 
+	private void refreshDrawer()
+	{
+		profilesAdapter.clear();
+		profilesAdapter.addAll(db.getAllProfiles());
+        profiles.setSelection(profilesAdapter.getPosition(prefs.getString("profile", "Default")));
+		
+		List<String> sortOptions = Arrays.asList(getResources().getStringArray(R.array.pref_sort_values));
+		List<String> filterOptions = Arrays.asList(getResources().getStringArray(R.array.pref_filter_values));
+		
+		sortSpinner.setSelection(sortOptions.indexOf(prefs.getString("sort", "default")));
+		filter.setSelection(filterOptions.indexOf(prefs.getString("filter", "all")));
+	}
+	
+	private void closeDrawer()
+	{
+		mDrawerLayout.closeDrawer(drawerContent);
+	}
+	
 	@Override
     protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
@@ -194,8 +297,16 @@ public class MainActivity extends Activity
 	@Override
 	protected void onResume()
 	{
-		if (Tools.isRefresh())
+	    if (Tools.isRefresh())
 		{
+		refreshShows();
+		}
+		super.onResume();
+	}
+	
+	private void refreshShows()
+	{
+	
 			profile = prefs.getString("profile", "Default");
 			sort = prefs.getString("sort", "default");
 			StringBuilder b = new StringBuilder();
@@ -214,9 +325,8 @@ public class MainActivity extends Activity
 			}
 			getActionBar().setSubtitle(b.toString());
 			new LoadShows().execute();
+			refreshDrawer();
 			Tools.setRefresh(false);
-		}
-		super.onResume();
 	}
 
 	@Override
@@ -498,7 +608,7 @@ public class MainActivity extends Activity
 	/*@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(drawerContent);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }*/
@@ -506,9 +616,13 @@ public class MainActivity extends Activity
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
-		if (mDrawerToggle.onOptionsItemSelected(item)) {
+		/*if(mDrawerLayout.isDrawerOpen(drawerContent))
+		{
+		    mDrawerLayout.closeDrawer(drawerContent);
+		}
+		/*if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
-        }
+        }*/
 		switch (item.getItemId())
 		{
 		case 1:

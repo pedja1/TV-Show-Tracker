@@ -2,14 +2,14 @@ package rs.pedjaapps.tvshowtracker.model;
 
 public class AgendaSection implements Agenda{
 
-	private String airs;
+	private String showName;
 	
-	public AgendaSection(String airs){
-		this.airs = airs;
+	public AgendaSection(String showName){
+		this.showName = showName;
 	}
 	
-	public String getAirs(){
-		return airs;
+	public String getShowName(){
+		return showName;
 	}
 	
 	@Override

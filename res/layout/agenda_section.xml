@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+	android:id="@+id/section_container"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@color/holo_blue_light"
     android:orientation="horizontal" >
 
     <TextView
-        android:id="@+id/airs"
+        android:id="@+id/showName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        android:text="Season 0"
+        android:text=""
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:textColor="#ffffff" />
 

@@ -34,7 +34,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
 			.bitmapConfig(Bitmap.Config.RGB_565)
 			.build();
 	}
-
+	
 	@Override
 	public View getView(final int position, final View convertView, final ViewGroup parent)
 	{

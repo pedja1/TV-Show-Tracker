@@ -26,11 +26,14 @@ public class DetailsActivity extends FragmentActivity
 	static DatabaseHandler db;
 	static int seriesId;
 	static String profile;
+	static List<Actor> actors;
+	static List<EpisodeItem> episodes;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
+		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		setContentView(R.layout.activity_details);
 
 		// Show the Up button in the action bar.
@@ -40,44 +43,83 @@ public class DetailsActivity extends FragmentActivity
 		profile = getIntent().getStringExtra("profile");
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		mSectionsPagerAdapter = new SectionsPagerAdapter(
-				getSupportFragmentManager());
-
-		// Set up the ViewPager with the sections adapter.
-		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setAdapter(mSectionsPagerAdapter);
 		db = new DatabaseHandler(this);
-		mViewPager.setCurrentItem(1, true);
-		mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
-		{
-
-			@Override
-			public void onPageScrollStateChanged(int arg0)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPageScrolled(int arg0, float arg1, int arg2)
-			{
-				// TODO Auto-generated method stub
-
-			}
-
-			@Override
-			public void onPageSelected(int position)
-			{
-				if (position == 1)
-				{
-					OverviewFragment.setProgress();
-				}
-
-			}
-		});
+		
+		
+		new Loader().execute();
 
 	}
 
+	public class Loader extends AsyncTask<String, Void, Void>
+	{
+
+		@Override
+		protected Void doInBackground(String... args)
+		{
+			actors = db.getAllActors(seriesId + "", profile);
+			episodes = db.getAllEpisodes(seriesId + "", profile);
+			Collections.reverse(episodes);
+			return null;
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+			setProgressBarIndeterminateVisibility(true);
+		}
+
+		@Override
+		protected void onPostExecute(Void result)
+		{
+			setProgressBarIndeterminateVisibility(false);
+			setupViewPager();
+		}
+	}
+	
+	private void setupViewPager()
+	{
+		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+		mViewPager = (ViewPager) findViewById(R.id.pager);
+		mViewPager.setAdapter(mSectionsPagerAdapter);
+		new Handler().post(new Runnable(){
+
+				public void run()
+				{
+					mViewPager.setCurrentItem(1, true);
+					// TODO: Implement this method
+				}
+			});
+		mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+			{
+
+				@Override
+				public void onPageScrollStateChanged(int arg0)
+				{
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onPageScrolled(int arg0, float arg1, int arg2)
+				{
+					// TODO Auto-generated method stub
+
+				}
+
+				@Override
+				public void onPageSelected(int position)
+				{
+					if (position == 1)
+					{
+						OverviewFragment.setProgress();
+					}
+
+				}
+			});
+			//mSectionsPagerAdapter.notifyDataSetChanged();
+			//mViewPager.invalidate();
+	}
+	
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
@@ -195,7 +237,6 @@ public class DetailsActivity extends FragmentActivity
 			adapter = new ActorsAdapter(this.getActivity(),
 					R.layout.details_actors_row);
 			ListView list = (ListView) rootView.findViewById(R.id.list);
-			List<Actor> actors = db.getAllActors(seriesId + "", profile);
 			for (Actor a : actors)
 			{
 
@@ -227,10 +268,9 @@ public class DetailsActivity extends FragmentActivity
 					container, false);
 			adapter = new EpisodesAdapter(this.getActivity(), seriesId + "");
 			ListView list = (ListView) rootView.findViewById(R.id.list);
-			List<EpisodeItem> e = db.getAllEpisodes(seriesId + "", profile);
-			Collections.reverse(e);
+			
 			List<Integer> seasons = new ArrayList<Integer>();
-			for (EpisodeItem i : e)
+			for (EpisodeItem i : episodes)
 			{
 				if (i.getSeason() != 0)
 				{
@@ -347,7 +387,6 @@ public class DetailsActivity extends FragmentActivity
 					.findViewById(R.id.txtShowEnded);
 			TextView summary = (TextView) rootView
 					.findViewById(R.id.txtSummary);
-			TextView actors = (TextView) rootView.findViewById(R.id.txtActors);
 			Button imdb = (Button) rootView.findViewById(R.id.btnOpenImdb);
 			RelativeLayout lastAiredLayout = (RelativeLayout) rootView
 					.findViewById(R.id.rllHeader1);
@@ -373,7 +412,6 @@ public class DetailsActivity extends FragmentActivity
 			status.setText(s.getStatus().toUpperCase());
 			rating.setText(s.getRating() + "");
 			summary.setText(s.getOverview());
-			actors.setText(s.getActors());
 
 			setProgress();
 			final int lePos = getLastAiredEpisodePosition(episodes);
@@ -480,5 +518,10 @@ public class DetailsActivity extends FragmentActivity
 			}
 		}
 		return -1;
+	}
+	
+	public void onDestroy()
+	{
+		super.onDestroy();
 	}
 }

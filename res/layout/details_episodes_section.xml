@@ -17,10 +17,11 @@
     <TextView
         android:id="@+id/markAllWatched"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="center_vertical"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
         android:layout_weight="0"
         android:text="MARK ALL WATCHED"
-        android:textColor="#ffffff" />
+        android:textColor="#ffffff"
+		android:background="@drawable/mark_all_selector"/>
 
 </LinearLayout>

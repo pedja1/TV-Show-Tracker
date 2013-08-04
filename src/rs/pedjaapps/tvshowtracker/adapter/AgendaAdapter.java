@@ -38,29 +38,76 @@ public final class AgendaAdapter extends ArrayAdapter<Agenda>
 	}
 
 	@Override
-	public View getView(final int position, final View convertView, final ViewGroup parent)
+	public int getItemViewType(int pos)
 	{
-
-		
-		final Agenda a = getItem(position);
-		final boolean isSection = a.isSection();
-		
-		View view;
-		if(isSection){
-			view  = inflater.inflate(R.layout.agenda_section, null);
-			final AgendaSection as = (AgendaSection)a;
-			((TextView)view.findViewById(R.id.airs)).setText(as.getAirs());
-		
-		}
-		else{
-			view  = inflater.inflate(R.layout.agenda_row, null);
-			final AgendaItem ai = (AgendaItem)a;
-			((TextView)view.findViewById(R.id.txtUpcomingEpisode)).setText(ai.getNextEpisode());
-			imageLoader.displayImage("file://"+ai.getBanner(), ((ImageView)view.findViewById(R.id.imgSeriesImage)), options);	
-		}
-		return view;
+		if(getItem(pos).isSection()) return 1;
+		else if(!getItem(pos).isSection()) return 0;
+		else return -1;
 	}
 
+	@Override
+	public int getItemViewTypeCount()
+	{
+        return 2;
+	}
 	
+	@Override
+	public View getView(final int position, final View convertView, final ViewGroup parent)
+	{
+		final Agenda a = getItem(position);
+		int itemType = getItemViewType(position);
+		
+		switch(itemType)
+		{
+			case 0:
+			    View itemView = convertView;
+			    ItemHolder itemHolder;
+				if(itemView == null || itemView.getId() != R.id.item_container)
+				{
+					itemView = inflater.inflate(R.layout.agenda_row, null);
+					itemHolder = new ItemHolder();
+					itemHolder.episodeInfo = (TextView) itemView.findViewById(R.id.txtUpcomingEpisode);
+					itemHolder.banner = (ImageView)itemView.findViewById(R.id.imgSeriesImage);
+					itemView.setTag(itemHolder);
+				}
+				else
+				{
+					itemHolder = (AgendaAdapter.ItemHolder) convertView.getTag();
+				}
+				AgendaItem ai = (AgendaItem)a;
+				itemHolder.episodeInfo.setText(ai.getNextEpisode());
+				imageLoader.displayImage("file://"+ai.getBanner(), itemHolder.banner, options);
+				return itemView;
+			case 1:
+			    View sectionView = convertView;
+			    SectionHolder sectionHolder;
+				if(sectionView == null || sectionView.getId() != R.id.section_container)
+				{
+					sectionView = inflater.inflate(R.layout.agenda_section, null);
+					sectionHolder = new SectionHolder();
+					sectionHolder.showName = (TextView) sectionView.findViewById(R.id.showName);
+					sectionView.setTag(sectionHolder);
+				}
+				else
+				{
+					sectionHolder = (SectionHolder) convertView.getTag();
+				}
+				AgendaSection as = (AgendaSection)a;
+				sectionHolder.showName.setText(as.getShowName());
+				return sectionView;
+		}
+		return convertView;
+	}
+
+	public class SectionHolder
+	{
+		TextView showName;
+	}
+	
+	public class ItemHolder
+	{
+		TextView episodeInfo;
+		ImageView banner;
+	}
 
 }

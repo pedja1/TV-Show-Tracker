@@ -36,65 +36,99 @@
 
 	</RelativeLayout>
     <!-- The navigation drawer -->
-	<LinearLayout
+	<RelativeLayout
 		android:id="@+id/left_drawer"
 		android:layout_width="240dp"
 		android:layout_height="match_parent"
 		android:layout_gravity="start"
-		android:background="#333333"
-		android:orientation="vertical">
-		<Spinner
-			style="@style/Spinner"
-			android:id="@+id/profile"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:padding="5dp"/>
-		<Spinner
-			style="@style/Spinner"
-			android:id="@+id/sort"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:padding="5dp"
-                android:layout_marginTop="5dp"/>
-		<Spinner
-			style="@style/Spinner"
-			android:id="@+id/filter"
-			android:layout_width="match_parent"
-			android:layout_height="wrap_content"
-			android:padding="5dp"
-                android:layout_marginTop="5dp"/>
-		<ListView
-            android:id="@+id/drawer_list"
+		android:background="#333333">
+		<ScrollView
 			android:layout_width="match_parent"
 			android:layout_height="match_parent"
-			android:choiceMode="singleChoice"
-			android:divider="@drawable/divider_horizontal_bright_opaque"
-			android:dividerHeight="0.5dp"
-			android:padding="5dp"
-            android:layout_marginTop="10dp"
-                android:layout_weight="1"/>
-    <LinearLayout
+			android:layout_above="@+id/poweredBy">
+			<LinearLayout
+				android:layout_width="match_parent"
+				android:layout_height="match_parent"
+				android:orientation="vertical">
+				<TextView
+					style="?android:attr/listSeparatorTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="PROFILE"
+					android:textColor="#00ddff"/>
+				<Spinner
+					style="@style/Spinner"
+					android:id="@+id/profile"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="5dp"/>
+				<TextView
+					style="?android:attr/listSeparatorTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="SORT ORDER"
+					android:textColor="#00ddff"/>
+				<Spinner
+					style="@style/Spinner"
+					android:id="@+id/sort"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:layout_marginTop="5dp"/>
+				<TextView
+					style="?android:attr/listSeparatorTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="FILTER"
+					android:textColor="#00ddff"/>
+				<Spinner
+					style="@style/Spinner"
+					android:id="@+id/filter"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:padding="5dp"
+					android:layout_marginTop="5dp"/>
+
+				<TextView
+					style="?android:attr/listSeparatorTextViewStyle"
+					android:layout_width="match_parent"
+					android:layout_height="wrap_content"
+					android:text="OPTIONS"
+					android:textColor="#00ddff"/>
+				<ListView
+					android:id="@+id/drawer_list"
+					android:layout_width="match_parent"
+					android:layout_height="match_parent"
+					android:choiceMode="singleChoice"
+					android:divider="@drawable/divider_horizontal_bright_opaque"
+					android:dividerHeight="0.5dp"
+					android:padding="5dp"
+					android:layout_weight="1"/>
+
+
+			</LinearLayout>
+		</ScrollView>
+		<LinearLayout
             android:id="@+id/poweredBy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="vertical"
-            android:layout_weight="0"
             android:padding="10dp"
+			android:layout_alignParentBottom="true"
             android:background="@drawable/list_selector">
-        <TextView
+			<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Powered By"
                 android:textSize="20sp"
                 android:textColor="#ffffff"/>
-        <TextView
+			<TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="thetvdb.com"
                 android:textColor="#ffffff" />
-    </LinearLayout>
-		
-	</LinearLayout>
+		</LinearLayout>
+	</RelativeLayout>
 </android.support.v4.widget.DrawerLayout>
 
 

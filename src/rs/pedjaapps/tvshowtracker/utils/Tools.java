@@ -1,21 +1,15 @@
 package rs.pedjaapps.tvshowtracker.utils;
 
-import java.io.BufferedInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
-import java.net.URLConnection;
-
-import org.apache.http.util.ByteArrayBuffer;
-
-import android.app.Activity;
-import android.content.Context;
-import android.net.ConnectivityManager;
-import android.os.Environment;
-import android.util.Log;
-import android.view.WindowManager;
+import android.app.*;
+import android.content.*;
+import android.net.*;
+import android.os.*;
+import android.util.*;
+import android.view.*;
+import android.widget.*;
+import java.io.*;
+import java.net.*;
+import org.apache.http.util.*;
 
 public class Tools {
 	
@@ -109,5 +103,25 @@ public class Tools {
 	{
 	    return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
 	}
+	
+	public static void setListViewHeightBasedOnChildren(ListView listView)
+    {
+        ListAdapter listAdapter = listView.getAdapter();
+        if (listAdapter != null)
+        {
+            int totalHeight = 0;
+            for (int i = 0; i < listAdapter.getCount(); i++)
+            {
+                View listItem = listAdapter.getView(i, null, listView);
+                listItem.measure(0, 0);
+                totalHeight += listItem.getMeasuredHeight();
+            }
+            ViewGroup.LayoutParams params = listView.getLayoutParams();
+            params.height = totalHeight
+				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+            listView.setLayoutParams(params);
+            System.out.println(totalHeight);
+        }
+    }
 	
 }

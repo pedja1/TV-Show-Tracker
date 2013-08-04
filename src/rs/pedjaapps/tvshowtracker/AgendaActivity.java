@@ -26,15 +26,15 @@ public class AgendaActivity extends Activity {
 	    list = (ListView)findViewById(R.id.list);
 		adapter = new AgendaAdapter(this);
 		profile = getIntent().getStringExtra("profile");
-		for(Agenda a : getItems()){
-			adapter.add(a);
-		}
 		list.setAdapter(adapter);
+		new LoadEpisodes().execute();
 	}
 
-	private List<Agenda> getItems(){
+	private List<Agenda> getItems()
+	{
 		List<Agenda> a = new ArrayList<Agenda>();
 		List<Show> shows = db.getAllShows("", profile);
+		List<String> showTitles = new ArrayList<String>();
 		for(Show s : shows){
 			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"", profile);
 			for(EpisodeItem e : episodes){
@@ -43,6 +43,11 @@ public class AgendaActivity extends Activity {
 						Date firstAired = Constants.df.parse(e.getFirstAired());
 						if(new Date().before(firstAired) || (new Date().getTime() / (1000*60*60*24)) == (firstAired.getTime()/ (1000*60*60*24)))
 						{
+							if (!showTitles.contains(s.getSeriesName()))
+							{
+								a.add(new AgendaSection(s.getSeriesName()));
+								showTitles.add(s.getSeriesName());
+							}
 							a.add(new AgendaItem(e.getEpisodeName(), s.getBanner(), EpisodesAdapter.episode(e)[0]));
 						}
 					}
@@ -57,7 +62,32 @@ public class AgendaActivity extends Activity {
 		return a;
 	}
 
-	
+	public class LoadEpisodes extends AsyncTask<String, Void, List<Agenda>>
+	{
+
+		@Override
+		protected List<Agenda> doInBackground(String... args)
+		{
+			return getItems();
+		}
+
+		@Override
+		protected void onPreExecute()
+		{
+			setProgressBarIndeterminateVisibility(true);
+		}
+
+		@Override
+		protected void onPostExecute(List<Agenda> result)
+		{
+			adapter.clear();
+			for(Agenda a : result){
+				adapter.add(a);
+			}
+			adapter.notifyDataSetChanged();
+			setProgressBarIndeterminateVisibility(false);
+		}
+	}
 	
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
