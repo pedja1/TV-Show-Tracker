@@ -85,6 +85,7 @@ public class SettingsActivity extends PreferenceActivity {
 		// to reflect the new value, per the Android Design guidelines.
 		bindPreferenceSummaryToValue(findPreference("filter"));
 		bindPreferenceSummaryToValue(findPreference("sort"));
+		bindPreferenceSummaryToValue(findPreference("details_def_page"));
 	}
 
 	/** {@inheritDoc} */
@@ -191,6 +192,7 @@ public class SettingsActivity extends PreferenceActivity {
 			// guidelines.
 			bindPreferenceSummaryToValue(findPreference("filter"));
 			bindPreferenceSummaryToValue(findPreference("sort"));
+			bindPreferenceSummaryToValue(findPreference("details_def_page"));
 		}
 	}
 

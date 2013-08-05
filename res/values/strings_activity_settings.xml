@@ -25,5 +25,15 @@
         <item>continuing</item>
         <item>ended</item>
     </string-array>
+	<string-array name="pref_details_def_page_titles">
+        <item>Actors</item>
+        <item>Overview</item>
+        <item>Episodes</item>
+    </string-array>
+    <string-array name="pref_details_def_page_values">
+        <item>0</item>
+        <item>1</item>
+        <item>3</item>
+    </string-array>
 
 </resources>

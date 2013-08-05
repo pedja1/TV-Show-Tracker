@@ -5,6 +5,7 @@ import android.content.*;
 import android.graphics.*;
 import android.net.*;
 import android.os.*;
+import android.preference.*;
 import android.support.v4.app.*;
 import android.support.v4.view.*;
 import android.view.*;
@@ -85,8 +86,9 @@ public class DetailsActivity extends FragmentActivity
 
 				public void run()
 				{
-					mViewPager.setCurrentItem(1, true);
-					// TODO: Implement this method
+					SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DetailsActivity.this);
+					int page = Integer.parseInt(prefs.getString("details_def_page", "1"));
+					mViewPager.setCurrentItem(page, true);
 				}
 			});
 		mViewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
