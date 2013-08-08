@@ -12,4 +12,6 @@ public class Constants {
 	public static final int UI_CODE_AFTERLOAD = 1;
 	public static final int REFRESH_HANDLER_UPDATE_LIST = 1001;
 	public static final String LOG_TAG = "tvst";
+
+	public static String ENCODING = "UTF-8";
 }

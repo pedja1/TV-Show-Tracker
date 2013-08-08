@@ -156,8 +156,7 @@ public class MainActivity extends Activity
                         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                         break;
                     case 3:
-                        //startActivity(new Intent(MainActivity.this, AgendaActivity.class).putExtra(
-                               // "profile", profile));
+                        startActivity(new Intent(MainActivity.this, BackupActivity.class));
                         Toast.makeText(MainActivity.this, "TODO: about", Toast.LENGTH_LONG).show();
                         break;
                 }
@@ -804,8 +803,7 @@ public class MainActivity extends Activity
 								parser.getValue(e, "Network"),
 								Tools.parseInt(parser.getValue(e, "Runtime")),
 								parser.getValue(e, "Status"), false, false,
-								date, parser.getValue(e, "Actors")), seriesId,
-						profile);
+								date, parser.getValue(e, "Actors"), profile));
 
 				nl = doc.getElementsByTagName("Episode");
 

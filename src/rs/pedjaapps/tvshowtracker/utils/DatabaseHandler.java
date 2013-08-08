@@ -131,7 +131,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.close(); // Closing database connection
 	}
 
-	public synchronized void addShow(Show s, String profile)
+	public synchronized void addShow(Show s)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -152,7 +152,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(show_filds[14], s.isHide());
 		values.put(show_filds[15], s.getUpdated());
 		values.put(show_filds[16], s.getActors());
-		values.put(show_filds[17], profile);
+		values.put(show_filds[17], s.getProfileName());
 
 		// Inserting Row
 		db.insert(TABLE_SERIES, null, values);
@@ -161,7 +161,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		createActorsTable(s.getSeriesId() + "");
 	}
 
-	public synchronized int updateShow(Show s, String seriesId, String profile)
+	public synchronized int updateShow(Show s)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -182,10 +182,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(show_filds[14], s.isHide());
 		values.put(show_filds[15], s.getUpdated());
 		values.put(show_filds[16], s.getActors());
-		values.put(show_filds[17], profile);
+		values.put(show_filds[17], s.getProfileName());
 
 		int count = db.update(TABLE_SERIES, values, show_filds[2] + " = ?",
-				new String[] { seriesId });
+				new String[] { s.getSeriesId()+"" });
 		db.close();
 		return count;
 	}
@@ -244,6 +244,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				show.setHide(intToBool(cursor.getInt(14)));
 				show.setUpdated(cursor.getString(15));
 				show.setActors(cursor.getString(16));
+				show.setProfileName(cursor.getString(17));
 
 				shows.add(show);
 			}
@@ -324,7 +325,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				cursor.getString(4), cursor.getString(12), cursor.getString(5),
 				cursor.getInt(10), cursor.getString(11),
 				intToBool(cursor.getInt(13)), intToBool(cursor.getInt(14)),
-				cursor.getString(15), cursor.getString(16));
+				cursor.getString(15), cursor.getString(16), cursor.getString(17));
 		// return list
 		db.close();
 		cursor.close();

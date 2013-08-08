@@ -1,6 +1,7 @@
 package rs.pedjaapps.tvshowtracker.model;
 
-public class Show {
+public class Show 
+{
 	private int id;
 	private String seriesName;
     private String firstAired;
@@ -21,6 +22,7 @@ public class Show {
     private int nextEpisodeDays;
     private int prgWatched;
     private String actors;
+	private String profileName;
     
     
     
@@ -52,7 +54,7 @@ public class Show {
 	public Show(int id, String seriesName, String firstAired, String imdbId,
 			String overview, double rating, int seriesId, String language,
 			String banner, String fanart, String network, int runtime,
-			String status, boolean ignore, boolean hide, String updated, String actors) {
+			String status, boolean ignore, boolean hide, String updated, String actors, String profileName) {
 		this.id = id;
 		this.seriesName = seriesName;
 		this.firstAired = firstAired;
@@ -70,12 +72,13 @@ public class Show {
 		this.hide = hide;
 		this.updated = updated;
 		this.actors = actors;
+	    this.profileName = profileName;
 	}
 	
 	public Show(String seriesName, String firstAired, String imdbId,
 			String overview, double rating, int seriesId, String language,
 			String banner, String fanart, String network, int runtime,
-			String status, boolean ignore, boolean hide, String updated, String actors) {
+			String status, boolean ignore, boolean hide, String updated, String actors, String profileName) {
 		this.seriesName = seriesName;
 		this.firstAired = firstAired;
 		this.imdbId = imdbId;
@@ -92,10 +95,21 @@ public class Show {
 		this.hide = hide;
 		this.updated = updated;
 		this.actors = actors;
+		this.profileName = profileName;
 	}
 
 	public Show(){
 		
+	}
+
+	public void setProfileName(String profileName)
+	{
+		this.profileName = profileName;
+	}
+
+	public String getProfileName()
+	{
+		return profileName;
 	}
 	
 	public int getId() {

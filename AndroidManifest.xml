@@ -96,6 +96,10 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
+		<activity
+            android:name="rs.pedjaapps.tvshowtracker.BackupActivity"
+            android:label="@string/title_activity_profiles" >
+        </activity>
     </application>
 
 </manifest>

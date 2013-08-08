@@ -1,0 +1,31 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+	
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="@string/restore_warning"/>
+		
+	<LinearLayout
+		android:layout_width="fill_parent"
+		android:layout_height="wrap_content"
+		android:orientation="horizontal">
+		
+		<Button 
+			android:id="@+id/backup"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="Backup"/>
+		<Button 
+			android:id="@+id/restore"
+			android:layout_width="match_parent"
+			android:layout_height="wrap_content"
+			android:layout_weight="1"
+			android:text="Restore"/>
+		
+	</LinearLayout>
+    
+</LinearLayout>

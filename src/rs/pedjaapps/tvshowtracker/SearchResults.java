@@ -125,7 +125,7 @@ public class SearchResults extends Activity {
 					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "banner"), extStorage+"/TVST"+parser.getValue(e, "banner").substring(parser.getValue(e, "banner").lastIndexOf("/")), true), 
 					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/")), true), 
 					parser.getValue(e, "Network"), Tools.parseInt(parser.getValue(e, "Runtime")), 
-					parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors")), profile);
+					parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors"), profile));
 			
 			nl = doc.getElementsByTagName("Episode");
 			

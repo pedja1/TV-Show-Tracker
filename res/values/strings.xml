@@ -19,5 +19,7 @@
     <string name="title_activity_profiles">Profiles</string>
     <string name="drawer_open">open</string>
     <string name="drawer_closed">closed</string>
+	
+	<string name="restore_warning"><b>Warning!</b> Database will be wiped before restore</string>
 
 </resources>
