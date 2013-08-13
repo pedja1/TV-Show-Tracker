@@ -80,7 +80,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 					DatabaseHandler db = new DatabaseHandler(getContext());
                     ei.setWatched(isChecked);
-					db.updateEpisode(ei, ei.getEpisodeId()+"", seriesId);
+					db.updateEpisode(ei);
 					if(!Tools.isRefresh())
 					Tools.setRefresh(true);
 				}

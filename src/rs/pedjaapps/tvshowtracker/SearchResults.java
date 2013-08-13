@@ -137,7 +137,7 @@ public class SearchResults extends Activity {
 						Tools.parseInt(parser.getValue(e, "SeasonNumber")),
 						parser.getValue(e, "FirstAired"), parser.getValue(e, "IMDB_ID"), 
 						parser.getValue(e, "Overview"), Tools.parseRating(parser.getValue(e, "Rating")),
-						false, Tools.parseInt(parser.getValue(e, "id")), profile), seriesId);
+						false, Tools.parseInt(parser.getValue(e, "id")), profile, seriesId));
 				}
 				publishProgress(new Integer[]{1,i,nl.getLength()});
 			}
@@ -155,7 +155,7 @@ public class SearchResults extends Activity {
 				if(!db.actorExists(seriesId, parser.getValue(e, "id"), profile))
 				{
 				db.addActor(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"), 
-						image, profile), seriesId);
+						image, profile, seriesId));
 				}
 				publishProgress(new Integer[]{2,i,nl.getLength()});
 			}
@@ -212,7 +212,8 @@ public class SearchResults extends Activity {
 			 
 			NodeList nl = doc.getElementsByTagName("Series");
 			     
-			for (int i = 0; i < nl.getLength(); i++) {
+			for (int i = 0; i < nl.getLength(); i++) 
+			{
 				Element e = (Element) nl.item(i);
 				entry.add(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "Overview"),
 						Integer.parseInt(parser.getValue(e, "seriesid")),

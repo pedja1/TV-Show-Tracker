@@ -1,0 +1,12 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
+    
+	<TextView
+		android:layout_width="match_parent"
+		android:layout_height="wrap_content"
+		android:text="Developed By: Predrag Čokulov\nCopyright© Predrag Čokulov 20012-2013\nLicence: GPL v3"
+		/>
+	
+</LinearLayout>

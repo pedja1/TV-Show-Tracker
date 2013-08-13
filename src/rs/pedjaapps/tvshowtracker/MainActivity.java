@@ -156,8 +156,8 @@ public class MainActivity extends Activity
                         startActivity(new Intent(MainActivity.this, SettingsActivity.class));
                         break;
                     case 3:
-                        startActivity(new Intent(MainActivity.this, BackupActivity.class));
-                        Toast.makeText(MainActivity.this, "TODO: about", Toast.LENGTH_LONG).show();
+                        startActivity(new Intent(MainActivity.this, About.class));
+                       // Toast.makeText(MainActivity.this, "TODO: about", Toast.LENGTH_LONG).show();
                         break;
                 }
 				closeDrawer();
@@ -828,7 +828,7 @@ public class MainActivity extends Activity
 											.parseRating(parser.getValue(e,
 													"Rating")), false,
 											Tools.parseInt(parser.getValue(e,
-													"id")), profile), seriesId);
+													"id")), profile, seriesId));
 						}
 						else
 						{
@@ -847,8 +847,7 @@ public class MainActivity extends Activity
 											seriesId, parser.getValue(e, "id"),
 											profile).isWatched(),
 											Tools.parseInt(parser.getValue(e,
-													"id")), profile), parser
-											.getValue(e, "id"), seriesId);
+													"id")), profile, seriesId));
 						}
 					}
 				}
@@ -885,7 +884,7 @@ public class MainActivity extends Activity
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
 										image,
-										profile), seriesId);
+										profile, seriesId));
 					}
 					else
 					{
@@ -895,8 +894,7 @@ public class MainActivity extends Activity
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
 										image,
-										profile), parser.getValue(e, "id"),
-								seriesId);
+										profile, seriesId));
 						System.out.println("actor update"+i+parser.getValue(e, "id")+" "+image);
 					}
 				}

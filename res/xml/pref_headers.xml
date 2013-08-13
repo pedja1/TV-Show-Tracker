@@ -23,6 +23,11 @@
 	    android:icon="@drawable/ic_action_profiles">
 	    <intent android:action="rs.pedjaapps.tvshowtracker.ProfilesActivity" />
 	</header>
+	<header
+	    android:title="Backup"
+	    android:icon="@drawable/ic_action_backup">
+	    <intent android:action="rs.pedjaapps.tvshowtracker.BackupActivity" />
+	</header>
 </preference-headers>
 <!-- intent android:action="android.intent.action.VIEW"
             android:data="http://imdbapi.org" /> -->

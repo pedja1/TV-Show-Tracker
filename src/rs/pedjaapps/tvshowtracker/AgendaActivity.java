@@ -1,6 +1,9 @@
 package rs.pedjaapps.tvshowtracker;
 
+import android.app.*;
+import android.content.*;
 import android.os.*;
+import android.support.v4.app.*;
 import android.view.*;
 import android.widget.*;
 import com.caldroid.*;
@@ -11,8 +14,8 @@ import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
 
+import android.support.v4.app.FragmentTransaction;
 import rs.pedjaapps.tvshowtracker.R;
-import android.support.v4.app.*;
 public class AgendaActivity extends FragmentActivity {
 
 	AgendaAdapter adapter;
@@ -81,6 +84,43 @@ public class AgendaActivity extends FragmentActivity {
 		adapter = new AgendaAdapter(this);
 		profile = getIntent().getStringExtra("profile");
 		list.setAdapter(adapter);
+		list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+			{
+
+				@Override
+				public void onItemClick(AdapterView<?> arg0, View arg1,
+										int position, long arg3)
+				{
+
+					if (adapter.getItem(position) instanceof AgendaItem)
+					{
+						AlertDialog.Builder builder = new AlertDialog.Builder(AgendaActivity.this);
+
+						builder.setTitle(((AgendaItem) adapter
+										 .getItem(position)).getEpisodeName());
+						String plot = ((AgendaItem) adapter
+							.getItem(position)).getOverview();
+						builder.setMessage(plot.length() > 0 ? plot : "Plot not available");
+
+						builder.setPositiveButton(
+							getResources().getString(android.R.string.ok),
+							new DialogInterface.OnClickListener()
+							{
+								@Override
+								public void onClick(DialogInterface dialog,
+													int which)
+								{
+
+								}
+							});
+
+						AlertDialog alert = builder.create();
+
+						alert.show();
+					}
+				}
+
+			});
 		new LoadEpisodes().execute();
 	}
 
@@ -102,7 +142,7 @@ public class AgendaActivity extends FragmentActivity {
 								a.add(new AgendaSection(s.getSeriesName()));
 								showTitles.add(s.getSeriesName());
 							}
-							a.add(new AgendaItem(e.getEpisodeName(), s.getBanner(), EpisodesAdapter.episode(e)[0], e.getFirstAired()));
+							a.add(new AgendaItem(e.getEpisodeName(), s.getBanner(), EpisodesAdapter.episode(e)[0], e.getFirstAired(), e.getOverview()));
 							caldroidFragment.setBackgroundResourceForDate( R.color.caldroid_holo_blue_light, firstAired);
 							caldroidFragment.setTextColorForDate(R.color.caldroid_white, firstAired);
 						}

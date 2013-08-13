@@ -16,7 +16,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 4;
+	private static final int DATABASE_VERSION = 1;
 
 	// Database Name
 	private static final String DATABASE_NAME = "tvst.db";
@@ -24,6 +24,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	// table names
 	private static final String TABLE_SERIES = "series";
 	private static final String TABLE_PROFILES = "profiles";
+	private static final String TABLE_EPISODES = "episodes";
+	private static final String TABLE_ACTORS = "actors";
 
 	// private static final String TABLE_ITEM = "item_table";
 	// Table Columns names
@@ -35,9 +37,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			"profile_name" };
 	private static final String[] episode_filds = { "_id", "episode", "season",
 			"episode_name", "first_aired", "imdb_id", "overview", "rating",
-			"watched", "episode_id", "profile_name" };
+			"watched", "episode_id", "seriesId", "profile_name" };
 	private static final String[] actors_filds = { "_id", "actor_id", "name",
-			"role", "image", "profile_name" };
+			"role", "image", "seriesId", "profile_name" };
 	private static final String[] profile_filds = { "_id", "name" };
 
 	public DatabaseHandler(Context context)
@@ -65,6 +67,21 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				+ " BOOLEAN," + show_filds[14] + " BOOLEAN," + show_filds[15]
 				+ " TEXT," + show_filds[16] + " TEXT," + show_filds[17]
 				+ " TEXT" + ")";
+		String CREATE_EPISODE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EPISODES
+		    + "(" + episode_filds[0] + " INTEGER PRIMARY KEY,"
+			+ episode_filds[1] + " INTEGER," + episode_filds[2]
+			+ " INTEGER," + episode_filds[3] + " TEXT," + episode_filds[4]
+			+ " TEXT," + episode_filds[5] + " TEXT," + episode_filds[6]
+			+ " TEXT," + episode_filds[7] + " DOUBLE," + episode_filds[8]
+			+ " BOOLEAN," + episode_filds[9] + " INTEGER,"
+			+ episode_filds[10] + " TEXT," + episode_filds[11] + " TEXT"+ ")";
+
+		String CREATE_ACTORS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ACTORS
+			+ "(" + actors_filds[0] + " INTEGER PRIMARY KEY,"
+			+ actors_filds[1] + " TEXT," + actors_filds[2] + " TEXT,"
+			+ actors_filds[3] + " TEXT," + actors_filds[4] + " TEXT,"
+			+ actors_filds[5] + " TEXT," + actors_filds[6] + " TEXT"+ ")";
+	
 		db.execSQL(CREATE_PROFILES_TABLE);
 		ContentValues values = new ContentValues();
 		values.put(profile_filds[1], "Default");
@@ -72,6 +89,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		// Inserting Row
 		db.insert(TABLE_PROFILES, null, values);
 		db.execSQL(CREATE_SERIES_TABLE);
+		db.execSQL(CREATE_EPISODE_TABLE);
+		db.execSQL(CREATE_ACTORS_TABLE);
 	}
 
 	// Upgrading database
@@ -81,6 +100,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		// Drop older table if existed
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERIES);
 		db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILES);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_EPISODES);
+		db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTORS);
 
 		// Create tables again
 		onCreate(db);
@@ -90,35 +111,17 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * All CRUD(Create, Read, Update, Delete) Operations
 	 */
 
-	public synchronized void createEpisodeTable(String seriesId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		String CREATE_EPISODE_TABLE = "CREATE TABLE IF NOT EXISTS episodes_"
-				+ seriesId + "(" + episode_filds[0] + " INTEGER PRIMARY KEY,"
-				+ episode_filds[1] + " INTEGER," + episode_filds[2]
-				+ " INTEGER," + episode_filds[3] + " TEXT," + episode_filds[4]
-				+ " TEXT," + episode_filds[5] + " TEXT," + episode_filds[6]
-				+ " TEXT," + episode_filds[7] + " DOUBLE," + episode_filds[8]
-				+ " BOOLEAN," + episode_filds[9] + " INTEGER,"
-				+ episode_filds[10] + " TEXT" + ")";
-
-		db.execSQL(CREATE_EPISODE_TABLE);
-		db.close();
-	}
-
-	public synchronized void createActorsTable(String seriesId)
-	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		String CREATE_ACTORS_TABLE = "CREATE TABLE IF NOT EXISTS actors_"
-				+ seriesId + "(" + actors_filds[0] + " INTEGER PRIMARY KEY,"
-				+ actors_filds[1] + " TEXT," + actors_filds[2] + " TEXT,"
-				+ actors_filds[3] + " TEXT," + actors_filds[4] + " TEXT,"
-				+ actors_filds[5] + " TEXT" + ")";
-
-		db.execSQL(CREATE_ACTORS_TABLE);
-		db.close();
-	}
-
+	 public void wipeDatabase()
+	 {
+		 SQLiteDatabase db = this.getWritableDatabase();
+		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERIES);
+		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILES);
+		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_EPISODES);
+		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTORS);
+		 onCreate(db);
+		 db.close();
+	 }
+	 
 	public synchronized void addProfile(String profileName)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
@@ -157,8 +160,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		// Inserting Row
 		db.insert(TABLE_SERIES, null, values);
 		db.close(); // Closing database connection
-		createEpisodeTable(s.getSeriesId() + "");
-		createActorsTable(s.getSeriesId() + "");
 	}
 
 	public synchronized int updateShow(Show s)
@@ -288,16 +289,16 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	public synchronized void deleteEpisodes(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete("episodes_" + seriesId, "profile_name = ?",
-				new String[] { profile });
+		db.delete(TABLE_EPISODES, "profile_name = ? and seriesId = ?",
+				new String[] { profile, seriesId });
 		db.close();
 	}
 
 	public synchronized void deleteActors(String seriesId, String profile)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
-		db.delete("actors_" + seriesId, "profile_name = ?",
-				new String[] { profile });
+		db.delete(TABLE_ACTORS, "profile_name = ? and seriesId = ?",
+				new String[] { profile, seriesId });
 		db.close();
 	}
 
@@ -332,7 +333,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return e;
 	}
 
-	public synchronized void addEpisode(EpisodeItem e, String seriesId)
+	public synchronized void addEpisode(EpisodeItem e)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -345,14 +346,15 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(episode_filds[7], e.getRating());
 		values.put(episode_filds[8], e.isWatched());
 		values.put(episode_filds[9], e.getEpisodeId());
-		values.put(episode_filds[10], e.getProfile());
+		values.put(episode_filds[10], e.getSeriesId());
+		values.put(episode_filds[11], e.getProfile());
 
 		// Inserting Row
-		db.insert("episodes_" + seriesId, null, values);
+		db.insert(TABLE_EPISODES, null, values);
 		db.close(); // Closing database connection
 	}
 
-	public synchronized void addActor(Actor a, String seriesId)
+	public synchronized void addActor(Actor a)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
@@ -360,10 +362,11 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(actors_filds[2], a.getName());
 		values.put(actors_filds[3], a.getRole());
 		values.put(actors_filds[4], a.getImage());
-		values.put(actors_filds[5], a.getProfile());
+		values.put(actors_filds[5], a.getSeriesId());
+		values.put(actors_filds[6], a.getProfile());
 
 		// Inserting Row
-		db.insert("actors_" + seriesId, null, values);
+		db.insert(TABLE_ACTORS, null, values);
 		db.close(); // Closing database connection
 	}
 
@@ -372,9 +375,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query("episodes_" + seriesId, episode_filds,
+		Cursor cursor = db.query(TABLE_EPISODES, episode_filds,
 				episode_filds[9] + "=? and profile_name LIKE \"%" + profile
-						+ "%\"", new String[] { episodeId }, null, null, null,
+						+ "%\" and seriesId = " + seriesId , new String[] { episodeId }, null, null, null,
 				null);
 		if (cursor != null)
 			cursor.moveToFirst();
@@ -383,7 +386,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				cursor.getString(1), cursor.getInt(2), cursor.getInt(3),
 				cursor.getString(4), cursor.getString(5), cursor.getString(6),
 				cursor.getDouble(7), intToBool(cursor.getInt(8)),
-				cursor.getInt(9), cursor.getString(10));
+				cursor.getInt(9), cursor.getString(11), cursor.getString(10));
 		// return list
 		db.close();
 		cursor.close();
@@ -394,16 +397,16 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query("actors_" + seriesId, actors_filds,
+		Cursor cursor = db.query(TABLE_ACTORS, actors_filds,
 				actors_filds[1] + "=? and profile_name LIKE \"%" + profile
-						+ "%\"", new String[] { actorId }, null, null, null,
+						+ "%\" and seriesId = " + seriesId, new String[] { actorId }, null, null, null,
 				null);
 		if (cursor != null)
 			cursor.moveToFirst();
 
 		Actor a = new Actor(Integer.parseInt(cursor.getString(0)),
 				cursor.getString(1), cursor.getString(2), cursor.getString(3),
-				cursor.getString(4), cursor.getString(5));
+				cursor.getString(4), cursor.getString(6), cursor.getString(5));
 		// return list
 		db.close();
 		cursor.close();
@@ -423,7 +426,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		{
 			do
 			{
-
 				profiles.add(cursor.getString(1));
 			}
 			while (cursor.moveToNext());
@@ -439,8 +441,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	{
 		List<EpisodeItem> episodeItems = new ArrayList<EpisodeItem>();
 		// Select All Query
-		String selectQuery = "SELECT  * FROM episodes_" + seriesId
-				+ " WHERE profile_name LIKE \"%" + profile + "%\"";
+		String selectQuery = "SELECT  * FROM " + TABLE_EPISODES
+				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = "+seriesId;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -460,6 +462,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				episodeItem.setRating(cursor.getDouble(7));
 				episodeItem.setWatched(intToBool(cursor.getInt(8)));
 				episodeItem.setEpisodeId(cursor.getInt(9));
+				episodeItem.setSeriesId(cursor.getString(10));
+				episodeItem.setProfile(cursor.getString(11));
 
 				// Adding to list
 				episodeItems.add(episodeItem);
@@ -477,8 +481,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	{
 		List<Actor> actors = new ArrayList<Actor>();
 		// Select All Query
-		String selectQuery = "SELECT  * FROM actors_" + seriesId
-				+ " WHERE profile_name LIKE \"%" + profile + "%\"";
+		String selectQuery = "SELECT  * FROM " + TABLE_ACTORS
+				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = " + seriesId;
 
 		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
@@ -493,6 +497,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				actor.setName(cursor.getString(2));
 				actor.setRole(cursor.getString(3));
 				actor.setImage(cursor.getString(4));
+				actor.setSeriesId(cursor.getString(5));
+				actor.setProfile(cursor.getString(6));
 
 				// Adding to list
 				actors.add(actor);
@@ -520,9 +526,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query("episodes_" + seriesId, episode_filds,
+		Cursor cursor = db.query(TABLE_EPISODES, episode_filds,
 				episode_filds[9] + "=? and profile_name LIKE \"%" + profile
-						+ "%\"", new String[] { episodeId }, null, null, null,
+						+ "%\" and seriesId = "+ seriesId, new String[] { episodeId }, null, null, null,
 				null);
 		boolean exists = (cursor.getCount() > 0);
 		cursor.close();
@@ -534,9 +540,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	{
 		SQLiteDatabase db = this.getReadableDatabase();
 
-		Cursor cursor = db.query("actors_" + seriesId, actors_filds,
+		Cursor cursor = db.query(TABLE_ACTORS, actors_filds,
 				actors_filds[1] + "=? and profile_name LIKE \"%" + profile
-						+ "%\"", new String[] { actorId }, null, null, null,
+						+ "%\" and seriesId = " + seriesId, new String[] { actorId }, null, null, null,
 				null);
 		boolean exists = (cursor.getCount() > 0);
 		cursor.close();
@@ -544,7 +550,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return exists;
 	}
 
-	public synchronized int updateEpisode(EpisodeItem e, String episodeId, String seriesId)
+	public synchronized int updateEpisode(EpisodeItem e)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -558,16 +564,17 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(episode_filds[7], e.getRating());
 		values.put(episode_filds[8], e.isWatched());
 		values.put(episode_filds[9], e.getEpisodeId());
-		values.put(episode_filds[10], e.getProfile());
+		values.put(episode_filds[10], e.getSeriesId());
+		values.put(episode_filds[11], e.getProfile());
 
-		int count = db.update("episodes_" + seriesId, values, episode_filds[9]
-				+ " = ?  and profile_name LIKE \"%" + e.getProfile() + "%\"",
-				new String[] { episodeId });
+		int count = db.update(TABLE_EPISODES, values, episode_filds[9]
+				+ " = ?  and profile_name LIKE \"%" + e.getProfile() + "%\" and seriesId = " + e.getSeriesId(),
+				new String[] { e.getEpisodeId()+"" });
 		db.close();
 		return count;
 	}
 
-	public synchronized int updateActor(Actor a, String actorId, String seriesId)
+	public synchronized int updateActor(Actor a)
 	{
 		SQLiteDatabase db = this.getWritableDatabase();
 
@@ -576,19 +583,20 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(actors_filds[2], a.getName());
 		values.put(actors_filds[3], a.getRole());
 		values.put(actors_filds[4], a.getImage());
-		values.put(actors_filds[5], a.getProfile());
+		values.put(actors_filds[5], a.getSeriesId());
+		values.put(actors_filds[6], a.getProfile());
 
-		int count = db.update("actors_" + seriesId, values, actors_filds[1]
-				+ " = ?  and profile_name LIKE \"%" + a.getProfile() + "%\"",
-				new String[] { actorId });
+		int count = db.update(TABLE_ACTORS, values, actors_filds[1]
+				+ " = ?  and profile_name LIKE \"%" + a.getProfile() + "%\" and seriesId = "+a.getSeriesId(),
+				new String[] { a.getActorId() });
 		db.close();
 		return count;
 	}
 
 	public synchronized int getEpisodesCount(String seriesId, String profile)
 	{
-		String countQuery = "SELECT  * FROM episodes_" + seriesId
-				+ " WHERE profile_name LIKE \"%" + profile + "%\"";
+		String countQuery = "SELECT  * FROM "+ TABLE_EPISODES
+				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = " + seriesId;
 		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.rawQuery(countQuery, null);
 		int count = cursor.getCount();

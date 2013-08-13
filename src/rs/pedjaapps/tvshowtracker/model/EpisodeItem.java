@@ -13,11 +13,12 @@ public class EpisodeItem implements Episode{
     private boolean watched;
     private int episodeId;
     private String profile;
+	private String seriesId;
     
    
 	public EpisodeItem(String episodeName, int episode, int season,
 			String firstAired, String imdbId, String overview, double rating,
-			boolean watched, int episodeId, String profile) {
+			boolean watched, int episodeId, String profile, String seriesId) {
 		super();
 		this.episodeName = episodeName;
 		this.episode = episode;
@@ -29,11 +30,12 @@ public class EpisodeItem implements Episode{
 		this.watched = watched;
 		this.episodeId = episodeId;
 		this.profile = profile;
+		this.seriesId = seriesId;
 	}
 
 	public EpisodeItem(int id, String episodeName, int episode, int season,
 			String firstAired, String imdbId, String overview, double rating,
-			boolean watched, int episodeId, String profile) {
+			boolean watched, int episodeId, String profile, String seriesId) {
 		super();
 		this.id = id;
 		this.episodeName = episodeName;
@@ -46,10 +48,21 @@ public class EpisodeItem implements Episode{
 		this.watched = watched;
 		this.episodeId = episodeId;
 		this.profile = profile;
+		this.seriesId = seriesId;
 	}
 
 	public EpisodeItem(){
 		
+	}
+
+	public void setSeriesId(String seriesId)
+	{
+		this.seriesId = seriesId;
+	}
+
+	public String getSeriesId()
+	{
+		return seriesId;
 	}
 	
 	public int getId() {

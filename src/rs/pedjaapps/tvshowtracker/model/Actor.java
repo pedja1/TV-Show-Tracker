@@ -10,26 +10,45 @@ public class Actor {
     private String role;
     private String image;
     private String profile;
+    private String seriesId;
 
+	public Actor(String actorId, String name, String role, String image, String profile, String seriesId)
+	{
+		this.actorId = actorId;
+		this.name = name;
+		this.role = role;
+		this.image = image;
+		this.profile = profile;
+		this.seriesId = seriesId;
+	}
+
+	public Actor(int id, String actorId, String name, String role, String image, String profile, String seriesId)
+	{
+		this.id = id;
+		this.actorId = actorId;
+		this.name = name;
+		this.role = role;
+		this.image = image;
+		this.profile = profile;
+		this.seriesId = seriesId;
+	}
+	
     public Actor(){
     	
     }
+
+	public void setSeriesId(String seriesId)
+	{
+		this.seriesId = seriesId;
+	}
+
+	public String getSeriesId()
+	{
+		return seriesId;
+	}
     
-    public Actor(int id, String actorId, String name, String role, String image, String profile) {
-    	this.id = id;
-    	this.actorId = actorId;
-        this.name = name;
-        this.role = role;
-        this.image = image;
-        this.profile = profile;
-    }
-    public Actor(String actorId, String name, String role, String image, String profile) {
-    	this.actorId = actorId;
-        this.name = name;
-        this.role = role;
-        this.image = image;
-        this.profile = profile;
-    }
+    
+    
     public String getName() {
         return name;
     }

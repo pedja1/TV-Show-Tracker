@@ -85,7 +85,7 @@ public class BackupActivity extends Activity implements OnClickListener
 			}
 			else
 			{
-				FileSystem.deleteFile(Environment.getDataDirectory() + "/database/tvst.db");
+				db.wipeDatabase();
 				db = new DatabaseHandler(BackupActivity.this);
 				String data = FileSystem.readFile(Environment.getExternalStorageDirectory() + "/tvst/", "backup.json");
 				JsonObject obj = gson.fromJson(data, JsonObject.class);
@@ -115,13 +115,13 @@ public class BackupActivity extends Activity implements OnClickListener
 					aP = 0;
 					for (EpisodeItem e: s.getEpisodes())
 					{
-						db.addEpisode(e, s.getShow().getSeriesId() + "");
+						db.addEpisode(e);
 						setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 						eP++;
 					}
 					for (Actor a : s.getActors())
 					{
-						db.addActor(a, s.getShow().getSeriesId() + "");
+						db.addActor(a);
 						setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 						aP++;
 					}

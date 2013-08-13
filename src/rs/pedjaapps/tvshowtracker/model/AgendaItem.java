@@ -6,14 +6,28 @@ public class AgendaItem implements Agenda{
 	private String banner;
 	private String nextEpisode;
 	private String airDate;
-	
-	public AgendaItem(String episodeName, String banner, String nextEpisode, String airDate) {
-		super();
+	private String overview;
+
+	public AgendaItem(String episodeName, String banner, String nextEpisode, String airDate, String overview)
+	{
 		this.episodeName = episodeName;
 		this.banner = banner;
 		this.nextEpisode = nextEpisode;
 		this.airDate = airDate;
+		this.overview = overview;
 	}
+
+	public void setOverview(String overview)
+	{
+		this.overview = overview;
+	}
+
+	public String getOverview()
+	{
+		return overview;
+	}
+	
+	
 
 	public void setAirDate(String airDate)
 	{

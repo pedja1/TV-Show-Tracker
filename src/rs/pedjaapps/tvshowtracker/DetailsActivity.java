@@ -243,7 +243,7 @@ public class DetailsActivity extends FragmentActivity
 			{
 
 				adapter.add(new Actor(a.getActorId(), a.getName(), a.getRole(),
-						a.getImage(), profile));
+						a.getImage(), profile, seriesId+""));
 
 			}
 
@@ -284,7 +284,7 @@ public class DetailsActivity extends FragmentActivity
 					adapter.add(new EpisodeItem(i.getEpisodeName(), i
 							.getEpisode(), i.getSeason(), i.getFirstAired(), i
 							.getImdbId(), i.getOverview(), i.getRating(), i
-							.isWatched(), i.getEpisodeId(), profile));
+							.isWatched(), i.getEpisodeId(), profile, seriesId+""));
 				}
 			}
 
@@ -304,8 +304,9 @@ public class DetailsActivity extends FragmentActivity
 
 						builder.setTitle(((EpisodeItem) adapter
 								.getItem(position)).getEpisodeName());
-						builder.setMessage(((EpisodeItem) adapter
-								.getItem(position)).getOverview());
+						String plot = ((EpisodeItem) adapter
+							.getItem(position)).getOverview();
+						builder.setMessage(plot.length() > 0 ? plot : "Plot not available");
 
 						builder.setPositiveButton(
 								getResources().getString(android.R.string.ok),

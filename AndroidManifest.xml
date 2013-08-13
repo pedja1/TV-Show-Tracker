@@ -27,7 +27,8 @@
 
         <activity
             android:name="rs.pedjaapps.tvshowtracker.MainActivity"
-            android:label="@string/app_name" >
+            android:label="@string/app_name"
+			android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -98,7 +99,22 @@
         </activity>
 		<activity
             android:name="rs.pedjaapps.tvshowtracker.BackupActivity"
-            android:label="@string/title_activity_profiles" >
+            android:label="@string/title_activity_backup" >
+			<intent-filter>
+                <action android:name="rs.pedjaapps.tvshowtracker.BackupActivity" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+		<activity
+            android:name="rs.pedjaapps.tvshowtracker.About"
+            android:label="@string/title_activity_about"
+			android:theme="@android:style/Theme.Holo.Dialog">
+			<intent-filter>
+                <action android:name="rs.pedjaapps.tvshowtracker.About" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
     </application>
 

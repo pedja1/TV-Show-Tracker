@@ -17,6 +17,8 @@
     <string name="title_activity_agenda">Calendar</string>
     <string name="title_activity_banner">Download Banner</string>
     <string name="title_activity_profiles">Profiles</string>
+	<string name="title_activity_about">About</string>
+	<string name="title_activity_backup">Backup</string>
     <string name="drawer_open">open</string>
     <string name="drawer_closed">closed</string>
 	
