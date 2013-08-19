@@ -69,8 +69,14 @@ public class SettingsActivity extends PreferenceActivity {
 		
 		addPreferencesFromResource(R.xml.pref_profile);
 		addPreferencesFromResource(R.xml.pref_backup);
-		// Add 'ui' preferences, and a corresponding header.
+		// Add 'gen' preferences, and a corresponding header.
 		PreferenceCategory fakeHeader = new PreferenceCategory(this);
+		fakeHeader.setTitle("General Preferences");
+		getPreferenceScreen().addPreference(fakeHeader);
+		addPreferencesFromResource(R.xml.prefs_gen);
+		
+		// Add 'ui' preferences, and a corresponding header.
+		fakeHeader = new PreferenceCategory(this);
 		fakeHeader.setTitle("UI Preferences");
 		getPreferenceScreen().addPreference(fakeHeader);
 		addPreferencesFromResource(R.xml.pref_ui);
@@ -87,6 +93,7 @@ public class SettingsActivity extends PreferenceActivity {
 		bindPreferenceSummaryToValue(findPreference("filter"));
 		bindPreferenceSummaryToValue(findPreference("sort"));
 		bindPreferenceSummaryToValue(findPreference("details_def_page"));
+		bindPreferenceSummaryToValue(findPreference("locale"));
 	}
 
 	/** {@inheritDoc} */
@@ -176,6 +183,21 @@ public class SettingsActivity extends PreferenceActivity {
 						""));
 	}
 
+	@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+	public static class GeneralPreferenceFragment extends PreferenceFragment {
+		@Override
+		public void onCreate(Bundle savedInstanceState) {
+			super.onCreate(savedInstanceState);
+			addPreferencesFromResource(R.xml.prefs_gen);
+
+			// Bind the summaries of EditText/List/Dialog/Ringtone preferences
+			// to their values. When their values change, their summaries are
+			// updated to reflect the new value, per the Android Design
+			// guidelines.
+			bindPreferenceSummaryToValue(findPreference("locale"));
+		}
+	}
+	
 	/**
 	 * This fragment shows general preferences only. It is used when the
 	 * activity is showing a two-pane settings UI.

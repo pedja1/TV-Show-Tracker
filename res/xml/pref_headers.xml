@@ -1,10 +1,10 @@
 <preference-headers xmlns:android="http://schemas.android.com/apk/res/android" >
 
-    <!-- These settings headers are only used on tablets. 
+    <!-- These settings headers are only used on tablets. -->
 
     <header
         android:fragment="rs.pedjaapps.tvshowtracker.SettingsActivity$GeneralPreferenceFragment"
-        android:title="@string/pref_header_general" />-->
+        android:title="General" />
     <header
         android:fragment="rs.pedjaapps.tvshowtracker.SettingsActivity$UiPreferenceFragment"
         android:title="UI"

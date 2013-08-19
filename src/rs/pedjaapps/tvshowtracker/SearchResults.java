@@ -204,10 +204,11 @@ public class SearchResults extends Activity {
 		@Override
 		protected List<Show> doInBackground(String... args)
 		{
+			String lang = prefs.getString("locale", "en");
 			List<Show> entry = new ArrayList<Show>();
 			
 			XMLParser parser = new XMLParser();
-			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/GetSeries.php?seriesname="+args[0]); // getting XML
+			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/GetSeries.php?seriesname="+args[0]+"&language="+lang); // getting XML
 			Document doc = parser.getDomElement(xml); // getting DOM element
 			 
 			NodeList nl = doc.getElementsByTagName("Series");
