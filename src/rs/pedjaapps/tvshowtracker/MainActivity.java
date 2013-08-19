@@ -4,7 +4,7 @@ import android.annotation.*;
 import android.app.*;
 import android.content.*;
 import android.content.res.*;
-import android.net.Uri;
+import android.net.*;
 import android.os.*;
 import android.preference.*;
 import android.support.v4.app.*;
@@ -12,12 +12,16 @@ import android.support.v4.widget.*;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
+import com.jeremyfeinstein.slidingmenu.lib.*;
 import java.io.*;
 import java.util.*;
 import org.w3c.dom.*;
+import rs.pedjaapps.tvshowtracker.*;
 import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
+
+import rs.pedjaapps.tvshowtracker.R;
 
 public class MainActivity extends Activity
 {
@@ -44,10 +48,8 @@ public class MainActivity extends Activity
 	boolean sortFirstSelect = true;
 	boolean filterFirstSelect = true;
 	
-	private DrawerLayout mDrawerLayout;
-    private ActionBarDrawerToggle mDrawerToggle;
-    //private CharSequence mDrawerTitle;
-    //private CharSequence mTitle;
+	SlidingMenu sideMenu;
+	
 	private RelativeLayout drawerContent;
 
 	@Override
@@ -55,6 +57,17 @@ public class MainActivity extends Activity
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		
+		sideMenu = new SlidingMenu(this);
+        sideMenu.setMode(SlidingMenu.LEFT);
+        sideMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
+        sideMenu.setShadowWidthRes(R.dimen.shadow_width);
+        sideMenu.setShadowDrawable(R.drawable.menu_shadow);
+        sideMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
+        sideMenu.setFadeDegree(0.35f);
+        sideMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
+        sideMenu.setMenu(R.layout.menu_layout);
+		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		db = new DatabaseHandler(this);
 
@@ -105,26 +118,7 @@ public class MainActivity extends Activity
 		});
 		//mTitle = mDrawerTitle = getTitle();
 		drawerContent = (RelativeLayout)findViewById(R.id.left_drawer);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout,
-												  R.drawable.ic_drawer, R.string.drawer_open, R.string.drawer_closed) {
-
-            /** Called when a drawer has settled in a completely closed state. */
-            public void onDrawerClosed(View view) {
-               // getActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-
-            /** Called when a drawer has settled in a completely open state. */
-            public void onDrawerOpened(View drawerView) {
-                //getActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
-            }
-        };
-
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
-		
+        
         getActionBar().setDisplayHomeAsUpEnabled(true);
         getActionBar().setHomeButtonEnabled(true);
 		
@@ -277,21 +271,8 @@ public class MainActivity extends Activity
 	
 	private void closeDrawer()
 	{
-		mDrawerLayout.closeDrawer(drawerContent);
+		sideMenu.toggle(true);
 	}
-	
-	@Override
-    protected void onPostCreate(Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
-        mDrawerToggle.syncState();
-    }
-
-    @Override
-    public void onConfigurationChanged(Configuration newConfig) {
-        super.onConfigurationChanged(newConfig);
-        mDrawerToggle.onConfigurationChanged(newConfig);
-    }
 	
 	@Override
 	protected void onResume()

@@ -1,4 +1,5 @@
 <RelativeLayout
+	xmlns:android="http://schemas.android.com/apk/res/android"
 	android:id="@+id/left_drawer"
 	android:layout_width="240dp"
 	android:layout_height="match_parent"
