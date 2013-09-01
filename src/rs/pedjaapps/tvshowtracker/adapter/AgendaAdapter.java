@@ -46,7 +46,7 @@ public final class AgendaAdapter extends ArrayAdapter<Agenda>
 	}
 
 	@Override
-	public int getItemViewTypeCount()
+	public int getViewTypeCount()
 	{
         return 2;
 	}

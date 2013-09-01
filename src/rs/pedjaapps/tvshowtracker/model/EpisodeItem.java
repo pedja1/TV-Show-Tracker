@@ -1,8 +1,7 @@
 package rs.pedjaapps.tvshowtracker.model;
 
 public class EpisodeItem implements Episode{
-	
-	private int id;
+
 	private String episodeName;
     private int episode;
     private int season;
@@ -33,24 +32,6 @@ public class EpisodeItem implements Episode{
 		this.seriesId = seriesId;
 	}
 
-	public EpisodeItem(int id, String episodeName, int episode, int season,
-			String firstAired, String imdbId, String overview, double rating,
-			boolean watched, int episodeId, String profile, String seriesId) {
-		super();
-		this.id = id;
-		this.episodeName = episodeName;
-		this.episode = episode;
-		this.season = season;
-		this.firstAired = firstAired;
-		this.imdbId = imdbId;
-		this.overview = overview;
-		this.rating = rating;
-		this.watched = watched;
-		this.episodeId = episodeId;
-		this.profile = profile;
-		this.seriesId = seriesId;
-	}
-
 	public EpisodeItem(){
 		
 	}
@@ -63,14 +44,6 @@ public class EpisodeItem implements Episode{
 	public String getSeriesId()
 	{
 		return seriesId;
-	}
-	
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
 	}
 
 	public String getEpisodeName() {

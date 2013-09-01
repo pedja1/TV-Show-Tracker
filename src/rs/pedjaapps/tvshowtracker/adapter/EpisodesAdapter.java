@@ -1,7 +1,9 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.R.id;
@@ -21,13 +23,16 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 
 	LayoutInflater inflater;
 	String seriesId;
+	DatabaseHandler db;
+    boolean checkChangeListenerEnabled = true;
 	
-	public EpisodesAdapter(final Context context, String seriesId) {
+	public EpisodesAdapter(final Context context, String seriesId, DatabaseHandler db) {
 
 		super(context, 0);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.seriesId = seriesId;
+		this.db = db;
 	}
 
 	@Override
@@ -46,19 +51,27 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 			((TextView)view.findViewById(R.id.markAllWatched)).setOnClickListener(new View.OnClickListener() {
 				
 				@Override
-				public void onClick(View v) {
-					for(int i = 0; i < EpisodesAdapter.this.getCount(); i++){
-						if(!getItem(i).isSection()){
+				public void onClick(View v)
+                {
+                    checkChangeListenerEnabled = false;
+                    List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
+					for(int i = 0; i < EpisodesAdapter.this.getCount(); i++)
+                    {
+						if(!getItem(i).isSection())
+                        {
 						EpisodeItem ei = (EpisodeItem)getItem(i);
-						if(ei.getSeason() == es.getSeason()){
+						if(ei.getSeason() == es.getSeason())
+                        {
 							((CheckBox)EpisodesAdapter.this.getView(i, convertView, parent).findViewById(R.id.chkWatched)).setChecked(true);
-							//ei.setWatched(true);
-							//db.updateEpisode(ei, ei.getEpisodeId()+"", seriesId);
-							Tools.setRefresh(true);
+							ei.setWatched(true);
+							episodes.add(ei);
 						}
 						}
 					}
 					EpisodesAdapter.this.notifyDataSetChanged();
+                    db.insertEpisodes(episodes);
+                    checkChangeListenerEnabled = true;
+                    Tools.setRefresh(true);
 				}
 			});
 		}
@@ -74,15 +87,21 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 				mark.setVisibility(View.GONE);
 			}
 			
-			mark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+			mark.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener()
+            {
 				
 				@Override
-				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-					DatabaseHandler db = new DatabaseHandler(getContext());
+				public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+                {
+                    if(checkChangeListenerEnabled)
+                    {
+                    List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
                     ei.setWatched(isChecked);
-					db.updateEpisode(ei);
+                    episodes.add(ei);
+					db.insertEpisodes(episodes);
 					if(!Tools.isRefresh())
 					Tools.setRefresh(true);
+                    }
 				}
 			});
 		}

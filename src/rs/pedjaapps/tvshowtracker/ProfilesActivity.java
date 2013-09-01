@@ -12,8 +12,7 @@ import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
 
-public class ProfilesActivity extends Activity {
-	DatabaseHandler db;
+public class ProfilesActivity extends BaseActivity {
 	ProfilesAdapter adapter;
 	SharedPreferences prefs;
 	EditText name;
@@ -24,7 +23,6 @@ public class ProfilesActivity extends Activity {
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		ListView list = (ListView)findViewById(R.id.list);
 		adapter = new ProfilesAdapter(this, R.layout.profiles_row);
-		db = new DatabaseHandler(this);
 		updateList();
 		list.setAdapter(adapter);
 		final Button add = (Button)findViewById(R.id.add);

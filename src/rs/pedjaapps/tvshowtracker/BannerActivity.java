@@ -11,11 +11,10 @@ import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
 
-public class BannerActivity extends Activity {
+public class BannerActivity extends BaseActivity {
 
 	BannersAdapter adapter;
 	GridView list;
-	DatabaseHandler db;
 	String extStorage = Environment.getExternalStorageDirectory().toString();
 	String seriesId;
 	String profile;
@@ -33,7 +32,6 @@ public class BannerActivity extends Activity {
 		adapter = new BannersAdapter(this, R.layout.banner_row);
 		list = (GridView)findViewById(R.id.list);
 		list.setAdapter(adapter);
-		db = new DatabaseHandler(this);
 		seriesId = getIntent().getStringExtra("seriesId");
 		String type = getIntent().getStringExtra("type");
 		profile = getIntent().getStringExtra("profile");

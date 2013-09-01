@@ -19,12 +19,11 @@ import rs.pedjaapps.tvshowtracker.utils.*;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 
-public class DetailsActivity extends FragmentActivity
+public class DetailsActivity extends BaseActivity
 {
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	static DatabaseHandler db;
 	static int seriesId;
 	static String profile;
 	static List<Actor> actors;
@@ -44,9 +43,6 @@ public class DetailsActivity extends FragmentActivity
 		profile = getIntent().getStringExtra("profile");
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		db = new DatabaseHandler(this);
-		
-		
 		new Loader().execute();
 
 	}
@@ -268,7 +264,7 @@ public class DetailsActivity extends FragmentActivity
 		{
 			View rootView = inflater.inflate(R.layout.details_episodes,
 					container, false);
-			adapter = new EpisodesAdapter(this.getActivity(), seriesId + "");
+			adapter = new EpisodesAdapter(this.getActivity(), seriesId + "", db);
 			ListView list = (ListView) rootView.findViewById(R.id.list);
 			
 			List<Integer> seasons = new ArrayList<Integer>();

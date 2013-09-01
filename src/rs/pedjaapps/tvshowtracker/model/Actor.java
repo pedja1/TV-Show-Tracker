@@ -3,8 +3,8 @@ package rs.pedjaapps.tvshowtracker.model;
 /**
  * Created by pedja on 5/21/13.
  */
-public class Actor {
-	private int id;
+public class Actor
+{
 	private String actorId;
     private String name;
     private String role;
@@ -22,17 +22,6 @@ public class Actor {
 		this.seriesId = seriesId;
 	}
 
-	public Actor(int id, String actorId, String name, String role, String image, String profile, String seriesId)
-	{
-		this.id = id;
-		this.actorId = actorId;
-		this.name = name;
-		this.role = role;
-		this.image = image;
-		this.profile = profile;
-		this.seriesId = seriesId;
-	}
-	
     public Actor(){
     	
     }
@@ -72,14 +61,6 @@ public class Actor {
     public void setImage(String image) {
         this.image = image;
     }
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getActorId() {
 		return actorId;

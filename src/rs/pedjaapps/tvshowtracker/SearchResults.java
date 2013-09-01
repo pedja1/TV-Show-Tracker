@@ -24,12 +24,11 @@ import rs.pedjaapps.tvshowtracker.utils.SuggestionProvider;
 import rs.pedjaapps.tvshowtracker.utils.Tools;
 import rs.pedjaapps.tvshowtracker.utils.XMLParser;
 
-public class SearchResults extends Activity {
+public class SearchResults extends BaseActivity {
 
 	
 	ListView searchListView;
 	SearchAdapter searchAdapter;
-	DatabaseHandler db;
 	String extStorage = Environment.getExternalStorageDirectory().toString();
 	String profile;
 	SharedPreferences prefs;
@@ -42,7 +41,6 @@ public class SearchResults extends Activity {
 		requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
 		
 		setContentView(R.layout.search_result);
-		db = new DatabaseHandler(this);
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		profile = prefs.getString("profile", "Default");
 		
@@ -118,32 +116,36 @@ public class SearchResults extends Activity {
 			Element e = (Element) nl.item(0);
 			String date = Constants.df.format(new Date());
 			String seriesId = parser.getValue(e, "id");
-			db.addShow(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "FirstAired"), 
-					parser.getValue(e, "IMDB_ID"), parser.getValue(e, "Overview"),
-					Tools.parseRating(parser.getValue(e, "Rating")), Integer.parseInt(parser.getValue(e, "id")),
-					parser.getValue(e, "Language"), 
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "banner"), extStorage+"/TVST"+parser.getValue(e, "banner").substring(parser.getValue(e, "banner").lastIndexOf("/")), true), 
-					Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/")), true), 
-					parser.getValue(e, "Network"), Tools.parseInt(parser.getValue(e, "Runtime")), 
-					parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors"), profile));
+            List<Show> shows = new ArrayList<Show>();
+            shows.add(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "FirstAired"),
+                    parser.getValue(e, "IMDB_ID"), parser.getValue(e, "Overview"),
+                    Tools.parseRating(parser.getValue(e, "Rating")), Integer.parseInt(parser.getValue(e, "id")),
+                    parser.getValue(e, "Language"),
+                    Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "banner"), extStorage+"/TVST"+parser.getValue(e, "banner").substring(parser.getValue(e, "banner").lastIndexOf("/")), true),
+                    Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/")), true),
+                    parser.getValue(e, "Network"), Tools.parseInt(parser.getValue(e, "Runtime")),
+                    parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors"), profile));
+			db.insertShows(shows);
 			
 			nl = doc.getElementsByTagName("Episode");
-			
+			List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
 			for(int i =0; i < nl.getLength(); i++){
 				e = (Element) nl.item(i);
-				if(!parser.getValue(e, "SeasonNumber").equals("0") && !db.episodeExists(seriesId, parser.getValue(e, "id"), profile)){
-				db.addEpisode(new EpisodeItem(parser.getValue(e, "EpisodeName"),
-						Tools.parseInt(parser.getValue(e, "EpisodeNumber")), 
-						Tools.parseInt(parser.getValue(e, "SeasonNumber")),
-						parser.getValue(e, "FirstAired"), parser.getValue(e, "IMDB_ID"), 
-						parser.getValue(e, "Overview"), Tools.parseRating(parser.getValue(e, "Rating")),
-						false, Tools.parseInt(parser.getValue(e, "id")), profile, seriesId));
+				if(!parser.getValue(e, "SeasonNumber").equals("0")){
+				episodes.add(new EpisodeItem(parser.getValue(e, "EpisodeName"),
+                        Tools.parseInt(parser.getValue(e, "EpisodeNumber")),
+                        Tools.parseInt(parser.getValue(e, "SeasonNumber")),
+                        parser.getValue(e, "FirstAired"), parser.getValue(e, "IMDB_ID"),
+                        parser.getValue(e, "Overview"), Tools.parseRating(parser.getValue(e, "Rating")),
+                        false, Tools.parseInt(parser.getValue(e, "id")), profile, seriesId));
 				}
-				publishProgress(new Integer[]{1,i,nl.getLength()});
+				publishProgress(new Integer[]{1, i, nl.getLength()});
 			}
+            db.insertEpisodes(episodes);
 			xml = parser.getXmlFromUrl("http://thetvdb.com/api/"+Constants.apiKey+"/series/"+args[0]+"/actors.xml"); 
 			doc = parser.getDomElement(xml);
 			nl = doc.getElementsByTagName("Actor");
+            List<Actor> actors = new ArrayList<Actor>();
 			for(int i =0; i < nl.getLength(); i++){
 				e = (Element) nl.item(i);
 				String image = "";
@@ -154,11 +156,12 @@ public class SearchResults extends Activity {
 				}
 				if(!db.actorExists(seriesId, parser.getValue(e, "id"), profile))
 				{
-				db.addActor(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"), 
+				actors.add(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"),
 						image, profile, seriesId));
 				}
 				publishProgress(new Integer[]{2,i,nl.getLength()});
 			}
+            db.insertActors(actors);
 			return "";
 			
 		}

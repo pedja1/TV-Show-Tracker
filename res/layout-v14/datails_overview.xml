@@ -260,28 +260,6 @@
             android:layout_marginRight="10.0dip"
             android:textAppearance="?android:textAppearanceMedium" />
 
-        <TextView
-            android:id="@+id/txtActorsHeader"
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5.0dip"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:text="Actors"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/holo_blue_light"
-            android:textSize="11.0sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
-
-        <TextView
-            android:id="@+id/txtActors"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:textAppearance="?android:textAppearanceMedium" />
 
         <TextView
             style="?android:attr/listSeparatorTextViewStyle"

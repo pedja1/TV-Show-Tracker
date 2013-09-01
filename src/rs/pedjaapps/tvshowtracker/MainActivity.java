@@ -23,14 +23,13 @@ import rs.pedjaapps.tvshowtracker.utils.*;
 
 import rs.pedjaapps.tvshowtracker.R;
 
-public class MainActivity extends Activity
+public class MainActivity extends BaseActivity
 {
 
 	ShowsAdapter adapter;
 	GridView list;
 	ProgressBar loading;
 	TextView listEmpty;
-	DatabaseHandler db;
 	SearchView searchView;
 	ActionMode mode;
 	String extStorage = Environment.getExternalStorageDirectory().toString();
@@ -53,7 +52,7 @@ public class MainActivity extends Activity
 	private RelativeLayout drawerContent;
 
 	@Override
-	protected void onCreate(Bundle savedInstanceState)
+	public void onCreate(Bundle savedInstanceState)
 	{
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
@@ -69,8 +68,6 @@ public class MainActivity extends Activity
         sideMenu.setMenu(R.layout.menu_layout);
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
-		db = new DatabaseHandler(this);
-
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		searchView = new SearchView(getActionBar().getThemedContext());
 		searchView.setQueryHint("Add new Movie");
@@ -719,8 +716,10 @@ public class MainActivity extends Activity
 		@Override
 		protected String doInBackground(List<Show>... args)
 		{
-			
-			for (int n = 0; n < args[0].size(); n++)
+            List<Show> shows = new ArrayList<Show>();
+            List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
+            List<Actor> actors = new ArrayList<Actor>();
+            for (int n = 0; n < args[0].size(); n++)
 			{
 				publishProgress(new String[] { n + 1 + "",
 						args[0].get(n).getSeriesName(), args[0].size() + "" });
@@ -769,8 +768,12 @@ public class MainActivity extends Activity
 															.lastIndexOf(
 																	"/")), true);
 				}
-				catch(Exception exc){}
-				db.updateShow(
+				catch(Exception exc)
+                {
+
+                }
+
+				shows.add(
 						new Show(
 								parser.getValue(e, "SeriesName"),
 								parser.getValue(e, "FirstAired"),
@@ -793,10 +796,8 @@ public class MainActivity extends Activity
 					e = (Element) nl.item(i);
 					if (!parser.getValue(e, "SeasonNumber").equals("0"))
 					{
-						if (!db.episodeExists(seriesId,
-								parser.getValue(e, "id"), profile))
-						{
-							db.addEpisode(
+
+							episodes.add(
 									new EpisodeItem(parser.getValue(e,
 											"EpisodeName"), Tools
 											.parseInt(parser.getValue(e,
@@ -810,26 +811,7 @@ public class MainActivity extends Activity
 													"Rating")), false,
 											Tools.parseInt(parser.getValue(e,
 													"id")), profile, seriesId));
-						}
-						else
-						{
-							db.updateEpisode(
-									new EpisodeItem(parser.getValue(e,
-											"EpisodeName"), Tools
-											.parseInt(parser.getValue(e,
-													"EpisodeNumber")), Tools
-											.parseInt(parser.getValue(e,
-													"SeasonNumber")), parser
-											.getValue(e, "FirstAired"), parser
-											.getValue(e, "IMDB_ID"), parser
-											.getValue(e, "Overview"), Tools
-											.parseRating(parser.getValue(e,
-													"Rating")), db.getEpisode(
-											seriesId, parser.getValue(e, "id"),
-											profile).isWatched(),
-											Tools.parseInt(parser.getValue(e,
-													"id")), profile, seriesId));
-						}
+
 					}
 				}
 				xml = parser.getXmlFromUrl("http://thetvdb.com/api/"
@@ -856,30 +838,20 @@ public class MainActivity extends Activity
 						ex.printStackTrace();
 					}
 					
-					if (!db.actorExists(seriesId, parser.getValue(e, "id"),
-							profile))
-					{
-						db.addActor(
+
+						actors.add(
 								new Actor(
 										parser.getValue(e, "id"),
 										parser.getValue(e, "Name"),
 										parser.getValue(e, "Role"),
 										image,
 										profile, seriesId));
-					}
-					else
-					{
-						db.updateActor(
-								new Actor(
-										parser.getValue(e, "id"),
-										parser.getValue(e, "Name"),
-										parser.getValue(e, "Role"),
-										image,
-										profile, seriesId));
-						System.out.println("actor update"+i+parser.getValue(e, "id")+" "+image);
-					}
+
 				}
 			}
+            db.insertActors(actors);
+            db.insertEpisodes(episodes);
+            db.insertShows(shows);
 			return "";
 
 		}
@@ -915,7 +887,7 @@ public class MainActivity extends Activity
 	}
 
 	@Override
-	protected void onDestroy()
+	public void onDestroy()
 	{
 		Tools.setKeepScreenOn(MainActivity.this, false);
 		super.onDestroy();

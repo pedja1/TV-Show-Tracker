@@ -13,16 +13,14 @@ import rs.pedjaapps.tvshowtracker.utils.*;
 import rs.pedjaapps.tvshowtracker.model.JsonObject;
 import android.view.*;
 
-public class BackupActivity extends Activity implements OnClickListener
+public class BackupActivity extends BaseActivity implements OnClickListener
 {
 
-    DatabaseHandler db;
     @Override
 	protected void onCreate(Bundle sis)
 	{
 		super.onCreate(sis);
 		setContentView(R.layout.activity_backup);
-		db = new DatabaseHandler(this);
 		Button backup = (Button)findViewById(R.id.backup);
 		Button restore = (Button)findViewById(R.id.restore);
 
@@ -103,10 +101,13 @@ public class BackupActivity extends Activity implements OnClickListener
 					setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 					pP++;
 				}
+                List<Show> shows = new ArrayList<Show>();
+                List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
+                List<Actor> actors = new ArrayList<Actor>();
 				for (JsonShow s : obj.getShows())
 				{
 					
-					db.addShow(s.getShow());
+					shows.add(s.getShow());
 					setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 					sP++;
 					eS = s.getEpisodes().size();
@@ -115,17 +116,20 @@ public class BackupActivity extends Activity implements OnClickListener
 					aP = 0;
 					for (EpisodeItem e: s.getEpisodes())
 					{
-						db.addEpisode(e);
+						episodes.add(e);
 						setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 						eP++;
 					}
 					for (Actor a : s.getActors())
 					{
-						db.addActor(a);
+						actors.add(a);
 						setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 						aP++;
 					}
 				}
+                db.insertActors(actors);
+                db.insertEpisodes(episodes);
+                db.insertShows(shows);
 
 			}
 			return null;

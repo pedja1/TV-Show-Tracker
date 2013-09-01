@@ -16,11 +16,11 @@ import rs.pedjaapps.tvshowtracker.utils.*;
 
 import android.support.v4.app.FragmentTransaction;
 import rs.pedjaapps.tvshowtracker.R;
-public class AgendaActivity extends FragmentActivity {
+public class AgendaActivity extends BaseActivity 
+{
 
 	AgendaAdapter adapter;
 	ListView list;
-	DatabaseHandler db;
 	String profile;
 	CaldroidFragment caldroidFragment;
 	List<Agenda> a;
@@ -79,7 +79,6 @@ public class AgendaActivity extends FragmentActivity {
 		t.replace(R.id.calendar, caldroidFragment);
 		t.commit();
 		
-		db = new DatabaseHandler(this);
 	    list = (ListView)findViewById(R.id.list);
 		adapter = new AgendaAdapter(this);
 		profile = getIntent().getStringExtra("profile");

@@ -2,7 +2,6 @@ package rs.pedjaapps.tvshowtracker.model;
 
 public class Show 
 {
-	private int id;
 	private String seriesName;
     private String firstAired;
     private String imdbId;
@@ -50,31 +49,7 @@ public class Show
     	this.seriesId= seriesId;
     	this.nextEpisodeDays = nextEpisodeDays;
     }
-    
-	public Show(int id, String seriesName, String firstAired, String imdbId,
-			String overview, double rating, int seriesId, String language,
-			String banner, String fanart, String network, int runtime,
-			String status, boolean ignore, boolean hide, String updated, String actors, String profileName) {
-		this.id = id;
-		this.seriesName = seriesName;
-		this.firstAired = firstAired;
-		this.imdbId = imdbId;
-		this.overview = overview;
-		this.rating = rating;
-		this.seriesId = seriesId;
-		this.language = language;
-		this.banner = banner;
-		this.fanart = fanart;
-		this.network = network;
-		this.runtime = runtime;
-		this.status = status;
-		this.ignore = ignore;
-		this.hide = hide;
-		this.updated = updated;
-		this.actors = actors;
-	    this.profileName = profileName;
-	}
-	
+
 	public Show(String seriesName, String firstAired, String imdbId,
 			String overview, double rating, int seriesId, String language,
 			String banner, String fanart, String network, int runtime,
@@ -112,13 +87,7 @@ public class Show
 		return profileName;
 	}
 	
-	public int getId() {
-		return id;
-	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
 
 	public String getSeriesName() {
 		return seriesName;

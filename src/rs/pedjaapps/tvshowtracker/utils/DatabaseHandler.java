@@ -16,7 +16,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 1;
+	private static final int DATABASE_VERSION = 2;
 
 	// Database Name
 	private static final String DATABASE_NAME = "tvst.db";
@@ -30,23 +30,62 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	// private static final String TABLE_ITEM = "item_table";
 	// Table Columns names
 
-	private static final String[] show_filds = { "_id", "series_name",
+	private static final String[] show_filds = {"series_name",
 			"series_id", "language", "banner", "network", "first_aired",
 			"imdb_id", "overview", "rating", "runtime", "status", "fanart",
 			"ignore_agenda", "hide_from_list", "updated", "actors",
 			"profile_name" };
-	private static final String[] episode_filds = { "_id", "episode", "season",
+	private static final String[] episode_filds = {"episode", "season",
 			"episode_name", "first_aired", "imdb_id", "overview", "rating",
 			"watched", "episode_id", "seriesId", "profile_name" };
-	private static final String[] actors_filds = { "_id", "actor_id", "name",
+	private static final String[] actors_filds = {"actor_id", "name",
 			"role", "image", "seriesId", "profile_name" };
 	private static final String[] profile_filds = { "_id", "name" };
 
+	SQLiteDatabase db;
+	static DatabaseHandler databaseHandler = null;
+	
 	public DatabaseHandler(Context context)
 	{
 		super(context, DATABASE_NAME, null, DATABASE_VERSION);
 	}
 
+	public static synchronized DatabaseHandler getInstance(Context context)
+	{
+		if(databaseHandler == null)
+		{
+			databaseHandler = new DatabaseHandler(context);
+		}
+		return databaseHandler;
+	}
+	
+	public boolean open()
+	{
+		try
+		{
+		     db = this.getWritableDatabase();
+			 return true;
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+			return false;
+		}
+	}
+	
+	public void close()
+	{
+		try
+		{
+			db.close();
+		}
+		catch(Exception e)
+		{
+			e.printStackTrace();
+		}
+		super.close();
+	}
+	
 	// Creating Tables
 	@Override
 	public void onCreate(SQLiteDatabase db)
@@ -56,41 +95,75 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				+ profile_filds[0] + " INTEGER PRIMARY KEY," + profile_filds[1]
 				+ " TEXT" + ")";
 
-		String CREATE_SERIES_TABLE = "CREATE TABLE " + TABLE_SERIES + "("
-				+ show_filds[0] + " INTEGER PRIMARY KEY," + show_filds[1]
-				+ " TEXT," + show_filds[2] + " INTEGER," + show_filds[3]
-				+ " TEXT," + show_filds[4] + " TEXT," + show_filds[5]
-				+ " TEXT," + show_filds[6] + " TEXT," + show_filds[7]
-				+ " TEXT," + show_filds[8] + " TEXT," + show_filds[9]
-				+ " DOUBLE," + show_filds[10] + " INTEGER," + show_filds[11]
-				+ " TEXT," + show_filds[12] + " TEXT," + show_filds[13]
-				+ " BOOLEAN," + show_filds[14] + " BOOLEAN," + show_filds[15]
-				+ " TEXT," + show_filds[16] + " TEXT," + show_filds[17]
-				+ " TEXT" + ")";
-		String CREATE_EPISODE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EPISODES
-		    + "(" + episode_filds[0] + " INTEGER PRIMARY KEY,"
-			+ episode_filds[1] + " INTEGER," + episode_filds[2]
-			+ " INTEGER," + episode_filds[3] + " TEXT," + episode_filds[4]
-			+ " TEXT," + episode_filds[5] + " TEXT," + episode_filds[6]
-			+ " TEXT," + episode_filds[7] + " DOUBLE," + episode_filds[8]
-			+ " BOOLEAN," + episode_filds[9] + " INTEGER,"
-			+ episode_filds[10] + " TEXT," + episode_filds[11] + " TEXT"+ ")";
+		String CREATE_SERIES_TABLE = "CREATE TABLE " + TABLE_SERIES 
+		        + "("
+				+ show_filds[0] + " TEXT,"
+				+ show_filds[1] + " INTEGER,"
+				+ show_filds[2] + " TEXT,"
+				+ show_filds[3] + " TEXT,"
+				+ show_filds[4] + " TEXT,"
+				+ show_filds[5] + " TEXT,"
+				+ show_filds[6] + " TEXT,"
+				+ show_filds[7] + " TEXT,"
+				+ show_filds[8] + " DOUBLE,"
+				+ show_filds[9] + " INTEGER,"
+				+ show_filds[10] + " TEXT,"
+				+ show_filds[11] + " TEXT,"
+				+ show_filds[12] + " BOOLEAN,"
+				+ show_filds[13] + " BOOLEAN,"
+				+ show_filds[14] + " TEXT,"
+				+ show_filds[15] + " TEXT,"
+				+ show_filds[16] + " TEXT,"
+		        + "PRIMARY KEY ( " + show_filds[1] + ", " + show_filds[16] + " )"
+				+ ")";
 
-		String CREATE_ACTORS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ACTORS
-			+ "(" + actors_filds[0] + " INTEGER PRIMARY KEY,"
-			+ actors_filds[1] + " TEXT," + actors_filds[2] + " TEXT,"
-			+ actors_filds[3] + " TEXT," + actors_filds[4] + " TEXT,"
-			+ actors_filds[5] + " TEXT," + actors_filds[6] + " TEXT"+ ")";
-	
-		db.execSQL(CREATE_PROFILES_TABLE);
+		String CREATE_INDEXES_ON_SERIES_TABLE = "CREATE INDEX series_idx ON " + TABLE_SERIES + "(series_id, profile_name)";
+
+        String CREATE_EPISODE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EPISODES
+		        + "("
+			    + episode_filds[0] + " INTEGER,"
+                + episode_filds[1] + " INTEGER,"
+                + episode_filds[2] + " TEXT,"
+                + episode_filds[3] + " TEXT,"
+                + episode_filds[4] + " TEXT,"
+                + episode_filds[5] + " TEXT,"
+                + episode_filds[6] + " DOUBLE,"
+                + episode_filds[7] + " BOOLEAN,"
+                + episode_filds[8] + " INTEGER,"
+			    + episode_filds[9] + " TEXT,"
+                + episode_filds[10] + " TEXT,"
+                + "PRIMARY KEY ( " + episode_filds[8] + ", " + episode_filds[9] + ", " + episode_filds[10] + ")"
+                + ")";
+
+        String CREATE_INDEXES_ON_EPISODES_TABLE = "CREATE INDEX episodes_idx ON " + TABLE_EPISODES + "(seriesId, profile_name)";
+
+        String CREATE_ACTORS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ACTORS
+			    + "("
+			    + actors_filds[0] + " TEXT,"
+                + actors_filds[1] + " TEXT,"
+			    + actors_filds[2] + " TEXT,"
+                + actors_filds[3] + " TEXT,"
+			    + actors_filds[4] + " TEXT,"
+                + actors_filds[5] + " TEXT,"
+                + "PRIMARY KEY ( " + actors_filds[0] + ", " + actors_filds[4] + ", " + actors_filds[5] + ")"
+                + ")";
+
+        String CREATE_INDEXES_ON_ACTORS_TABLE = "CREATE INDEX actors_idx ON " + TABLE_ACTORS + "(seriesId, profile_name)";
+
+        db.execSQL(CREATE_PROFILES_TABLE);
 		ContentValues values = new ContentValues();
 		values.put(profile_filds[1], "Default");
 
 		// Inserting Row
 		db.insert(TABLE_PROFILES, null, values);
 		db.execSQL(CREATE_SERIES_TABLE);
+		db.execSQL(CREATE_INDEXES_ON_SERIES_TABLE);
+
 		db.execSQL(CREATE_EPISODE_TABLE);
+        db.execSQL(CREATE_INDEXES_ON_EPISODES_TABLE);
+
 		db.execSQL(CREATE_ACTORS_TABLE);
+        db.execSQL(CREATE_INDEXES_ON_ACTORS_TABLE);
 	}
 
 	// Upgrading database
@@ -111,33 +184,60 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * All CRUD(Create, Read, Update, Delete) Operations
 	 */
 
+	public void insertShows(List<Show> shows)
+	{
+	    final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_SERIES + " (series_name, first_aired, imdb_id, overview, rating, series_id, language, banner, fanart, network, runtime, status, updated, profile_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    db.beginTransaction();
+	    try 
+	    {
+	        for(Show show : shows)
+	        {
+	            statement.clearBindings();
+	            statement.bindString(1, show.getSeriesName());
+	            statement.bindString(2, show.getFirstAired());
+	            statement.bindString(3, show.getImdbId());
+	            statement.bindString(4, show.getOverview());
+	            statement.bindDouble(5, show.getRating());
+	            statement.bindLong(6, show.getSeriesId());
+	            statement.bindString(7, show.getLanguage());
+	            statement.bindString(8, show.getBanner());
+	            statement.bindString(9, show.getFanart());
+	            statement.bindString(10, show.getNetwork());
+	            statement.bindLong(11, show.getRuntime());
+	            statement.bindString(12, show.getStatus());
+	            statement.bindString(13, show.getUpdated());
+	            statement.bindString(14, show.getProfileName());
+	            statement.execute();
+	        }
+	        db.setTransactionSuccessful();
+	    } 
+	    finally 
+	    {
+	        db.endTransaction();
+	    }
+	    //db.close();
+	}
+	 
 	 public void wipeDatabase()
 	 {
-		 SQLiteDatabase db = this.getWritableDatabase();
 		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_SERIES);
 		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_PROFILES);
 		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_EPISODES);
 		 db.execSQL("DROP TABLE IF EXISTS " + TABLE_ACTORS);
 		 onCreate(db);
-		 db.close();
 	 }
 	 
 	public synchronized void addProfile(String profileName)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
-
 		ContentValues values = new ContentValues();
 		values.put(profile_filds[1], profileName);
 
 		// Inserting Row
 		db.insert(TABLE_PROFILES, null, values);
-		db.close(); // Closing database connection
 	}
 
-	public synchronized void addShow(Show s)
+	/*public synchronized void addShow(Show s)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
-
 		ContentValues values = new ContentValues();
 		values.put(show_filds[1], s.getSeriesName());
 		values.put(show_filds[2], s.getSeriesId());
@@ -159,13 +259,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 		// Inserting Row
 		db.insert(TABLE_SERIES, null, values);
-		db.close(); // Closing database connection
 	}
 
 	public synchronized int updateShow(Show s)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
-
 		ContentValues values = new ContentValues();
 		values.put(show_filds[1], s.getSeriesName());
 		values.put(show_filds[2], s.getSeriesId());
@@ -185,11 +282,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		values.put(show_filds[16], s.getActors());
 		values.put(show_filds[17], s.getProfileName());
 
-		int count = db.update(TABLE_SERIES, values, show_filds[2] + " = ?",
+		return db.update(TABLE_SERIES, values, show_filds[2] + " = ?",
 				new String[] { s.getSeriesId()+"" });
-		db.close();
-		return count;
-	}
+	}*/
 
 	/**
 	 * @param filter
@@ -218,8 +313,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		builder.append(" and profile_name LIKE \"%" + profile + "%\"");
 		String selectQuery = builder.toString();// "SELECT  * FROM " +
 												// TABLE_SERIES;
-
-		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		// looping through all rows and adding to list
@@ -228,7 +321,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			do
 			{
 				Show show = new Show();
-				show.setId(Integer.parseInt(cursor.getString(0)));
 				show.setSeriesName(cursor.getString(1));
 				show.setSeriesId(cursor.getInt(2));
 				show.setLanguage(cursor.getString(3));
@@ -253,7 +345,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		}
 
 		// return list
-		db.close();
 		cursor.close();
 		Log.d(Constants.LOG_TAG,
 				"DatabaseHandler.java > getAllShows(): "
@@ -263,80 +354,64 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 	public synchronized boolean showExists(String seriesName, String profile)
 	{
-		SQLiteDatabase db = this.getReadableDatabase();
-
 		Cursor cursor = db.query(TABLE_SERIES, show_filds, show_filds[1]
 				+ "=? and profile_name LIKE \"%" + profile + "%\"",
 				new String[] { seriesName }, null, null, null, null);
 		boolean exists = (cursor.getCount() > 0);
 		cursor.close();
-		db.close();
 		return exists;
 	}
 
 	public synchronized void deleteSeries(String seriesId, String profile)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_SERIES, show_filds[2]
 				+ " = ? and profile_name LIKE \"%" + profile + "%\"",
 				new String[] { seriesId });
 
 		deleteEpisodes(seriesId, profile);
 		deleteActors(seriesId, profile);
-		db.close();
 	}
 
 	public synchronized void deleteEpisodes(String seriesId, String profile)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_EPISODES, "profile_name = ? and seriesId = ?",
 				new String[] { profile, seriesId });
-		db.close();
 	}
 
 	public synchronized void deleteActors(String seriesId, String profile)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_ACTORS, "profile_name = ? and seriesId = ?",
 				new String[] { profile, seriesId });
-		db.close();
 	}
 
 	public synchronized void deleteProfile(String profile)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
 		db.delete(TABLE_PROFILES, profile_filds[1] + " = ?",
 				new String[] { profile });
-
-		db.close();
 	}
 
 	public synchronized Show getShow(String seriesId, String profile)
 	{
-		SQLiteDatabase db = this.getReadableDatabase();
-
 		Cursor cursor = db.query("series", show_filds, show_filds[2]
 				+ "=? and profile_name LIKE \"%" + profile + "%\"",
 				new String[] { seriesId }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
-		Show e = new Show(cursor.getInt(0), cursor.getString(1),
-				cursor.getString(6), cursor.getString(7), cursor.getString(8),
-				cursor.getDouble(9), cursor.getInt(2), cursor.getString(3),
-				cursor.getString(4), cursor.getString(12), cursor.getString(5),
-				cursor.getInt(10), cursor.getString(11),
-				intToBool(cursor.getInt(13)), intToBool(cursor.getInt(14)),
-				cursor.getString(15), cursor.getString(16), cursor.getString(17));
+		Show e = new Show(cursor.getString(0),
+				cursor.getString(5), cursor.getString(6), cursor.getString(7),
+				cursor.getDouble(8), cursor.getInt(1), cursor.getString(2),
+				cursor.getString(3), cursor.getString(11), cursor.getString(4),
+				cursor.getInt(9), cursor.getString(10),
+				intToBool(cursor.getInt(12)), intToBool(cursor.getInt(13)),
+				cursor.getString(14), cursor.getString(15), cursor.getString(16));
 		// return list
-		db.close();
 		cursor.close();
 		return e;
 	}
 
-	public synchronized void addEpisode(EpisodeItem e)
+	/*public synchronized void addEpisode(EpisodeItem e)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
-		ContentValues values = new ContentValues();
+	    ContentValues values = new ContentValues();
 		values.put(episode_filds[1], e.getEpisode());
 		values.put(episode_filds[2], e.getSeason());
 		values.put(episode_filds[3], e.getEpisodeName());
@@ -351,12 +426,76 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 		// Inserting Row
 		db.insert(TABLE_EPISODES, null, values);
-		db.close(); // Closing database connection
-	}
+	}*/
 
-	public synchronized void addActor(Actor a)
+    public void insertEpisodes(List<EpisodeItem> episodeItems)
+    {
+        final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_EPISODES
+                + " (episode_name, episode, season, first_aired, imdb_id, overview, rating, watched, " +
+                "episode_id, profile_name, seriesId) " +
+                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+        db.beginTransaction();
+        try
+        {
+            for(EpisodeItem episodeItem : episodeItems)
+            {
+                statement.clearBindings();
+                statement.bindString(1, episodeItem.getEpisodeName());
+                statement.bindLong(2, episodeItem.getEpisode());
+                statement.bindLong(3, episodeItem.getSeason());
+                statement.bindString(4, episodeItem.getFirstAired());
+                statement.bindString(5, episodeItem.getImdbId());
+                statement.bindString(6, episodeItem.getOverview());
+                statement.bindDouble(7, episodeItem.getRating());
+                statement.bindLong(8, boolToInt(episodeItem.isWatched()));
+                statement.bindLong(9, episodeItem.getEpisodeId());
+                statement.bindString(10, episodeItem.getProfile());
+                statement.bindString(11, episodeItem.getSeriesId());
+                statement.execute();
+            }
+            db.setTransactionSuccessful();
+        }
+        finally
+        {
+            db.endTransaction();
+        }
+        //db.close();
+    }
+/*private String actorId;
+    private String name;
+    private String role;
+    private String image;
+    private String profile;
+    private String seriesId;*/
+    public void insertActors(List<Actor> actors)
+    {
+        final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_ACTORS
+                + " (actor_id, name, role, image, profile_name, seriesId) " +
+                "VALUES(?, ?, ?, ?, ?, ?)");
+        db.beginTransaction();
+        try
+        {
+            for(Actor actor : actors)
+            {
+                statement.clearBindings();
+                statement.bindString(1, actor.getActorId());
+                statement.bindString(2, actor.getRole());
+                statement.bindString(3, actor.getImage());
+                statement.bindString(4, actor.getProfile());
+                statement.bindString(5, actor.getSeriesId());
+                statement.execute();
+            }
+            db.setTransactionSuccessful();
+        }
+        finally
+        {
+            db.endTransaction();
+        }
+        //db.close();
+    }
+
+	/*public synchronized void addActor(Actor a)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
 		ContentValues values = new ContentValues();
 		values.put(actors_filds[1], a.getActorId());
 		values.put(actors_filds[2], a.getName());
@@ -367,14 +506,11 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 		// Inserting Row
 		db.insert(TABLE_ACTORS, null, values);
-		db.close(); // Closing database connection
-	}
+	}*/
 
 	public synchronized EpisodeItem getEpisode(String seriesId, String episodeId,
 			String profile)
 	{
-		SQLiteDatabase db = this.getReadableDatabase();
-
 		Cursor cursor = db.query(TABLE_EPISODES, episode_filds,
 				episode_filds[9] + "=? and profile_name LIKE \"%" + profile
 						+ "%\" and seriesId = " + seriesId , new String[] { episodeId }, null, null, null,
@@ -382,21 +518,18 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		if (cursor != null)
 			cursor.moveToFirst();
 
-		EpisodeItem e = new EpisodeItem(Integer.parseInt(cursor.getString(0)),
-				cursor.getString(1), cursor.getInt(2), cursor.getInt(3),
-				cursor.getString(4), cursor.getString(5), cursor.getString(6),
-				cursor.getDouble(7), intToBool(cursor.getInt(8)),
-				cursor.getInt(9), cursor.getString(11), cursor.getString(10));
+		EpisodeItem e = new EpisodeItem(
+				cursor.getString(0), cursor.getInt(1), cursor.getInt(2),
+				cursor.getString(3), cursor.getString(4), cursor.getString(5),
+				cursor.getDouble(6), intToBool(cursor.getInt(7)),
+				cursor.getInt(8), cursor.getString(10), cursor.getString(9));
 		// return list
-		db.close();
 		cursor.close();
 		return e;
 	}
 
 	public synchronized Actor getActor(String seriesId, String actorId, String profile)
 	{
-		SQLiteDatabase db = this.getReadableDatabase();
-
 		Cursor cursor = db.query(TABLE_ACTORS, actors_filds,
 				actors_filds[1] + "=? and profile_name LIKE \"%" + profile
 						+ "%\" and seriesId = " + seriesId, new String[] { actorId }, null, null, null,
@@ -404,11 +537,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		if (cursor != null)
 			cursor.moveToFirst();
 
-		Actor a = new Actor(Integer.parseInt(cursor.getString(0)),
-				cursor.getString(1), cursor.getString(2), cursor.getString(3),
-				cursor.getString(4), cursor.getString(6), cursor.getString(5));
+		Actor a = new Actor(
+				cursor.getString(0), cursor.getString(1), cursor.getString(2),
+				cursor.getString(3), cursor.getString(5), cursor.getString(6));
 		// return list
-		db.close();
 		cursor.close();
 		return a;
 	}
@@ -419,7 +551,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		// Select All Query
 		String selectQuery = "SELECT  * FROM profiles";
 
-		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		if (cursor.moveToFirst())
@@ -432,7 +563,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		}
 
 		// return list
-		db.close();
 		cursor.close();
 		return profiles;
 	}
@@ -444,7 +574,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		String selectQuery = "SELECT  * FROM " + TABLE_EPISODES
 				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = "+seriesId;
 
-		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		if (cursor.moveToFirst())
@@ -452,7 +581,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			do
 			{
 				EpisodeItem episodeItem = new EpisodeItem();
-				episodeItem.setId(Integer.parseInt(cursor.getString(0)));
 				episodeItem.setEpisode(cursor.getInt(1));
 				episodeItem.setSeason(cursor.getInt(2));
 				episodeItem.setEpisodeName(cursor.getString(3));
@@ -472,7 +600,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		}
 
 		// return list
-		db.close();
 		cursor.close();
 		return episodeItems;
 	}
@@ -484,7 +611,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		String selectQuery = "SELECT  * FROM " + TABLE_ACTORS
 				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = " + seriesId;
 
-		SQLiteDatabase db = this.getWritableDatabase();
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
 		if (cursor.moveToFirst())
@@ -492,7 +618,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			do
 			{
 				Actor actor = new Actor();
-				actor.setId(Integer.parseInt(cursor.getString(0)));
 				actor.setActorId(cursor.getString(1));
 				actor.setName(cursor.getString(2));
 				actor.setRole(cursor.getString(3));
@@ -507,7 +632,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		}
 
 		// return list
-		db.close();
 		cursor.close();
 		return actors;
 	}
@@ -524,36 +648,28 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	public synchronized boolean episodeExists(String seriesId, String episodeId,
 			String profile)
 	{
-		SQLiteDatabase db = this.getReadableDatabase();
-
 		Cursor cursor = db.query(TABLE_EPISODES, episode_filds,
 				episode_filds[9] + "=? and profile_name LIKE \"%" + profile
 						+ "%\" and seriesId = "+ seriesId, new String[] { episodeId }, null, null, null,
 				null);
 		boolean exists = (cursor.getCount() > 0);
 		cursor.close();
-		db.close();
 		return exists;
 	}
 
 	public synchronized boolean actorExists(String seriesId, String actorId, String profile)
 	{
-		SQLiteDatabase db = this.getReadableDatabase();
-
 		Cursor cursor = db.query(TABLE_ACTORS, actors_filds,
 				actors_filds[1] + "=? and profile_name LIKE \"%" + profile
 						+ "%\" and seriesId = " + seriesId, new String[] { actorId }, null, null, null,
 				null);
 		boolean exists = (cursor.getCount() > 0);
 		cursor.close();
-		db.close();
 		return exists;
 	}
 
-	public synchronized int updateEpisode(EpisodeItem e)
+	/*public synchronized int updateEpisode(EpisodeItem e)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
-
 		ContentValues values = new ContentValues();
 		values.put(episode_filds[1], e.getEpisode());
 		values.put(episode_filds[2], e.getSeason());
@@ -570,14 +686,11 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		int count = db.update(TABLE_EPISODES, values, episode_filds[9]
 				+ " = ?  and profile_name LIKE \"%" + e.getProfile() + "%\" and seriesId = " + e.getSeriesId(),
 				new String[] { e.getEpisodeId()+"" });
-		db.close();
 		return count;
-	}
+	}*/
 
-	public synchronized int updateActor(Actor a)
+	/*public synchronized int updateActor(Actor a)
 	{
-		SQLiteDatabase db = this.getWritableDatabase();
-
 		ContentValues values = new ContentValues();
 		values.put(actors_filds[1], a.getActorId());
 		values.put(actors_filds[2], a.getName());
@@ -589,29 +702,27 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		int count = db.update(TABLE_ACTORS, values, actors_filds[1]
 				+ " = ?  and profile_name LIKE \"%" + a.getProfile() + "%\" and seriesId = "+a.getSeriesId(),
 				new String[] { a.getActorId() });
-		db.close();
 		return count;
-	}
+	}*/
 
 	public synchronized int getEpisodesCount(String seriesId, String profile)
 	{
 		String countQuery = "SELECT  * FROM "+ TABLE_EPISODES
 				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = " + seriesId;
-		SQLiteDatabase db = this.getReadableDatabase();
 		Cursor cursor = db.rawQuery(countQuery, null);
 		int count = cursor.getCount();
 		cursor.close();
-		db.close();
 		return count;
 	}
 
 	private boolean intToBool(int i)
 	{
-		if (i == 1)
-		{
-			return true;
-		}
-		return false;
+		return i == 1;
 	}
+
+    private int boolToInt(boolean bool)
+    {
+        return bool ? 1 : 0;
+    }
 
 }
