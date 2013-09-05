@@ -204,43 +204,62 @@ public class SearchResults extends BaseActivity {
 	public class TitleSearchParser extends AsyncTask<String, Void, List<Show>>
 	{
 
+		boolean error;
 		@Override
 		protected List<Show> doInBackground(String... args)
 		{
 			String lang = prefs.getString("locale", "en");
 			List<Show> entry = new ArrayList<Show>();
-			
-			XMLParser parser = new XMLParser();
-			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/GetSeries.php?seriesname="+args[0]+"&language="+lang); // getting XML
-			Document doc = parser.getDomElement(xml); // getting DOM element
-			 
-			NodeList nl = doc.getElementsByTagName("Series");
-			     
-			for (int i = 0; i < nl.getLength(); i++) 
+			try
 			{
-				Element e = (Element) nl.item(i);
-				entry.add(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "Overview"),
-						Integer.parseInt(parser.getValue(e, "seriesid")),
-						parser.getValue(e, "language"), parser.getValue(e, "Network"), parser.getValue(e, "FirstAired")));
-			  }
-			
+				XMLParser parser = new XMLParser();
+				String xml = parser.getXmlFromUrl("http://thetvdb.com/api/GetSeries.php?seriesname=" + args[0] + "&language=" + lang); // getting XML
+				Document doc = parser.getDomElement(xml); // getting DOM element
+
+				NodeList nl = doc.getElementsByTagName("Series");
+
+				for (int i = 0; i < nl.getLength(); i++) 
+				{
+					Element e = (Element) nl.item(i);
+					entry.add(new Show(parser.getValue(e, "SeriesName"), parser.getValue(e, "Overview"),
+									   Integer.parseInt(parser.getValue(e, "seriesid")),
+									   parser.getValue(e, "language"), parser.getValue(e, "Network"), parser.getValue(e, "FirstAired")));
+				}
+			}
+			catch (Exception e)
+			{
+				e.printStackTrace();
+				error = true;
+			}
+
 			return entry;
 		}
 
 		@Override
-		protected void onPreExecute(){
+		protected void onPreExecute()
+		{
 			setProgressBarIndeterminateVisibility(true);
-			 }
+	    }
 		
 		@Override
 		protected void onPostExecute(List<Show> result)
 		{
-			searchAdapter.clear();
-			for (Show entry : result) {
-				searchAdapter.add(entry);
+			
+			if(error)
+			{
+				//TODO show error dialog
+				finish();
 			}
+			else
+			{
+			searchAdapter.clear();
+			for (Show entry : result) 
+			{
+				searchAdapter.add(entry);
+	        }
 			searchAdapter.notifyDataSetChanged();
-			 setProgressBarIndeterminateVisibility(false);
+			}
+			setProgressBarIndeterminateVisibility(false);
 		}
 	}	
 

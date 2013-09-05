@@ -126,7 +126,7 @@ public class AgendaActivity extends BaseActivity
 	private List<Agenda> getItems()
 	{
 		a = new ArrayList<Agenda>();
-		List<Show> shows = db.getAllShows("", profile);
+		List<Show> shows = db.getAllShows("", profile, DatabaseHandler.SORT.id, "");
 		List<String> showTitles = new ArrayList<String>();
 		for(Show s : shows){
 			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"", profile);

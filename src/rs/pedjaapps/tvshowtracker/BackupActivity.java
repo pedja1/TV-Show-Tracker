@@ -50,7 +50,7 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 
 		for (String p : profiles)
 		{
-			List<Show> tmpShow = db.getAllShows("", p);
+			List<Show> tmpShow = db.getAllShows("", p, DatabaseHandler.SORT.id, "");
 			for (Show s : tmpShow)
 			{
 				/*List<EpisodeItem> tmpEpisodes = db.getAllEpisodes(s.getSeriesId()+"", p);

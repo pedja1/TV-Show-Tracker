@@ -5,15 +5,23 @@
    
     <string-array name="pref_sort_titles">
         <item>Dont Sort</item>
-        <item>Name</item>
+        <item>Series Name</item>
         <item>Next Episode</item>
         <item>Unwatched Episodes</item>
+        <item>Network</item>
+        <item>Rating</item>
+        <item>Runtime</item>
+        <item>Status</item>
     </string-array>
     <string-array name="pref_sort_values">
-        <item>default</item>
-        <item>name</item>
+        <item>id</item>
+        <item>series_name</item>
         <item>next</item>
         <item>unwatched</item>
+        <item>network</item>
+        <item>rating</item>
+        <item>runtime</item>
+        <item>status</item>
     </string-array>
 <string-array name="pref_filter_titles">
         <item>All</item>

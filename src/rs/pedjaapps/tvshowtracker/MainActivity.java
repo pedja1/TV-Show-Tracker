@@ -365,7 +365,7 @@ public class MainActivity extends BaseActivity
 		long startTime = System.currentTimeMillis();
 		List<Show> shows = new ArrayList<Show>();
 		List<Show> dbShows = db.getAllShows(prefs.getString("filter", "all"),
-				profile);
+				profile, DatabaseHandler.SORT.valueOf(prefs.getString("sort", "id")), "");
 
 		for (Show s : dbShows)
 		{
@@ -378,11 +378,11 @@ public class MainActivity extends BaseActivity
 					Integer.parseInt(ue[1])));
 		}
 		
-		if (sort.equals("name"))
+		/*if (sort.equals("name"))
 		{
 			Collections.sort(shows, new SortByName());
 		}
-		else if (sort.equals("next"))
+		else*/ if (sort.equals("next"))
 		{
 			Collections.sort(shows, new SortByNextEpisode());
 		}
@@ -612,7 +612,7 @@ public class MainActivity extends BaseActivity
 		case 3:
 			if (Tools.isNetworkAvailable(this))
 			{
-				new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile));
+				new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile, DatabaseHandler.SORT.valueOf(prefs.getString("sort", "id")), ""));
 			}
 			else
 			{
