@@ -19,7 +19,7 @@ public class BaseActivity extends FragmentActivity
 
 	protected void onDestroy()
 	{
-		db.close();
+		//db.close();
 		super.onDestroy();
 	}
 	

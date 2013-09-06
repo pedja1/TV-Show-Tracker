@@ -14,7 +14,7 @@ import rs.pedjaapps.tvshowtracker.model.Show;
 public class DatabaseHandler extends SQLiteOpenHelper
 {
 
-    public static enum SORT
+    /*public static enum SORT
 	{
 		series_name("series_name"),
 		network("network"),
@@ -35,10 +35,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			return mValue;
 		}
 		
-	}
+	}*/
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 3;
+	private static final int DATABASE_VERSION = 2;
 
 	// Database Name
 	private static final String DATABASE_NAME = "tvst.db";
@@ -136,11 +136,11 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				+ show_filds[14] + " TEXT,"
 				+ show_filds[15] + " TEXT,"
 			    + show_filds[16] + " TEXT,"
-			    + show_filds[17] + " INTEGER AUTO_INCREMENT,"
-		        + "PRIMARY KEY ( " + show_filds[1] + ", " + show_filds[16] + " )"
+			    + show_filds[17] + " INTEGER NOT NULL,"
+			+ "PRIMARY KEY ( " + show_filds[1] + ", " + show_filds[16] + ", " + show_filds[17] + " )"
 				+ ")";
 
-		String CREATE_INDEXES_ON_SERIES_TABLE = "CREATE INDEX series_idx ON " + TABLE_SERIES + "(series_id, profile_name)";
+		String CREATE_INDEXES_ON_SERIES_TABLE = "CREATE INDEX series_idx ON " + TABLE_SERIES + "(series_id, profile_name, id)";
 
         String CREATE_EPISODE_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_EPISODES
 		        + "("
@@ -155,11 +155,11 @@ public class DatabaseHandler extends SQLiteOpenHelper
                 + episode_filds[8] + " INTEGER,"
 			    + episode_filds[9] + " TEXT,"
 			    + episode_filds[10] + " TEXT,"
-			    + episode_filds[11] + " INTEGER AUTO_INCREMENT,"
-                + "PRIMARY KEY ( " + episode_filds[8] + ", " + episode_filds[9] + ", " + episode_filds[10] + ")"
+			    + episode_filds[11] + " INTEGER NOT NULL,"
+			+ "PRIMARY KEY ( " + episode_filds[8] + ", " + episode_filds[9] + ", " + episode_filds[10] + ")"
                 + ")";
 
-        String CREATE_INDEXES_ON_EPISODES_TABLE = "CREATE INDEX episodes_idx ON " + TABLE_EPISODES + "(seriesId, profile_name)";
+        String CREATE_INDEXES_ON_EPISODES_TABLE = "CREATE INDEX episodes_idx ON " + TABLE_EPISODES + "(seriesId, profile_name, id)";
 
         String CREATE_ACTORS_TABLE = "CREATE TABLE IF NOT EXISTS " + TABLE_ACTORS
 			    + "("
@@ -210,7 +210,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 
 	public void insertShows(List<Show> shows)
 	{
-	    final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_SERIES + " (series_name, first_aired, imdb_id, overview, rating, series_id, language, banner, fanart, network, runtime, status, updated, profile_name) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+	    final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_SERIES + " (id, series_name, first_aired, imdb_id, overview, rating, series_id, language, banner, fanart, network, runtime, status, updated, profile_name) VALUES((SELECT IFNULL(MAX(id), 0) + 1 FROM series), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    db.beginTransaction();
 	    try 
 	    {
@@ -314,7 +314,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * @param filter
 	 *            Can be either all, continuing, or ended
 	 */
-	public synchronized List<Show> getAllShows(String filter, String profile, SORT sortOrder, String sortType)
+	public synchronized List<Show> getAllShows(String filter, String profile, String sortOrder, String sortType)
 	{
 		long startTime = System.currentTimeMillis();
 		List<Show> shows = new ArrayList<Show>();
@@ -335,9 +335,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 			builder.append(" status LIKE \"%\"");
 		}
 		builder.append(" and profile_name LIKE \"%" + profile + "%\" ");
-		if(sortOrder.value().length() != 0)
+		if(sortOrder.length() != 0 && columnExists(show_filds, sortOrder))
 		{
-			builder.append("ORDER BY " + sortOrder.value() + " " + sortType);
+			builder.append("ORDER BY " + sortOrder + " " + sortType);
 		}
 		String selectQuery = builder.toString();// "SELECT  * FROM " +
 												// TABLE_SERIES;
@@ -459,9 +459,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
     public void insertEpisodes(List<EpisodeItem> episodeItems)
     {
         final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_EPISODES
-                + " (episode_name, episode, season, first_aired, imdb_id, overview, rating, watched, " +
+                + " (id, episode_name, episode, season, first_aired, imdb_id, overview, rating, watched, " +
                 "episode_id, profile_name, seriesId) " +
-                "VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+				"VALUES((SELECT IFNULL(MAX(id), 0) + 1 FROM episodes), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
         db.beginTransaction();
         try
         {
@@ -601,7 +601,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		List<EpisodeItem> episodeItems = new ArrayList<EpisodeItem>();
 		// Select All Query
 		String selectQuery = "SELECT  * FROM " + TABLE_EPISODES
-				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = "+seriesId;
+				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = "+seriesId + " ORDER BY season";
 
 		Cursor cursor = db.rawQuery(selectQuery, null);
 
@@ -753,5 +753,19 @@ public class DatabaseHandler extends SQLiteOpenHelper
     {
         return bool ? 1 : 0;
     }
+	
+	private boolean columnExists(String[] columns, String column)
+	{
+		boolean exists = false;
+		for(int i = 0; i < columns.length; i++)
+		{
+			if(columns[i].equals(column))
+			{
+				exists = true;
+				break;
+			}
+		}
+		return exists;
+	}
 
 }

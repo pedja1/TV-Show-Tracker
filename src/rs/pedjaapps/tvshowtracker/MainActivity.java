@@ -365,7 +365,7 @@ public class MainActivity extends BaseActivity
 		long startTime = System.currentTimeMillis();
 		List<Show> shows = new ArrayList<Show>();
 		List<Show> dbShows = db.getAllShows(prefs.getString("filter", "all"),
-				profile, DatabaseHandler.SORT.valueOf(prefs.getString("sort", "id")), "");
+				profile, prefs.getString("sort", "id"), "");
 
 		for (Show s : dbShows)
 		{
@@ -612,7 +612,7 @@ public class MainActivity extends BaseActivity
 		case 3:
 			if (Tools.isNetworkAvailable(this))
 			{
-				new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile, DatabaseHandler.SORT.valueOf(prefs.getString("sort", "id")), ""));
+				new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile, prefs.getString("sort", "id"), ""));
 			}
 			else
 			{
@@ -890,6 +890,7 @@ public class MainActivity extends BaseActivity
 	public void onDestroy()
 	{
 		Tools.setKeepScreenOn(MainActivity.this, false);
+		db.close();
 		super.onDestroy();
 	}
 
