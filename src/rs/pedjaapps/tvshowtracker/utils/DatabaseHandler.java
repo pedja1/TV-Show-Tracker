@@ -601,7 +601,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		List<EpisodeItem> episodeItems = new ArrayList<EpisodeItem>();
 		// Select All Query
 		String selectQuery = "SELECT  * FROM " + TABLE_EPISODES
-				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = "+seriesId + " ORDER BY season";
+				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = "+seriesId + " ORDER BY season DESC, episode DESC";
 
 		Cursor cursor = db.rawQuery(selectQuery, null);
 

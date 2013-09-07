@@ -55,7 +55,7 @@ public class DetailsActivity extends BaseActivity
 		{
 			actors = db.getAllActors(seriesId + "", profile);
 			episodes = db.getAllEpisodes(seriesId + "", profile);
-			Collections.reverse(episodes);
+			//Collections.reverse(episodes);
 			return null;
 		}
 
