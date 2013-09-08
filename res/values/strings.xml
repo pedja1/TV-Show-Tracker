@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">TV Show Tracker</string>
+    <string name="app_name">trakt.tv</string>
     <string name="action_settings">Settings</string>
     <string name="title_overview">Overview</string>
     <string name="title_episodes">Episodes</string>
@@ -23,5 +23,7 @@
     <string name="drawer_closed">closed</string>
 	
 	<string name="restore_warning"><b>Warning!</b> Database will be wiped before restore</string>
+    <string name="login_hint_username">Username</string>
+    <string name="login_hint_password">Password</string>
 
 </resources>

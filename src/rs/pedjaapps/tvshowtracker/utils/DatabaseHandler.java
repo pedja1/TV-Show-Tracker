@@ -14,31 +14,9 @@ import rs.pedjaapps.tvshowtracker.model.Show;
 public class DatabaseHandler extends SQLiteOpenHelper
 {
 
-    /*public static enum SORT
-	{
-		series_name("series_name"),
-		network("network"),
-		rating("rating"),
-		runtime("runtime"),
-		status("status"),
-		id("id");
-		
-		String mValue;
-		
-		SORT(String value)
-		{
-			mValue = value;
-		}
-		
-		public String value()
-		{
-			return mValue;
-		}
-		
-	}*/
 	// All Static variables
 	// Database Version
-	private static final int DATABASE_VERSION = 2;
+	private static final int DATABASE_VERSION = 3;
 
 	// Database Name
 	private static final String DATABASE_NAME = "tvst.db";
@@ -52,11 +30,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	// private static final String TABLE_ITEM = "item_table";
 	// Table Columns names
 
-	private static final String[] show_filds = {"series_name",
-			"series_id", "language", "banner", "network", "first_aired",
-			"imdb_id", "overview", "rating", "runtime", "status", "fanart",
-			"ignore_agenda", "hide_from_list", "updated", "actors",
-			"profile_name", "id" };
+	private static final String[] show_filds = {"title",
+			"year", "url", "first_aired", "country", "overview", "runtime",
+			"network", "air_day", "air_time", "certification", "imdb_id",
+			"tvdb_id", "tvrage_id", "last_updated", "poster", "fanart", "banner", "ended" };
 	private static final String[] episode_filds = {"episode", "season",
 			"episode_name", "first_aired", "imdb_id", "overview", "rating",
 			"watched", "episode_id", "seriesId", "profile_name", "id" };
@@ -260,56 +237,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		db.insert(TABLE_PROFILES, null, values);
 	}
 
-	/*public synchronized void addShow(Show s)
-	{
-		ContentValues values = new ContentValues();
-		values.put(show_filds[1], s.getSeriesName());
-		values.put(show_filds[2], s.getSeriesId());
-		values.put(show_filds[3], s.getLanguage());
-		values.put(show_filds[4], s.getBanner());
-		values.put(show_filds[5], s.getNetwork());
-		values.put(show_filds[6], s.getFirstAired());
-		values.put(show_filds[7], s.getImdbId());
-		values.put(show_filds[8], s.getOverview());
-		values.put(show_filds[9], s.getRating());
-		values.put(show_filds[10], s.getRuntime());
-		values.put(show_filds[11], s.getStatus());
-		values.put(show_filds[12], s.getFanart());
-		values.put(show_filds[13], s.isIgnore());
-		values.put(show_filds[14], s.isHide());
-		values.put(show_filds[15], s.getUpdated());
-		values.put(show_filds[16], s.getActors());
-		values.put(show_filds[17], s.getProfileName());
-
-		// Inserting Row
-		db.insert(TABLE_SERIES, null, values);
-	}
-
-	public synchronized int updateShow(Show s)
-	{
-		ContentValues values = new ContentValues();
-		values.put(show_filds[1], s.getSeriesName());
-		values.put(show_filds[2], s.getSeriesId());
-		values.put(show_filds[3], s.getLanguage());
-		values.put(show_filds[4], s.getBanner());
-		values.put(show_filds[5], s.getNetwork());
-		values.put(show_filds[6], s.getFirstAired());
-		values.put(show_filds[7], s.getImdbId());
-		values.put(show_filds[8], s.getOverview());
-		values.put(show_filds[9], s.getRating());
-		values.put(show_filds[10], s.getRuntime());
-		values.put(show_filds[11], s.getStatus());
-		values.put(show_filds[12], s.getFanart());
-		values.put(show_filds[13], s.isIgnore());
-		values.put(show_filds[14], s.isHide());
-		values.put(show_filds[15], s.getUpdated());
-		values.put(show_filds[16], s.getActors());
-		values.put(show_filds[17], s.getProfileName());
-
-		return db.update(TABLE_SERIES, values, show_filds[2] + " = ?",
-				new String[] { s.getSeriesId()+"" });
-	}*/
-
 	/**
 	 * @param filter
 	 *            Can be either all, continuing, or ended
@@ -437,25 +364,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return e;
 	}
 
-	/*public synchronized void addEpisode(EpisodeItem e)
-	{
-	    ContentValues values = new ContentValues();
-		values.put(episode_filds[1], e.getEpisode());
-		values.put(episode_filds[2], e.getSeason());
-		values.put(episode_filds[3], e.getEpisodeName());
-		values.put(episode_filds[4], e.getFirstAired());
-		values.put(episode_filds[5], e.getImdbId());
-		values.put(episode_filds[6], e.getOverview());
-		values.put(episode_filds[7], e.getRating());
-		values.put(episode_filds[8], e.isWatched());
-		values.put(episode_filds[9], e.getEpisodeId());
-		values.put(episode_filds[10], e.getSeriesId());
-		values.put(episode_filds[11], e.getProfile());
-
-		// Inserting Row
-		db.insert(TABLE_EPISODES, null, values);
-	}*/
-
     public void insertEpisodes(List<EpisodeItem> episodeItems)
     {
         final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_EPISODES
@@ -487,14 +395,8 @@ public class DatabaseHandler extends SQLiteOpenHelper
         {
             db.endTransaction();
         }
-        //db.close();
     }
-/*private String actorId;
-    private String name;
-    private String role;
-    private String image;
-    private String profile;
-    private String seriesId;*/
+
     public void insertActors(List<Actor> actors)
     {
         final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_ACTORS
@@ -522,20 +424,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
         }
         //db.close();
     }
-
-	/*public synchronized void addActor(Actor a)
-	{
-		ContentValues values = new ContentValues();
-		values.put(actors_filds[1], a.getActorId());
-		values.put(actors_filds[2], a.getName());
-		values.put(actors_filds[3], a.getRole());
-		values.put(actors_filds[4], a.getImage());
-		values.put(actors_filds[5], a.getSeriesId());
-		values.put(actors_filds[6], a.getProfile());
-
-		// Inserting Row
-		db.insert(TABLE_ACTORS, null, values);
-	}*/
 
 	public synchronized EpisodeItem getEpisode(String seriesId, String episodeId,
 			String profile)
@@ -665,15 +553,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return actors;
 	}
 
-	/*
-	 * public void deleteEpisode(EpisodeItem e, String seriesId) {
-	 * SQLiteDatabase db = this.getWritableDatabase();
-	 * db.delete("episodes_"+seriesId, episode_filds[9] + " = ?", new String[] {
-	 * String.valueOf(e.getEpisodeId()) });
-	 * 
-	 * db.close(); }
-	 */
-
 	public synchronized boolean episodeExists(String seriesId, String episodeId,
 			String profile)
 	{
@@ -696,43 +575,6 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		cursor.close();
 		return exists;
 	}
-
-	/*public synchronized int updateEpisode(EpisodeItem e)
-	{
-		ContentValues values = new ContentValues();
-		values.put(episode_filds[1], e.getEpisode());
-		values.put(episode_filds[2], e.getSeason());
-		values.put(episode_filds[3], e.getEpisodeName());
-		values.put(episode_filds[4], e.getFirstAired());
-		values.put(episode_filds[5], e.getImdbId());
-		values.put(episode_filds[6], e.getOverview());
-		values.put(episode_filds[7], e.getRating());
-		values.put(episode_filds[8], e.isWatched());
-		values.put(episode_filds[9], e.getEpisodeId());
-		values.put(episode_filds[10], e.getSeriesId());
-		values.put(episode_filds[11], e.getProfile());
-
-		int count = db.update(TABLE_EPISODES, values, episode_filds[9]
-				+ " = ?  and profile_name LIKE \"%" + e.getProfile() + "%\" and seriesId = " + e.getSeriesId(),
-				new String[] { e.getEpisodeId()+"" });
-		return count;
-	}*/
-
-	/*public synchronized int updateActor(Actor a)
-	{
-		ContentValues values = new ContentValues();
-		values.put(actors_filds[1], a.getActorId());
-		values.put(actors_filds[2], a.getName());
-		values.put(actors_filds[3], a.getRole());
-		values.put(actors_filds[4], a.getImage());
-		values.put(actors_filds[5], a.getSeriesId());
-		values.put(actors_filds[6], a.getProfile());
-
-		int count = db.update(TABLE_ACTORS, values, actors_filds[1]
-				+ " = ?  and profile_name LIKE \"%" + a.getProfile() + "%\" and seriesId = "+a.getSeriesId(),
-				new String[] { a.getActorId() });
-		return count;
-	}*/
 
 	public synchronized int getEpisodesCount(String seriesId, String profile)
 	{

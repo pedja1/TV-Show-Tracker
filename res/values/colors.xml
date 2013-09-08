@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <color name="shows_list_background">#e4e4e4</color>
-    
+    <color name="black">#000</color>
 </resources>
