@@ -11,4 +11,5 @@
 <classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/universal-image-loader-1.8.4.jar"/>
 <classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/gson-2.2.4.jar"/>
 <classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/android-support-v4.jar"/>
+<classpathentry kind="lib" path="libs/commons-codec-1.8.jar"/>
 </classpath>

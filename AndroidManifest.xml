@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="rs.pedjaapps.tvshowtracker"
+    package="rs.pedjaapps.trakttvandroid"
     android:versionCode="1"
     android:versionName="1.0" >
 
@@ -14,19 +14,19 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 	
     <application
-        android:name="rs.pedjaapps.tvshowtracker.TVShowTracker"
+        android:name=".TVShowTracker"
         android:allowBackup="true"
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
 		android:largeHeap="true"
         android:theme="@android:style/Theme.Holo.Light.DarkActionBar" >
         <provider
-            android:name="rs.pedjaapps.tvshowtracker.utils.SuggestionProvider"
-            android:authorities="rs.pedjaapps.tvshowtracker.SuggestionProvider"
+            android:name=".utils.SuggestionProvider"
+            android:authorities=".SuggestionProvider"
             android:exported="false" />
 
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.MainActivity"
+            android:name=".MainActivity"
             android:label="@string/app_name">
 
 
@@ -35,7 +35,7 @@
                 android:value=".SearchResults" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.SearchResults"
+            android:name=".SearchResults"
             android:exported="false"
             android:label="Search Results"
             android:launchMode="singleTop" >
@@ -48,65 +48,65 @@
                 android:resource="@xml/searchable" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.DetailsActivity"
+            android:name=".DetailsActivity"
             android:label="@string/title_activity_details"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.AgendaActivity"
+            android:name=".AgendaActivity"
             android:label="@string/title_activity_agenda"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.BannerActivity"
+            android:name=".BannerActivity"
             android:label="@string/title_activity_banner"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.SettingsActivity"
+            android:name=".SettingsActivity"
             android:label="@string/title_activity_settings"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
+                android:value=".MainActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.ProfilesActivity"
+            android:name=".ProfilesActivity"
             android:label="@string/title_activity_profiles"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
+            android:parentActivityName=".MainActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
+                android:value=".MainActivity" />
             <intent-filter>
-                <action android:name="rs.pedjaapps.tvshowtracker.ProfilesActivity" />
+                <action android:name=".ProfilesActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 		<activity
-            android:name="rs.pedjaapps.tvshowtracker.BackupActivity"
+            android:name=".BackupActivity"
             android:label="@string/title_activity_backup" >
 			<intent-filter>
-                <action android:name="rs.pedjaapps.tvshowtracker.BackupActivity" />
+                <action android:name=".BackupActivity" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
 		<activity
-            android:name="rs.pedjaapps.tvshowtracker.About"
+            android:name=".About"
             android:label="@string/title_activity_about"
 			android:theme="@android:style/Theme.Holo.Dialog">
 			<intent-filter>
-                <action android:name="rs.pedjaapps.tvshowtracker.About" />
+                <action android:name=".About" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -115,7 +115,7 @@
                 android:name=".LoginActivity"
                 android:label="@string/app_name"
                 android:launchMode="singleTop"
-                android:theme="@android:style/Theme.Holo.NoActionBar">
+                android:theme="@android:style/Theme.Holo.Light.NoActionBar">
         <intent-filter>
             <action android:name="android.intent.action.MAIN" />
 

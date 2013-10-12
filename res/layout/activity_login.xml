@@ -67,6 +67,7 @@
                     android:paddingLeft="30dp"
                     android:paddingRight="30dp"
 					android:background="@drawable/bg_btn_blue"
+					android:textColor="@color/white"
                     />
 
             <CheckBox
@@ -75,7 +76,8 @@
                     android:text="Stay signed in"
                     android:id="@+id/chkStaySignedIn"
                     android:layout_marginLeft="10dp"
-					android:button="@drawable/bg_checkbox"/>
+					android:button="@drawable/bg_checkbox"
+					android:textColor="@color/white"/>
         </LinearLayout>
 
 		<LinearLayout

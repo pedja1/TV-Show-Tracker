@@ -2,4 +2,5 @@
 <resources>
     <color name="shows_list_background">#e4e4e4</color>
     <color name="black">#000</color>
+	<color name="white">#fff</color>
 </resources>
