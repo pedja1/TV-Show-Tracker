@@ -14,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.caldroid.CaldroidFragment;
 import com.caldroid.CaldroidListener;
-import com.caldroid.R;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;

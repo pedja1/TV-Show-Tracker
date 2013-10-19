@@ -21,3 +21,6 @@ out/
 # Local configuration file (sdk path, etc)
 local.properties
 lint.xml
+/nbandroid/
+/libs/SlidingMenu/nbandroid/
+/libs/Caldroid/nbandroid/
