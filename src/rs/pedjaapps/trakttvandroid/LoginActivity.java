@@ -60,6 +60,7 @@ public class LoginActivity extends Activity implements View.OnClickListener
 				if(success)
 				{
 					//TODO parse/insert user data
+                                    System.out.print(response);
 				}
 				else
 				{

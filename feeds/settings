@@ -1,0 +1,71 @@
+{
+    "status": "success",
+    "message": "All settings for pedja1",
+    "profile": {
+        "username": "pedja1",
+        "full_name": null,
+        "gender": null,
+        "age": "",
+        "location": null,
+        "about": null,
+        "joined": 1378555693,
+        "last_login": 1382195981,
+        "avatar": "http://gravatar.com/avatar/367196e4e5f8a29446fb381b4048eda6.jpg?s=140&r=pg&d=http%3A%2F%2Fslurm.trakt.us%2Fimages%2Favatar-large.jpg",
+        "url": "http://trakt.tv/user/pedja1",
+        "vip": false
+    },
+    "account": {
+        "timezone": "UM8",
+        "use_24hr": false,
+        "protected": false
+    },
+    "viewing": {
+        "ratings": {
+            "mode": "advanced"
+        },
+        "shouts": {
+            "show_badges": true,
+            "show_spoilers": false
+        }
+    },
+    "connections": {
+        "facebook": {
+            "connected": false,
+            "timeline_enabled": false,
+            "share_scrobbles_start": false,
+            "share_scrobbles_end": false,
+            "share_tv": true,
+            "share_movies": true,
+            "share_ratings": false,
+            "share_checkins": false
+        },
+        "twitter": {
+            "connected": false,
+            "share_scrobbles_start": false,
+            "share_scrobbles_end": false,
+            "share_tv": true,
+            "share_movies": true,
+            "share_ratings": false,
+            "share_checkins": false
+        },
+        "tumblr": {
+            "connected": false,
+            "share_scrobbles_start": false,
+            "share_scrobbles_end": false,
+            "share_tv": true,
+            "share_movies": true,
+            "share_ratings": false,
+            "share_checkins": false
+        },
+        "path": {
+            "connected": false
+        },
+        "prowl": {
+            "connected": false
+        }
+    },
+    "sharing_text": {
+        "watching": "I'm watching [item]",
+        "watched": "I just watched [item]"
+    }
+}
