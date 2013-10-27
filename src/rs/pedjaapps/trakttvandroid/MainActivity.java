@@ -275,10 +275,7 @@ public class MainActivity extends BaseActivity
 		filter.setSelection(filterOptions.indexOf(prefs.getString("filter", "all")));
 	}
 	
-	private void closeDrawer()
-	{
-		sideMenu.toggle(true);
-	}
+	
 	
 	@Override
 	protected void onResume()

@@ -9,8 +9,7 @@ public class BaseActivity extends FragmentActivity {
     SlidingMenu sideMenu;
 
     @Override
-    protected void onCreate(Bundle sis) 
-    {
+    protected void onCreate(Bundle sis) {
         super.onCreate(sis);
         sideMenu = new SlidingMenu(this);
         sideMenu.setMode(SlidingMenu.LEFT);
@@ -24,9 +23,12 @@ public class BaseActivity extends FragmentActivity {
     }
 
     @Override
-    protected void onDestroy() 
-    {
+    protected void onDestroy() {
         super.onDestroy();
+    }
+
+    private void closeDrawer() {
+        sideMenu.toggle(true);
     }
 
 }
