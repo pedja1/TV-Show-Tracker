@@ -3,6 +3,7 @@ package rs.pedjaapps.trakttvandroid;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -18,6 +19,7 @@ import rs.pedjaapps.trakttvandroid.utils.Constants;
 import rs.pedjaapps.trakttvandroid.utils.Internet;
 import rs.pedjaapps.trakttvandroid.R;
 import rs.pedjaapps.trakttvandroid.MainActivity;
+import rs.pedjaapps.trakttvandroid.model.User;
 
 /**
  * Created by pedja on 9/8/13.
@@ -59,7 +61,8 @@ public class LoginActivity extends Activity implements View.OnClickListener
 				success = json.getString("status").equals("success");
 				if(success)
 				{
-					//TODO parse/insert user data
+                                    User user = User.getInstance();
+                                    user.setUserFromJson(json);
                                     System.out.print(response);
 				}
 				else
@@ -74,6 +77,7 @@ public class LoginActivity extends Activity implements View.OnClickListener
 			return "0";
 		}
 		
+                @Override
 		protected void onPreExecute()
 		{
 			pd = new ProgressDialog(LoginActivity.this);
@@ -83,6 +87,7 @@ public class LoginActivity extends Activity implements View.OnClickListener
 			pd.show();
 		}
 		
+                @Override
 		protected void onPostExecute(String result)
 		{
 			if(pd != null && pd.isShowing())
@@ -106,7 +111,14 @@ public class LoginActivity extends Activity implements View.OnClickListener
 	{
 		AlertDialog.Builder b = new AlertDialog.Builder(this);
 		b.setMessage(message);
-		b.setNeutralButton("OK :(", null);
+		b.setPositiveButton("OK :(", null);
+                b.setNeutralButton("Contact Developer", new DialogInterface.OnClickListener() {
+
+                    public void onClick(DialogInterface di, int i) 
+                    {
+                        //TODO send mail with error message
+                    }
+                });
 		b.create().show();
 	}
 	
@@ -118,7 +130,7 @@ public class LoginActivity extends Activity implements View.OnClickListener
 		}
 		else if(error.startsWith("invalid"))
 		{
-			return "Error: " + error + "\nPlease contact developer!";
+			return "Error: " + error + "\n\nPlease contact developer!";
 		}
 		else if(error.equals("server is over capacity"))
 		{
@@ -126,7 +138,7 @@ public class LoginActivity extends Activity implements View.OnClickListener
 		}
 		else
 		{
-			return "Unknown error: " + error + "\nPlease contact developer\nMake sure to include this error message!";
+			return "Unknown error: " + error + "\n\nPlease contact developer\nMake sure to include this error message!";
 		}
 	}
 }

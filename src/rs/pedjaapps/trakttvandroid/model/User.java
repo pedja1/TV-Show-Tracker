@@ -6,6 +6,10 @@
 
 package rs.pedjaapps.trakttvandroid.model;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import rs.pedjaapps.trakttvandroid.json.JsonParser;
+
 /**
  *
  * @author pedja
@@ -18,7 +22,7 @@ public class User
     private String username;
     private String full_name;
     private String gender; //TODO this can be enum
-    private int age;
+    private String age;
     private String location;
     private String about;
     private long joined;
@@ -40,7 +44,7 @@ public class User
     /*connections*/
     private Connection facebook;
     private Connection twitter;
-    private Connection thumblr;
+    private Connection tumblr;
     private Connection path;
     private Connection prowlr;
     
@@ -90,11 +94,11 @@ public class User
         this.gender = gender;
     }
 
-    public int getAge() {
+    public String getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(String age) {
         this.age = age;
     }
 
@@ -218,12 +222,12 @@ public class User
         this.twitter = twitter;
     }
 
-    public Connection getThumblr() {
-        return thumblr;
+    public Connection getTumblr() {
+        return tumblr;
     }
 
-    public void setThumblr(Connection thumblr) {
-        this.thumblr = thumblr;
+    public void setTumblr(Connection thumblr) {
+        this.tumblr = thumblr;
     }
 
     public Connection getPath() {
@@ -258,9 +262,12 @@ public class User
         this.watched = watched;
     }
     
+    public void setUserFromJson(JSONObject json) throws JSONException
+    {
+        user = JsonParser.parseUserData(json);
+    }
     
-    
-    private class Connection
+    public static class Connection
     {
         private boolean connected;
         private boolean timeline_enabled;
@@ -271,15 +278,9 @@ public class User
         private boolean share_ratings;
         private boolean share_checkins;
 
-        public Connection(boolean connected, boolean timeline_enabled, boolean share_scrobblers_start, boolean share_scrobblers_end, boolean share_tv, boolean share_movies, boolean share_ratings, boolean share_checkins) {
-            this.connected = connected;
-            this.timeline_enabled = timeline_enabled;
-            this.share_scrobblers_start = share_scrobblers_start;
-            this.share_scrobblers_end = share_scrobblers_end;
-            this.share_tv = share_tv;
-            this.share_movies = share_movies;
-            this.share_ratings = share_ratings;
-            this.share_checkins = share_checkins;
+        public Connection() 
+        {
+            
         }
 
         public boolean isConnected() {
@@ -345,8 +346,7 @@ public class User
         public void setShare_checkins(boolean share_checkins) {
             this.share_checkins = share_checkins;
         }
-        
-        
+
     }
     
 }

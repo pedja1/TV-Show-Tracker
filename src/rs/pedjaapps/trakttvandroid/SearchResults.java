@@ -67,10 +67,10 @@ public class SearchResults extends BaseActivity {
 			@Override
 			public void onItemClick(AdapterView<?> arg0, View arg1, int position,
 					long arg3) {
-				if(!db.showExists(searchAdapter.getItem(position).getSeriesName(), profile))
-					new DownloadShowInfo().execute(searchAdapter.getItem(position).getSeriesId()+"", searchAdapter.getItem(position).getLanguage());
-				else
-					Toast.makeText(SearchResults.this, "Show Exists!\nSelect Another", Toast.LENGTH_LONG).show();
+				//if(!db.showExists(searchAdapter.getItem(position).getSeriesName(), profile))
+				//	new DownloadShowInfo().execute(searchAdapter.getItem(position).getSeriesId()+"", searchAdapter.getItem(position).getLanguage());
+				//else
+				//	Toast.makeText(SearchResults.this, "Show Exists!\nSelect Another", Toast.LENGTH_LONG).show();
 			}
 			
 		});
@@ -131,7 +131,7 @@ public class SearchResults extends BaseActivity {
                     Tools.DownloadFromUrl("http://thetvdb.com/banners/"+parser.getValue(e, "fanart"), extStorage+"/TVST"+parser.getValue(e, "fanart").substring(parser.getValue(e, "fanart").lastIndexOf("/")), true),
                     parser.getValue(e, "Network"), Tools.parseInt(parser.getValue(e, "Runtime")),
                     parser.getValue(e, "Status"), false, false, date, parser.getValue(e, "Actors"), profile));
-			db.insertShows(shows);
+			//db.insertShows(shows);
 			
 			nl = doc.getElementsByTagName("Episode");
 			List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
@@ -147,7 +147,7 @@ public class SearchResults extends BaseActivity {
 				}
 				publishProgress(new Integer[]{1, i, nl.getLength()});
 			}
-            db.insertEpisodes(episodes);
+           // db.insertEpisodes(episodes);
 			xml = parser.getXmlFromUrl("http://thetvdb.com/api/"+Constants.apiKey+"/series/"+args[0]+"/actors.xml"); 
 			doc = parser.getDomElement(xml);
 			nl = doc.getElementsByTagName("Actor");
@@ -160,14 +160,14 @@ public class SearchResults extends BaseActivity {
 				}
 				catch(Exception ex){
 				}
-				if(!db.actorExists(seriesId, parser.getValue(e, "id"), profile))
+				/*if(!db.actorExists(seriesId, parser.getValue(e, "id"), profile))
 				{
 				actors.add(new Actor(parser.getValue(e, "id"), parser.getValue(e, "Name"), parser.getValue(e, "Role"),
 						image, profile, seriesId));
-				}
+				}*/
 				publishProgress(new Integer[]{2,i,nl.getLength()});
 			}
-            db.insertActors(actors);
+            //db.insertActors(actors);
 			return "";
 			
 		}

@@ -65,36 +65,27 @@ public class MainActivity extends BaseActivity
 	boolean sortFirstSelect = true;
 	boolean filterFirstSelect = true;
 	
-	SlidingMenu sideMenu;
 	
 	private RelativeLayout drawerContent;
 
 	@Override
 	public void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
+		super.onCreate(savedInstanceState);
 		
-		sideMenu = new SlidingMenu(this);
-        sideMenu.setMode(SlidingMenu.LEFT);
-        sideMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_FULLSCREEN);
-        sideMenu.setShadowWidthRes(R.dimen.shadow_width);
-        sideMenu.setShadowDrawable(R.drawable.menu_shadow);
-        sideMenu.setBehindOffsetRes(R.dimen.slidingmenu_offset);
-        sideMenu.setFadeDegree(0.35f);
-        sideMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
-        sideMenu.setMenu(R.layout.menu_layout);
+		
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
 		searchView = new SearchView(getActionBar().getThemedContext());
-		searchView.setQueryHint("Add new Movie");
+		searchView.setQueryHint("Add new Show");
 		searchView.setSearchableInfo(searchManager
 				.getSearchableInfo(getComponentName()));
 		searchView.setIconifiedByDefault(false);
 		searchView.setQueryRefinementEnabled(true);
 
-		loading = (ProgressBar) findViewById(R.id.pgrSearch);
+		/*loading = (ProgressBar) findViewById(R.id.pgrSearch);
 		listEmpty = (TextView) findViewById(R.id.txtMessage);
 		adapter = new ShowsAdapter(this, R.layout.shows_list_row);
 		list = (GridView) findViewById(R.id.list);
@@ -268,13 +259,13 @@ public class MainActivity extends BaseActivity
 			}
 		);
 		
-		Tools.setRefresh(true);
+		Tools.setRefresh(true);*/
 	}
 
 	private void refreshDrawer()
 	{
 		profilesAdapter.clear();
-		profilesAdapter.addAll(db.getAllProfiles());
+		//profilesAdapter.addAll(db.getAllProfiles());
         profiles.setSelection(profilesAdapter.getPosition(prefs.getString("profile", "Default")));
 		
 		List<String> sortOptions = Arrays.asList(getResources().getStringArray(R.array.pref_sort_values));
@@ -292,10 +283,10 @@ public class MainActivity extends BaseActivity
 	@Override
 	protected void onResume()
 	{
-	    if (Tools.isRefresh())
+	    /*if (Tools.isRefresh())
 		{
 		refreshShows();
-		}
+		}*/
 		super.onResume();
 	}
 	
@@ -382,7 +373,7 @@ public class MainActivity extends BaseActivity
 	{
 		long startTime = System.currentTimeMillis();
 		List<Show> shows = new ArrayList<Show>();
-		List<Show> dbShows = db.getAllShows(prefs.getString("filter", "all"),
+		/*List<Show> dbShows = db.getAllShows(prefs.getString("filter", "all"),
 				profile, prefs.getString("sort", "id"), "");
 
 		for (Show s : dbShows)
@@ -394,7 +385,7 @@ public class MainActivity extends BaseActivity
 			shows.add(new Show(s.getSeriesName(), s.getBanner(), ue[0],
 					watchedPercent(episodeItems, episodeCount), s.getSeriesId(),
 					Integer.parseInt(ue[1])));
-		}
+		}*/
 		
 		/*if (sort.equals("name"))
 		{
@@ -630,7 +621,7 @@ public class MainActivity extends BaseActivity
 		case 3:
 			if (Tools.isNetworkAvailable(this))
 			{
-				new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile, prefs.getString("sort", "id"), ""));
+				//new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile, prefs.getString("sort", "id"), ""));
 			}
 			else
 			{
@@ -695,8 +686,8 @@ public class MainActivity extends BaseActivity
 			switch (item.getItemId())
 			{
 			case 0:
-				db.deleteSeries(adapter.getItem(position).getSeriesId() + "",
-						profile);
+				//db.deleteSeries(adapter.getItem(position).getSeriesId() + "",
+				//		profile);
 				adapter.remove(adapter.getItem(position));
 				adapter.notifyDataSetChanged();
 				setUI(Constants.UI_CODE_AFTERLOAD);
@@ -706,8 +697,8 @@ public class MainActivity extends BaseActivity
 				if (Tools.isNetworkAvailable(MainActivity.this))
 				{
 					List<Show> list = new ArrayList<Show>();
-					list.add(db.getShow(adapter.getItem(position).getSeriesId()
-							+ "", profile));
+					//list.add(db.getShow(adapter.getItem(position).getSeriesId()
+					//		+ "", profile));
 					new UpdateShow().execute(list);
 				}
 				else
@@ -867,9 +858,9 @@ public class MainActivity extends BaseActivity
 
 				}
 			}
-            db.insertActors(actors);
-            db.insertEpisodes(episodes);
-            db.insertShows(shows);
+           // db.insertActors(actors);
+           // db.insertEpisodes(episodes);
+           // db.insertShows(shows);
 			return "";
 
 		}
@@ -907,8 +898,8 @@ public class MainActivity extends BaseActivity
 	@Override
 	public void onDestroy()
 	{
-		Tools.setKeepScreenOn(MainActivity.this, false);
-		db.close();
+		//Tools.setKeepScreenOn(MainActivity.this, false);
+		//db.close();
 		super.onDestroy();
 	}
 

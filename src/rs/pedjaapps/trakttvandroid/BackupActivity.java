@@ -52,7 +52,7 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 		}
 	}
 
-	private JsonObject dbToJson()
+	/*private JsonObject dbToJson()
 	{
 
 		List<String> profiles = db.getAllProfiles();
@@ -63,18 +63,18 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 			List<Show> tmpShow = db.getAllShows("", p, "id", "");
 			for (Show s : tmpShow)
 			{
-				/*List<EpisodeItem> tmpEpisodes = db.getAllEpisodes(s.getSeriesId()+"", p);
-				 List<JsonObject.JsonEpisode> episodes = new ArrayList<JsonObject.JsonEpisode>();
-				 for(EpisodeItem e : tmpEpisodes)
-				 {
+				//List<EpisodeItem> tmpEpisodes = db.getAllEpisodes(s.getSeriesId()+"", p);
+				// List<JsonObject.JsonEpisode> episodes = new ArrayList<JsonObject.JsonEpisode>();
+				 //for(EpisodeItem e : tmpEpisodes)
+				// {
 
-				 }*/
+				 //}
 				shows.add(new JsonShow(s, db.getAllEpisodes(s.getSeriesId() + "", p), db.getAllActors(s.getSeriesId() + "", p)));
 			}
 		}
 
 		return new JsonObject(shows, profiles);
-	}
+	}*/
 
 	private class Backuper extends AsyncTask<Boolean,String, Boolean>
 	{
@@ -88,13 +88,13 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 			Gson gson = new Gson();
 			if (params[0])
 			{
-			    String data = gson.toJson(dbToJson());
-			    FileSystem.WriteFile(new File(Environment.getExternalStorageDirectory() + "/tvst/backup.json"), data);
+			    //String data = gson.toJson(dbToJson());
+			    //FileSystem.WriteFile(new File(Environment.getExternalStorageDirectory() + "/tvst/backup.json"), data);
 			}
 			else
 			{
-				db.wipeDatabase();
-				db = new DatabaseHandler(BackupActivity.this);
+				//db.wipeDatabase();
+				//db = new DatabaseHandler(BackupActivity.this);
 				String data = FileSystem.readFile(Environment.getExternalStorageDirectory() + "/tvst/", "backup.json");
 				JsonObject obj = gson.fromJson(data, JsonObject.class);
 				int pP = 0;
@@ -137,9 +137,9 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 						aP++;
 					}
 				}
-                db.insertActors(actors);
+                /*db.insertActors(actors);
                 db.insertEpisodes(episodes);
-                db.insertShows(shows);
+                db.insertShows(shows);*/
 
 			}
 			return null;

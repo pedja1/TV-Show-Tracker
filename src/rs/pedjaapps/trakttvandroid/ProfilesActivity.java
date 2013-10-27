@@ -83,10 +83,10 @@ public class ProfilesActivity extends BaseActivity {
 
 	private void updateList(){
 		adapter.clear();
-		for(String s: db.getAllProfiles()){
+		/*for(String s: db.getAllProfiles()){
 			boolean active = (prefs.getString("profile", "Default").equals(s));
 			adapter.add(new Profile(s, active));
-		}
+		}*/
 	}
 	
 	private void switchProfile(final String name){

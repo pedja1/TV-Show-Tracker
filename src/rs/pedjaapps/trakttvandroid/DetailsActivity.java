@@ -77,8 +77,8 @@ public class DetailsActivity extends BaseActivity
 		@Override
 		protected Void doInBackground(String... args)
 		{
-			actors = db.getAllActors(seriesId + "", profile);
-			episodes = db.getAllEpisodes(seriesId + "", profile);
+			//actors = db.getAllActors(seriesId + "", profile);
+			//episodes = db.getAllEpisodes(seriesId + "", profile);
 			//Collections.reverse(episodes);
 			return null;
 		}
@@ -288,7 +288,7 @@ public class DetailsActivity extends BaseActivity
 		{
 			View rootView = inflater.inflate(R.layout.details_episodes,
 					container, false);
-			adapter = new EpisodesAdapter(this.getActivity(), seriesId + "", db);
+			//adapter = new EpisodesAdapter(this.getActivity(), seriesId + "", db);
 			ListView list = (ListView) rootView.findViewById(R.id.list);
 			
 			List<Integer> seasons = new ArrayList<Integer>();
@@ -362,9 +362,9 @@ public class DetailsActivity extends BaseActivity
 
 		private static void setProgress()
 		{
-			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId + "",
-					profile);
-			int episodeCount = db.getEpisodesCount(seriesId + "", profile);
+			//final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId + "",
+			//		profile);
+			//int episodeCount = db.getEpisodesCount(seriesId + "", profile);
 			int watched = 0;
 			for (EpisodeItem e : episodes)
 			{
@@ -373,9 +373,9 @@ public class DetailsActivity extends BaseActivity
 					watched++;
 				}
 			}
-			prgWatched.setProgress((int) ((double) watched
-					/ (double) episodeCount * 100.0));
-			watchedText.setText(watched + "/" + episodeCount);
+			//prgWatched.setProgress((int) ((double) watched
+			//		/ (double) episodeCount * 100.0));
+			//watchedText.setText(watched + "/" + episodeCount);
 		}
 
 		@Override
@@ -415,7 +415,7 @@ public class DetailsActivity extends BaseActivity
 					.findViewById(R.id.rllHeader1);
 			RelativeLayout nextLayout = (RelativeLayout) rootView
 					.findViewById(R.id.rllHeader2);
-			final Show s = db.getShow(seriesId + "", profile);
+			/*final Show s = db.getShow(seriesId + "", profile);
 			getActivity().getActionBar().setTitle(
 					s.getSeriesName());
 			getActivity().getActionBar().setSubtitle(
@@ -434,7 +434,7 @@ public class DetailsActivity extends BaseActivity
 			name.setText(s.getSeriesName());
 			status.setText(s.getStatus().toUpperCase());
 			rating.setText(s.getRating() + "");
-			summary.setText(s.getOverview());
+			summary.setText(s.getOverview());*/
 
 			setProgress();
 			final int lePos = getLastAiredEpisodePosition(episodes);
@@ -463,7 +463,7 @@ public class DetailsActivity extends BaseActivity
 				nextHeader.setVisibility(View.GONE);
 				nextLayout.setVisibility(View.GONE);
 			}
-			if (s.getStatus().equals("Ended"))
+			/*if (s.getStatus().equals("Ended"))
 			{
 				showEnded.setVisibility(View.VISIBLE);
 			}
@@ -479,7 +479,7 @@ public class DetailsActivity extends BaseActivity
 					startActivity(intent);
 
 				}
-			});
+			});*/
 			return rootView;
 		}
 	}
