@@ -12,8 +12,8 @@ import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ListView;
-import com.caldroid.CaldroidFragment;
-import com.caldroid.CaldroidListener;
+//import com.caldroid.CaldroidFragment;
+//import com.caldroid.CaldroidListener;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -34,7 +34,7 @@ public class AgendaActivity extends BaseActivity
 	AgendaAdapter adapter;
 	ListView list;
 	String profile;
-	CaldroidFragment caldroidFragment;
+	//CaldroidFragment caldroidFragment;
 	List<Agenda> a;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class AgendaActivity extends BaseActivity
 
 		// Setup caldroid fragment
 		// **** If you want normal CaldroidFragment, use below line ****
-		caldroidFragment = new CaldroidFragment();
+		//caldroidFragment = new CaldroidFragment();
 
 		////////////////////////////////////////////////////////////////////////
 		// **** This is to show customized fragment. If you want customized
@@ -57,24 +57,24 @@ public class AgendaActivity extends BaseActivity
 
 		// If Activity is created after rotation
 		if (savedInstanceState != null) {
-			caldroidFragment.restoreStatesFromKey(savedInstanceState,
-					"CALDROID_SAVED_STATE");
+			//caldroidFragment.restoreStatesFromKey(savedInstanceState,
+				//	"CALDROID_SAVED_STATE");
 		}
 		// If activity is created from fresh
 		else {
 			Bundle args = new Bundle();
 			Calendar cal = Calendar.getInstance();
-			args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
-			args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
-			args.putBoolean(CaldroidFragment.ENABLE_SWIPE, true);
-			args.putBoolean(CaldroidFragment.FIT_ALL_MONTHS, false);
+			//args.putInt(CaldroidFragment.MONTH, cal.get(Calendar.MONTH) + 1);
+			//args.putInt(CaldroidFragment.YEAR, cal.get(Calendar.YEAR));
+			//args.putBoolean(CaldroidFragment.ENABLE_SWIPE, true);
+			//args.putBoolean(CaldroidFragment.FIT_ALL_MONTHS, false);
 
 			// Uncomment this to customize startDayOfWeek
 			 args.putInt("startDayOfWeek", 1); // Monday
-			caldroidFragment.setArguments(args);
+			//caldroidFragment.setArguments(args);
 		}
 		
-		caldroidFragment.setCaldroidListener(new CaldroidListener()
+		/*caldroidFragment.setCaldroidListener(new CaldroidListener()
 			{
 
 				public void onSelectDate(Date date, View view)
@@ -84,11 +84,11 @@ public class AgendaActivity extends BaseActivity
 				}
 				
 			
-		});
+		});*/
 
 		// Attach to the activity
 		FragmentTransaction t = getSupportFragmentManager().beginTransaction();
-		t.replace(R.id.calendar, caldroidFragment);
+		//t.replace(R.id.calendar, caldroidFragment);
 		t.commit();
 		
 	    list = (ListView)findViewById(R.id.list);
@@ -217,7 +217,7 @@ public class AgendaActivity extends BaseActivity
 			}
 			adapter.notifyDataSetChanged();
 			setProgressBarIndeterminateVisibility(false);
-			caldroidFragment.refreshView();
+			//caldroidFragment.refreshView();
 			//Tools.setListViewHeightBasedOnChildren(list);
 			//Tools.setListViewHeightBasedOnChildren(((GridView)findViewById(R.id.calendar_gridview))
 		}
@@ -263,9 +263,9 @@ public class AgendaActivity extends BaseActivity
 		// TODO Auto-generated method stub
 		super.onSaveInstanceState(outState);
 
-		if (caldroidFragment != null) {
-			caldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
-		}
+		//if (caldroidFragment != null) {
+		//	caldroidFragment.saveStatesToKey(outState, "CALDROID_SAVED_STATE");
+		//}
 	}
 
 }

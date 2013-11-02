@@ -73,8 +73,7 @@ public class MainActivity extends BaseActivity
 	{
 		setContentView(R.layout.activity_main);
 		super.onCreate(savedInstanceState);
-		
-		
+		setupMenu();
 		
 		prefs = PreferenceManager.getDefaultSharedPreferences(this);
 		SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);

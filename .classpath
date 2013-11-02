@@ -5,11 +5,8 @@
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.DEPENDENCIES"/>
 <classpathentry exported="true" kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 <classpathentry kind="output" path="bin/classes"/>
-<classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/Caldroid/libs/android-support-v4.jar"/>
-<classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/Caldroid/libs/joda-time-2.2.jar"/>
-<classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/SlidingMenu/libs/android-support-v4.jar"/>
-<classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/universal-image-loader-1.8.4.jar"/>
-<classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/gson-2.2.4.jar"/>
-<classpathentry kind="lib" path="/storage/sdcard0/AppProjects/TV-Show-Tracker/libs/android-support-v4.jar"/>
+<classpathentry kind="lib" path="libs/universal-image-loader-1.8.4.jar"/>
+<classpathentry kind="lib" path="libs/gson-2.2.4.jar"/>
+<classpathentry kind="lib" path="libs/android-support-v4.jar"/>
 <classpathentry kind="lib" path="libs/commons-codec-1.8.jar"/>
 </classpath>

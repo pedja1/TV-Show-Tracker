@@ -6,51 +6,53 @@
 
 package rs.pedjaapps.trakttvandroid.model;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-import rs.pedjaapps.trakttvandroid.json.JsonParser;
+import com.j256.ormlite.table.*;
+import org.json.*;
+import rs.pedjaapps.trakttvandroid.json.*;
+import com.j256.ormlite.field.*;
 
 /**
  *
  * @author pedja
  */
+@DatabaseTable(tableName = "user")
 public class User 
 {
     private static User user = null;
     
     /*profile*/
-    private String username;
-    private String full_name;
-    private String gender; //TODO this can be enum
-    private String age;
-    private String location;
-    private String about;
-    private long joined;
-    private long last_login;
-    private String avatar;
-    private String url;
-    private boolean vip;
+    @DatabaseField(id = true) private String username;
+    @DatabaseField private String full_name;
+    @DatabaseField private String gender; //TODO this can be enum
+    @DatabaseField private String age;
+    @DatabaseField private String location;
+    @DatabaseField private String about;
+    @DatabaseField private long joined;
+    @DatabaseField private long last_login;
+    @DatabaseField private String avatar;
+    @DatabaseField private String url;
+    @DatabaseField private boolean vip;
     
     /*account*/
-    private String timezone;
-    private boolean use_24h;
-    private boolean mProtected;
+    @DatabaseField private String timezone;
+    @DatabaseField private boolean use_24h;
+    @DatabaseField private boolean mProtected;
     
-    private String ratings_mode;//TODO can be enum
+    @DatabaseField private String ratings_mode;//TODO can be enum
     
-    private boolean show_badges;
-    private boolean show_spoilers;
+    @DatabaseField private boolean show_badges;
+    @DatabaseField private boolean show_spoilers;
     
     /*connections*/
-    private Connection facebook;
-    private Connection twitter;
-    private Connection tumblr;
-    private Connection path;
-    private Connection prowlr;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true) private Connection facebook;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true) private Connection twitter;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true) private Connection tumblr;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true) private Connection path;
+    @DatabaseField(foreign = true, foreignAutoCreate = true, foreignAutoRefresh = true) private Connection prowlr;
     
     /*sharing texts*/
-    private String watching;
-    private String watched;
+    @DatabaseField private String watching;
+    @DatabaseField private String watched;
     
     public static synchronized User getInstance()
     {
