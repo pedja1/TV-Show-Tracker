@@ -3,6 +3,7 @@ package rs.pedjaapps.trakttvandroid;
 import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Build;
 
 
@@ -11,9 +12,12 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
-public class TVShowTracker extends Application {
+public class MainApp extends Application {
 	
 	static Context context;
+        DevOpenHelper dbHelper;
+        SQLiteDatabase db;
+        DaoMaster daoMaster;
 
 	public static Context getContext()
 	{
@@ -24,6 +28,7 @@ public class TVShowTracker extends Application {
 		super.onCreate();
 		context = getApplicationContext();
 		initImageLoader(getApplicationContext());
+                initDb();
 	}
 
 	public static void initImageLoader(Context context) {
@@ -50,4 +55,11 @@ public class TVShowTracker extends Application {
 		// Initialize ImageLoader with configuration.
 		ImageLoader.getInstance().init(config);
 	}
+
+    private void initDb() 
+    {
+        dbHelper = new DaoMaster.DevOpenHelper(this, "trakttv.db", null);
+        db = helper.getWritableDatabase();
+        daoMaster = new DaoMaster(db);
+    }
 }

@@ -267,6 +267,12 @@ public class User
     public void setUserFromJson(JSONObject json) throws JSONException
     {
         user = JsonParser.parseUserData(json);
+        updateDatabase();
+    }
+
+    private void updateDatabase() 
+    {
+        
     }
     
     public static class Connection

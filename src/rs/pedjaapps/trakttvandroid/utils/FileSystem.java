@@ -17,7 +17,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import rs.pedjaapps.trakttvandroid.TVShowTracker;
+import rs.pedjaapps.trakttvandroid.MainApp;
 
 public class FileSystem
 {
@@ -149,7 +149,7 @@ public class FileSystem
             try
             {
                 Log.v(LOG_TAG, "FileSystem.readTextFile: reading private file: " + fileName);
-                fileInputStream = TVShowTracker.getContext().openFileInput(fileName);
+                fileInputStream = MainApp.getContext().openFileInput(fileName);
                 inputStreamReader = new InputStreamReader(fileInputStream, Constants.ENCODING);
                 bufferedReader = new BufferedReader(inputStreamReader);
             }

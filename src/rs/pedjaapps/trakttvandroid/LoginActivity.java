@@ -17,8 +17,6 @@ import org.json.JSONObject;
 import rs.pedjaapps.trakttvandroid.model.PostParams;
 import rs.pedjaapps.trakttvandroid.utils.Constants;
 import rs.pedjaapps.trakttvandroid.utils.Internet;
-import rs.pedjaapps.trakttvandroid.R;
-import rs.pedjaapps.trakttvandroid.MainActivity;
 import rs.pedjaapps.trakttvandroid.model.User;
 
 /**
