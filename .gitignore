@@ -17,6 +17,10 @@ gen/
 .gradle/
 build/
 out/
+*.iml
+*.ipr
+*.eml
+*.iws
 
 # Local configuration file (sdk path, etc)
 local.properties
