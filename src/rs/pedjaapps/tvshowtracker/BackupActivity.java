@@ -11,6 +11,8 @@ import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
 
 import rs.pedjaapps.tvshowtracker.model.JsonObject;
+import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
+
 import android.view.*;
 
 public class BackupActivity extends BaseActivity implements OnClickListener
@@ -50,8 +52,8 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 
 		for (String p : profiles)
 		{
-			List<Show> tmpShow = db.getAllShows("", p, "id", "");
-			for (Show s : tmpShow)
+			List<ShowOld> tmpShow = db.getAllShows("", p, "id", "");
+			for (ShowOld s : tmpShow)
 			{
 				/*List<EpisodeItem> tmpEpisodes = db.getAllEpisodes(s.getSeriesId()+"", p);
 				 List<JsonObject.JsonEpisode> episodes = new ArrayList<JsonObject.JsonEpisode>();
@@ -101,9 +103,9 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 					setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 					pP++;
 				}
-                List<Show> shows = new ArrayList<Show>();
+                List<ShowOld> shows = new ArrayList<ShowOld>();
                 List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
-                List<Actor> actors = new ArrayList<Actor>();
+                List<ActorOld> actors = new ArrayList<ActorOld>();
 				for (JsonShow s : obj.getShows())
 				{
 					
@@ -120,7 +122,7 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 						setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 						eP++;
 					}
-					for (Actor a : s.getActors())
+					for (ActorOld a : s.getActors())
 					{
 						actors.add(a);
 						setProgress(pP, pS, sP, sS, eP, eS, aP, aS);

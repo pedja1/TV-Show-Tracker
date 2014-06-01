@@ -2,9 +2,8 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.drawable;
-import rs.pedjaapps.tvshowtracker.R.id;
-import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.ActorOld;
+
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.view.LayoutInflater;
@@ -16,7 +15,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 
-public final class ActorsAdapter extends ArrayAdapter<Actor>
+public final class ActorsAdapter extends ArrayAdapter<ActorOld>
 {
 
 	private final int itemLayoutResource;
@@ -41,7 +40,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
 
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
-		final Actor actor = getItem(position);
+		final ActorOld actor = getItem(position);
 		imageLoader.displayImage("file://"+actor.getImage(), viewHolder.imageView, options);
         viewHolder.nameView.setText(actor.getName());
         viewHolder.roleView.setText(actor.getRole());

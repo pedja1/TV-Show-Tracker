@@ -7,9 +7,9 @@ import android.util.Log;
 
 import java.util.*;
 
-import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.ActorOld;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowOld;
 
 public class DatabaseHandler extends SQLiteOpenHelper
 {
@@ -208,13 +208,13 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * All CRUD(Create, Read, Update, Delete) Operations
 	 */
 
-	public void insertShows(List<Show> shows)
+	public void insertShows(List<ShowOld> shows)
 	{
 	    final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_SERIES + " (id, series_name, first_aired, imdb_id, overview, rating, series_id, language, banner, fanart, network, runtime, status, updated, profile_name) VALUES((SELECT IFNULL(MAX(id), 0) + 1 FROM series), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 	    db.beginTransaction();
 	    try 
 	    {
-	        for(Show show : shows)
+	        for(ShowOld show : shows)
 	        {
 	            statement.clearBindings();
 	            statement.bindString(1, show.getSeriesName());
@@ -314,10 +314,10 @@ public class DatabaseHandler extends SQLiteOpenHelper
 	 * @param filter
 	 *            Can be either all, continuing, or ended
 	 */
-	public synchronized List<Show> getAllShows(String filter, String profile, String sortOrder, String sortType)
+	public synchronized List<ShowOld> getAllShows(String filter, String profile, String sortOrder, String sortType)
 	{
 		long startTime = System.currentTimeMillis();
-		List<Show> shows = new ArrayList<Show>();
+		List<ShowOld> shows = new ArrayList<ShowOld>();
 		// Select All Query
 		StringBuilder builder = new StringBuilder();
 		builder.append("SELECT  * FROM " + TABLE_SERIES + " WHERE");
@@ -348,7 +348,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		{
 			do
 			{
-				Show show = new Show();
+				ShowOld show = new ShowOld();
 				show.setSeriesName(cursor.getString(0));
 				show.setSeriesId(cursor.getInt(1));
 				show.setLanguage(cursor.getString(2));
@@ -418,14 +418,14 @@ public class DatabaseHandler extends SQLiteOpenHelper
 				new String[] { profile });
 	}
 
-	public synchronized Show getShow(String seriesId, String profile)
+	public synchronized ShowOld getShow(String seriesId, String profile)
 	{
 		Cursor cursor = db.query("series", show_filds, show_filds[1]
 				+ "=? and profile_name LIKE \"%" + profile + "%\"",
 				new String[] { seriesId }, null, null, null, null);
 		if (cursor != null)
 			cursor.moveToFirst();
-		Show e = new Show(cursor.getString(0),
+		ShowOld e = new ShowOld(cursor.getString(0),
 				cursor.getString(5), cursor.getString(6), cursor.getString(7),
 				cursor.getDouble(8), cursor.getInt(1), cursor.getString(2),
 				cursor.getString(3), cursor.getString(11), cursor.getString(4),
@@ -495,7 +495,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
     private String image;
     private String profile;
     private String seriesId;*/
-    public void insertActors(List<Actor> actors)
+    public void insertActors(List<ActorOld> actors)
     {
         final SQLiteStatement statement = db.compileStatement("INSERT OR REPLACE INTO " + TABLE_ACTORS
                 + " (actor_id, name, role, image, profile_name, seriesId) " +
@@ -503,7 +503,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
         db.beginTransaction();
         try
         {
-            for(Actor actor : actors)
+            for(ActorOld actor : actors)
             {
                 statement.clearBindings();
                 statement.bindString(1, actor.getActorId());
@@ -557,7 +557,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return e;
 	}
 
-	public synchronized Actor getActor(String seriesId, String actorId, String profile)
+	public synchronized ActorOld getActor(String seriesId, String actorId, String profile)
 	{
 		Cursor cursor = db.query(TABLE_ACTORS, actors_filds,
 				actors_filds[0] + "=? and profile_name LIKE \"%" + profile
@@ -566,7 +566,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		if (cursor != null)
 			cursor.moveToFirst();
 
-		Actor a = new Actor(
+		ActorOld a = new ActorOld(
 				cursor.getString(0), cursor.getString(1), cursor.getString(2),
 				cursor.getString(3), cursor.getString(5), cursor.getString(6));
 		// return list
@@ -633,9 +633,9 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		return episodeItems;
 	}
 
-	public synchronized List<Actor> getAllActors(String seriesId, String profile)
+	public synchronized List<ActorOld> getAllActors(String seriesId, String profile)
 	{
-		List<Actor> actors = new ArrayList<Actor>();
+		List<ActorOld> actors = new ArrayList<ActorOld>();
 		// Select All Query
 		String selectQuery = "SELECT  * FROM " + TABLE_ACTORS
 				+ " WHERE profile_name LIKE \"%" + profile + "%\" and seriesId = " + seriesId;
@@ -646,7 +646,7 @@ public class DatabaseHandler extends SQLiteOpenHelper
 		{
 			do
 			{
-				Actor actor = new Actor();
+				ActorOld actor = new ActorOld();
 				actor.setActorId(cursor.getString(0));
 				actor.setName(cursor.getString(1));
 				actor.setRole(cursor.getString(2));

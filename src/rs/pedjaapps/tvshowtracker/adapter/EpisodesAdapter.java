@@ -6,9 +6,7 @@ import java.util.Date;
 import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.id;
-import rs.pedjaapps.tvshowtracker.R.layout;
-import rs.pedjaapps.tvshowtracker.model.Episode;
+import rs.pedjaapps.tvshowtracker.model.EpisodeOld;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
@@ -19,7 +17,7 @@ import android.content.*;
 import android.view.*;
 import android.widget.*;
 
-public final class EpisodesAdapter extends ArrayAdapter<Episode> {
+public final class EpisodesAdapter extends ArrayAdapter<EpisodeOld> {
 
 	LayoutInflater inflater;
 	String seriesId;
@@ -39,7 +37,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Episode> {
 	public View getView(final int position, final View convertView,
 			final ViewGroup parent) {
 		
-		final Episode e = getItem(position);
+		final EpisodeOld e = getItem(position);
 		final boolean isSection = e.isSection();
 		//final View view = getWorkingView(convertView, isSection);
 		//final ViewHolder viewHolder = getViewHolder(view, isSection);

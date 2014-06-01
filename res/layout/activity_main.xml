@@ -10,7 +10,7 @@
 			android:background="@color/shows_list_background"
 			android:divider="#ff000000"
 			android:longClickable="true"
-			android:numColumns="1"
+			android:numColumns="@integer/main_column_num"
 			android:drawSelectorOnTop="true"/>
 
 		<ProgressBar

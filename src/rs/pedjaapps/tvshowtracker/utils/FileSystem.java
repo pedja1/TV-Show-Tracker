@@ -150,7 +150,7 @@ public class FileSystem
             try
             {
                 Log.v(LOG_TAG, "FileSystem.readTextFile: reading private file: " + fileName);
-                fileInputStream = TVShowTracker.getContext().openFileInput(fileName);
+                fileInputStream = MainApp.getContext().openFileInput(fileName);
                 inputStreamReader = new InputStreamReader(fileInputStream, Constants.ENCODING);
                 bufferedReader = new BufferedReader(inputStreamReader);
             }

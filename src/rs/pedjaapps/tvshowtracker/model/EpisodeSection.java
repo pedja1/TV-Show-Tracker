@@ -1,6 +1,7 @@
 package rs.pedjaapps.tvshowtracker.model;
 
-public class EpisodeSection implements Episode{
+public class EpisodeSection implements EpisodeOld
+{
 
 	private int season;
 	

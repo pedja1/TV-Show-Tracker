@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- File created by the Android Action Bar Style Generator
+
+     Copyright (C) 2011 The Android Open Source Project
+     Copyright (C) 2012 readyState Software Ltd
+
+     Licensed under the Apache License, Version 2.0 (the "License");
+     you may not use this file except in compliance with the License.
+     You may obtain a copy of the License at
+  
+          http://www.apache.org/licenses/LICENSE-2.0
+  
+     Unless required by applicable law or agreed to in writing, software
+     distributed under the License is distributed on an "AS IS" BASIS,
+     WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+     See the License for the specific language governing permissions and
+     limitations under the License.
+-->
+
+<resources>
+
+    <style name="Theme.Tvst_red" parent="@android:style/Theme.Holo.Light.DarkActionBar">
+        <item name="android:actionBarItemBackground">@drawable/selectable_background_tvst_red</item>
+        <item name="android:popupMenuStyle">@style/PopupMenu.Tvst_red</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Tvst_red</item>
+        <item name="android:actionBarTabStyle">@style/ActionBarTabStyle.Tvst_red</item>
+        <item name="android:actionDropDownStyle">@style/DropDownNav.Tvst_red</item>
+        <item name="android:actionBarStyle">@style/ActionBar.Solid.Tvst_red</item>
+        <item name="android:actionModeBackground">@drawable/cab_background_top_tvst_red</item>
+        <item name="android:actionModeSplitBackground">@drawable/cab_background_bottom_tvst_red</item>
+        <item name="android:actionModeCloseButtonStyle">@style/ActionButton.CloseMode.Tvst_red</item>
+    	<item name="android:progressBarStyleHorizontal">@style/ProgressBartvst_red</item>
+                <!-- Light.DarkActionBar specific -->
+        <item name="android:actionBarWidgetTheme">@style/Theme.Tvst_red.Widget</item>
+
+    </style>
+
+	<style name="ProgressBartvst_red" parent="android:Widget.Holo.Light.ProgressBar.Horizontal">
+		  <item name="android:progressDrawable">@drawable/tvst_red_progress_horizontal_holo_light</item>
+		  <item name="android:indeterminateDrawable">@drawable/tvst_red_progress_indeterminate_horizontal_holo_light</item>
+	</style>
+
+    <style name="ActionBar.Solid.Tvst_red" parent="@android:style/Widget.Holo.Light.ActionBar.Solid.Inverse">
+        <item name="android:background">@drawable/ab_background_textured_tvst_red</item>
+        <item name="android:backgroundStacked">@drawable/ab_stacked_solid_tvst_red</item>
+        <item name="android:backgroundSplit">@drawable/ab_background_textured_tvst_red</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Tvst_red</item>
+    </style>
+
+    <style name="ActionBar.Transparent.Tvst_red" parent="@android:style/Widget.Holo.ActionBar">
+        <item name="android:background">@drawable/ab_transparent_tvst_red</item>
+        <item name="android:progressBarStyle">@style/ProgressBar.Tvst_red</item>
+    </style>
+
+    <style name="PopupMenu.Tvst_red" parent="@android:style/Widget.Holo.ListPopupWindow">
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_tvst_red</item>	
+    </style>
+
+    <style name="DropDownListView.Tvst_red" parent="@android:style/Widget.Holo.ListView.DropDown">
+        <item name="android:listSelector">@drawable/selectable_background_tvst_red</item>
+    </style>
+
+    <style name="ActionBarTabStyle.Tvst_red" parent="@android:style/Widget.Holo.ActionBar.TabView">
+        <item name="android:background">@drawable/tab_indicator_ab_tvst_red</item>
+    </style>
+
+    <style name="DropDownNav.Tvst_red" parent="@android:style/Widget.Holo.Spinner">
+        <item name="android:background">@drawable/spinner_background_ab_tvst_red</item>
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_tvst_red</item>
+        <item name="android:dropDownSelector">@drawable/selectable_background_tvst_red</item>
+    </style>
+    
+    <style name="ProgressBar.Tvst_red" parent="@android:style/Widget.Holo.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/progress_horizontal_tvst_red</item>
+    </style>
+    
+    <style name="ActionButton.CloseMode.Tvst_red" parent="@android:style/Widget.Holo.ActionButton.CloseMode">
+        <item name="android:background">@drawable/btn_cab_done_tvst_red</item>
+    </style>
+
+    <!-- this style is only referenced in a Light.DarkActionBar based theme -->
+    <style name="Theme.Tvst_red.Widget" parent="@android:style/Theme.Holo">
+        <item name="android:popupMenuStyle">@style/PopupMenu.Tvst_red</item>
+        <item name="android:dropDownListViewStyle">@style/DropDownListView.Tvst_red</item>
+        <item name="android:textColorHint">@color/ab_hint</item>
+    </style>
+</resources>

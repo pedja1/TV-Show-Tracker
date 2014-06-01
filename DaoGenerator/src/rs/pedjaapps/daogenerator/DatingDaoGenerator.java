@@ -28,92 +28,99 @@ public class DatingDaoGenerator
     {
         Schema schema = new Schema(1, "rs.pedjaapps.tvshowtracker.model");
 
-        addMessage(schema);
-        addQuestions(schema);
+        addUser(schema);
 
         new DaoGenerator().generateAll(schema, "./src-gen");
     }
 
-    private static void addMessage(Schema schema)
+    private static void addUser(Schema schema)
     {
-        Entity message = schema.addEntity("Message");
-        message.implementsInterface("Parcelable");
-        message.setHasKeepSections(true);
-        message.addIdProperty();
-        message.addStringProperty("text");
-        message.addStringProperty("username").notNull();
-        message.addStringProperty("user_photo_url");
-        message.addIntProperty("user_id");
-        message.addBooleanProperty("sent").notNull();
-        message.addIntProperty("type").notNull();
-        message.addBooleanProperty("unlocked").notNull();
-        message.addBooleanProperty("seen").notNull();
+        Entity user = schema.addEntity("User");
+        user.setHasKeepSections(true);
+        user.addLongProperty("id").primaryKey().notNull();
+        user.addStringProperty("email").notNull();
+        user.addStringProperty("password").notNull();
+        user.addStringProperty("avatar");
+        user.addStringProperty("first_name");
+        user.addStringProperty("last_name");
 
-        /*Entity photo = schema.addEntity("Photo");
-        photo.implementsInterface("Parcelable");
-        photo.setHasKeepSections(true);
-        photo.addIntProperty("image_id").notNull();
-        photo.addIntProperty("gallery_id").notNull();
-        photo.addStringProperty("comment");
-        photo.addIntProperty("version").notNull();
-        photo.addIntProperty("adult");
-        photo.addIntProperty("status");
-        photo.addIntProperty("likes").notNull();
-        photo.addIntProperty("liked").notNull();
-        photo.addIntProperty("user_id").notNull();
-        photo.addStringProperty("photo");
-        photo.addStringProperty("thumb");
+        Entity show = schema.addEntity("Show");
+        show.setHasKeepSections(true);
+        show.addIdProperty();
+        show.addIntProperty("tvdb_id").notNull();
+        show.addStringProperty("title");
+        show.addIntProperty("year");
+        show.addStringProperty("url");
+        show.addLongProperty("first_aired");
+        show.addStringProperty("country");
+        show.addStringProperty("overview");
+        show.addIntProperty("runtime");
+        show.addStringProperty("status");
+        show.addStringProperty("network");
+        show.addStringProperty("air_day");
+        show.addStringProperty("air_time");
+        show.addStringProperty("certification");
+        show.addStringProperty("imdb_id");
+        show.addIntProperty("tvrage_id");
+        show.addLongProperty("last_updated");
+        show.addIntProperty("rating");
+        show.addIntProperty("votes");
+        show.addIntProperty("loved");
+        show.addIntProperty("hated");
 
-        Property messageId = photo.addLongProperty("message_id").notNull().getProperty();
-        ToMany messageToPhoto = message.addToMany(photo, messageId);
-        messageToPhoto.setName("photos");*/
+        Property userId = show.addLongProperty("user_id").notNull().getProperty();
+        ToMany userToShow = user.addToMany(show, userId);
+        userToShow.setName("shows");
+
+        Entity image = schema.addEntity("Image");
+        image.addIdProperty();
+        image.addStringProperty("poster");
+        image.addStringProperty("fanart");
+        image.addStringProperty("banner");
+
+        /*Property showId = image.addLongProperty("show_id").notNull().getProperty();
+        ToMany showToImage = show.addToMany(image, showId);
+        showToImage.setName("images");*/
+        Property imageId = show.addLongProperty("image_id").getProperty();
+        show.addToOne(image, imageId);
+
+        Entity actor = schema.addEntity("Actor");
+        actor.addIdProperty();
+        actor.addStringProperty("name");
+        actor.addStringProperty("character");
+        actor.addStringProperty("image");
+
+        Property showId = actor.addLongProperty("show_id").notNull().getProperty();
+        ToMany showToActor= show.addToMany(actor, showId);
+        showToActor.setName("actors");
+
+        Entity genre = schema.addEntity("Genre");
+        genre.addIdProperty();
+        genre.addStringProperty("name");
+
+        showId = genre.addLongProperty("show_id").notNull().getProperty();
+        ToMany showToGenre = show.addToMany(genre, showId);
+        showToGenre.setName("genres");
+
+        Entity episode = schema.addEntity("Episode");
+        episode.addIdProperty();
+        episode.addIntProperty("season");
+        episode.addIntProperty("episode");
+        episode.addIntProperty("tvdb_id");
+        episode.addStringProperty("title");
+        episode.addStringProperty("overview");
+        episode.addLongProperty("first_aired");
+        episode.addStringProperty("url");
+        episode.addStringProperty("screen");
+        episode.addIntProperty("rating");
+        episode.addIntProperty("votes");
+        episode.addIntProperty("loved");
+        episode.addIntProperty("hated");
+        episode.addBooleanProperty("watched").notNull();
+
+        showId = episode.addLongProperty("show_id").notNull().getProperty();
+        ToMany showToSeason = show.addToMany(episode, showId);
+        showToSeason.setName("episodes");
 
     }
-
-
-    private static void addQuestions(Schema schema)
-    {
-        Entity group = schema.addEntity("QuestionGroup");
-        group.setHasKeepSections(true);
-        group.addStringProperty("group_id").primaryKey();
-        group.addIntProperty("side_id");
-        group.addIntProperty("group_order");
-        group.addBooleanProperty("group_searchable");
-        group.addIntProperty("group_points");
-        group.addStringProperty("group_name");
-        group.addStringProperty("group_name_profile");
-        group.addStringProperty("group_code_name");
-        group.addStringProperty("group_prompt");
-        group.addStringProperty("group_description");
-        group.addStringProperty("group_text");
-
-        Entity question = schema.addEntity("Question");
-        question.addStringProperty("question_id").primaryKey();
-        question.addIntProperty("question_order");
-        question.addBooleanProperty("searchable");
-        question.addStringProperty("type");
-        question.addIntProperty("value_min");
-        question.addIntProperty("value_max");
-        question.addBooleanProperty("required");
-        question.addBooleanProperty("sortable");
-        question.addBooleanProperty("multiselect");
-        question.addStringProperty("question_name");
-        question.addStringProperty("question_name_profile");
-        question.addStringProperty("question_name_code");
-        question.addStringProperty("hide_from");
-        question.addStringProperty("description");
-
-        Property groupId = question.addStringProperty("group_id").notNull().getProperty();
-        ToMany groupToQuestion = group.addToMany(question, groupId);
-        groupToQuestion.setName("questions");
-
-        Entity answer = schema.addEntity("Answer");
-        answer.addIdProperty();
-        answer.addStringProperty("text");
-
-        Property questionId = answer.addStringProperty("question_id").notNull().getProperty();
-        ToMany questionToAnswer = question.addToMany(answer, questionId);
-        questionToAnswer.setName("answers");
-    }
-
 }

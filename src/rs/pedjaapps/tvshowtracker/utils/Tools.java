@@ -4,6 +4,7 @@ import android.app.*;
 import android.content.*;
 import android.net.*;
 import android.os.*;
+import android.text.Html;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
@@ -122,6 +123,65 @@ public class Tools {
             listView.setLayoutParams(params);
             System.out.println(totalHeight);
         }
+    }
+
+    /**
+     * General Purpose AlertDialog
+     */
+    public static AlertDialog showMessageAlertDialog(Context context, String message,
+                                                     String title, DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title != null ? Html.fromHtml(title) : null);
+        builder.setMessage(message != null ? Html.fromHtml(message) : null);
+        builder.setPositiveButton(android.R.string.ok, listener);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    }
+
+    /**
+     * General Purpose AlertDialog
+     */
+    public static AlertDialog showMessageAlertDialog(Context context, int message,
+                                                     int title, DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(Html.fromHtml(context.getString(title)));
+        builder.setMessage(Html.fromHtml(context.getString(message)));
+        builder.setPositiveButton(android.R.string.ok, listener);
+        AlertDialog dialog = builder.create();
+        dialog.show();
+        return dialog;
+    }
+
+    /**
+     * No Network dialog
+     */
+    public static AlertDialog buildNoNetworkDialog(Context context, int message,
+                                                   int title, DialogInterface.OnClickListener listener)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+        builder.setTitle(title);
+        builder.setMessage(message);
+        builder.setPositiveButton(android.R.string.ok, listener);
+        return builder.create();
+    }
+
+    /**
+     * General Purpose Toast
+     */
+    public static void showToast(Context context, String message)
+    {
+        Toast.makeText(context, message != null ? Html.fromHtml(message) : null, Toast.LENGTH_LONG).show();
+    }
+
+    /**
+     * General Purpose Toast
+     */
+    public static void showToast(Context context, int resId)
+    {
+        Toast.makeText(context, Html.fromHtml(context.getString(resId)), Toast.LENGTH_LONG).show();
     }
 	
 }

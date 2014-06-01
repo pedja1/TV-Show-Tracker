@@ -12,9 +12,12 @@ import android.view.*;
 import android.widget.*;
 import com.nostra13.universalimageloader.core.*;
 import java.util.*;
+
+import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
+import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
@@ -24,10 +27,10 @@ public class DetailsActivity extends BaseActivity
 
 	SectionsPagerAdapter mSectionsPagerAdapter;
 	ViewPager mViewPager;
-	static int seriesId;
+	static int showId;
 	static String profile;
-	static List<Actor> actors;
-	static List<EpisodeItem> episodes;
+
+    public static String EXTRA_SHOW_ID = "show_id";
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -39,24 +42,23 @@ public class DetailsActivity extends BaseActivity
 		// Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		seriesId = getIntent().getIntExtra("seriesId", 0);
-		profile = getIntent().getStringExtra("profile");
+		showId = getIntent().getIntExtra(EXTRA_SHOW_ID, 0);
 		// Create the adapter that will return a fragment for each of the three
 		// primary sections of the app.
-		new Loader().execute();
+		new ATLoadShow().execute();
 
 	}
 
-	public class Loader extends AsyncTask<String, Void, Void>
+	public class ATLoadShow extends AsyncTask<String, Void, Show>
 	{
 
 		@Override
-		protected Void doInBackground(String... args)
+		protected Show doInBackground(String... args)
 		{
-			actors = db.getAllActors(seriesId + "", profile);
-			episodes = db.getAllEpisodes(seriesId + "", profile);
-			//Collections.reverse(episodes);
-			return null;
+            ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+            QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
+            queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(showDao), ShowDao.Properties.User_id.eq(MainApp.getInstance().getActiveUser().getId()));
+			return queryBuilder.unique();
 		}
 
 		@Override
@@ -66,14 +68,14 @@ public class DetailsActivity extends BaseActivity
 		}
 
 		@Override
-		protected void onPostExecute(Void result)
+		protected void onPostExecute(Show show)
 		{
 			setProgressBarIndeterminateVisibility(false);
-			setupViewPager();
+			setupViewPager(show);
 		}
 	}
 	
-	private void setupViewPager()
+	private void setupViewPager(Show show)
 	{
 		mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 		mViewPager = (ViewPager) findViewById(R.id.pager);
@@ -235,10 +237,10 @@ public class DetailsActivity extends BaseActivity
 			adapter = new ActorsAdapter(this.getActivity(),
 					R.layout.details_actors_row);
 			ListView list = (ListView) rootView.findViewById(R.id.list);
-			for (Actor a : actors)
+			for (ActorOld a : actors)
 			{
 
-				adapter.add(new Actor(a.getActorId(), a.getName(), a.getRole(),
+				adapter.add(new ActorOld(a.getActorId(), a.getName(), a.getRole(),
 						a.getImage(), profile, seriesId+""));
 
 			}
@@ -309,8 +311,7 @@ public class DetailsActivity extends BaseActivity
 								new DialogInterface.OnClickListener()
 								{
 									@Override
-									public void onClick(DialogInterface dialog,
-											int which)
+									public void onClick(DialogInterface dialog, int which)
 									{
 
 									}
@@ -360,8 +361,7 @@ public class DetailsActivity extends BaseActivity
 		{
 			View rootView = inflater.inflate(R.layout.datails_overview,
 					container, false);
-			ImageView header = (ImageView) rootView
-					.findViewById(R.id.imgSeriesHeader);
+			ImageView header = (ImageView) rootView.findViewById(R.id.imgSeriesHeader);
 			TextView name = (TextView) rootView
 					.findViewById(R.id.txtSeriesName);
 			TextView status = (TextView) rootView
@@ -391,7 +391,7 @@ public class DetailsActivity extends BaseActivity
 					.findViewById(R.id.rllHeader1);
 			RelativeLayout nextLayout = (RelativeLayout) rootView
 					.findViewById(R.id.rllHeader2);
-			final Show s = db.getShow(seriesId + "", profile);
+			final ShowOld s = db.getShow(seriesId + "", profile);
 			getActivity().getActionBar().setTitle(
 					s.getSeriesName());
 			getActivity().getActionBar().setSubtitle(

@@ -4,23 +4,23 @@ import java.util.*;
 
 public class JsonShow
 {
-	private Show show;
+	private ShowOld show;
 	private List<EpisodeItem> episodes;
-	private List<Actor> actors;
+	private List<ActorOld> actors;
 
-	public JsonShow(Show show, List<EpisodeItem> episodes, List<Actor> actors)
+	public JsonShow(ShowOld show, List<EpisodeItem> episodes, List<ActorOld> actors)
 	{
 		this.show = show;
 		this.episodes = episodes;
 		this.actors = actors;
 	}
 
-	public void setShow(Show show)
+	public void setShow(ShowOld show)
 	{
 		this.show = show;
 	}
 
-	public Show getShow()
+	public ShowOld getShow()
 	{
 		return show;
 	}
@@ -35,12 +35,12 @@ public class JsonShow
 		return episodes;
 	}
 
-	public void setActors(List<Actor> actors)
+	public void setActors(List<ActorOld> actors)
 	{
 		this.actors = actors;
 	}
 
-	public List<Actor> getActors()
+	public List<ActorOld> getActors()
 	{
 		return actors;
 	}

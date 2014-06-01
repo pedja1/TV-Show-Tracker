@@ -1,6 +1,5 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.app.*;
 import android.os.*;
 import android.support.v4.app.*;
 import android.view.*;
@@ -10,6 +9,7 @@ import org.w3c.dom.*;
 import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
+import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 
 public class BannerActivity extends BaseActivity {
 
@@ -47,13 +47,13 @@ public class BannerActivity extends BaseActivity {
 		});
 	}
 
-	public class GetBanners extends AsyncTask<String, Void, List<Show>>
+	public class GetBanners extends AsyncTask<String, Void, List<ShowOld>>
 	{
 
 		@Override
-		protected List<Show> doInBackground(String... args)
+		protected List<ShowOld> doInBackground(String... args)
 		{
-			List<Show> entry = new ArrayList<Show>();
+			List<ShowOld> entry = new ArrayList<ShowOld>();
 			
 			XMLParser parser = new XMLParser();
 			String xml = parser.getXmlFromUrl("http://thetvdb.com/api/"+Constants.apiKey+"/series/"+args[0]+"/banners.xml"); // getting XML
@@ -65,7 +65,7 @@ public class BannerActivity extends BaseActivity {
 				Element e = (Element) nl.item(i);
 					if(parser.getValue(e, "BannerType").equals("series"))
 					{
-						entry.add(new Show(parser.getValue(e, "BannerPath")));
+						entry.add(new ShowOld(parser.getValue(e, "BannerPath")));
 					}
 				
 				
@@ -76,7 +76,7 @@ public class BannerActivity extends BaseActivity {
 					Element e = (Element) nl.item(i);
 						if(parser.getValue(e, "BannerType").equals("fanart"))
 						{
-							entry.add(new Show(parser.getValue(e, "BannerPath")));
+							entry.add(new ShowOld(parser.getValue(e, "BannerPath")));
 						}
 					
 					
@@ -91,10 +91,10 @@ public class BannerActivity extends BaseActivity {
 			 }
 		
 		@Override
-		protected void onPostExecute(List<Show> result)
+		protected void onPostExecute(List<ShowOld> result)
 		{
 			adapter.clear();
-			for (Show entry : result) {
+			for (ShowOld entry : result) {
 				adapter.add(entry);
 			}
 			adapter.notifyDataSetChanged();
@@ -109,7 +109,7 @@ public class BannerActivity extends BaseActivity {
 		protected String doInBackground(Integer... args)
 		{
 			
-			Show show = db.getShow(seriesId, profile);
+			ShowOld show = db.getShow(seriesId, profile);
 			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
 			
 			return "";

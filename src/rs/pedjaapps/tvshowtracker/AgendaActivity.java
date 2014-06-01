@@ -9,14 +9,15 @@ import android.widget.*;
 import com.caldroid.*;
 import java.text.*;
 import java.util.*;
-import rs.pedjaapps.tvshowtracker.*;
+
 import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
+import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 
 import android.support.v4.app.FragmentTransaction;
-import rs.pedjaapps.tvshowtracker.R;
-public class AgendaActivity extends BaseActivity 
+
+public class AgendaActivity extends BaseActivity
 {
 
 	AgendaAdapter adapter;
@@ -126,9 +127,9 @@ public class AgendaActivity extends BaseActivity
 	private List<Agenda> getItems()
 	{
 		a = new ArrayList<Agenda>();
-		List<Show> shows = db.getAllShows("", profile, "id", "");
+		List<ShowOld> shows = db.getAllShows("", profile, "id", "");
 		List<String> showTitles = new ArrayList<String>();
-		for(Show s : shows){
+		for(ShowOld s : shows){
 			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"", profile);
 			for(EpisodeItem e : episodes){
 				if(e.getSeason() != 0){

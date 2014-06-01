@@ -2,14 +2,11 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.R.drawable;
-import rs.pedjaapps.tvshowtracker.R.id;
-import rs.pedjaapps.tvshowtracker.model.Show;
+
 import android.content.*;
-import android.graphics.*;
 import android.view.*;
 import android.widget.*;
-import com.nostra13.universalimageloader.core.*;
+
 import rs.pedjaapps.tvshowtracker.model.*;
 
 public final class DrawerAdapter extends ArrayAdapter<DrawerItem>
