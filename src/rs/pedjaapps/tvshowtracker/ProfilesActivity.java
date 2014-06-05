@@ -58,7 +58,7 @@ public class ProfilesActivity extends BaseActivity {
 			
 			@Override
 			public void onClick(View arg0) {
-				new DatabaseHandler(ProfilesActivity.this).addProfile(name.getText().toString());
+				//new DatabaseHandler(ProfilesActivity.this).addProfile(name.getText().toString());
 				updateList();
 				switchProfile(name.getText().toString());
 			}
@@ -74,11 +74,11 @@ public class ProfilesActivity extends BaseActivity {
 	}
 
 	private void updateList(){
-		adapter.clear();
+		/*adapter.clear();
 		for(String s: db.getAllProfiles()){
 			boolean active = (prefs.getString("profile", "Default").equals(s));
 			adapter.add(new Profile(s, active));
-		}
+		}*/
 	}
 	
 	private void switchProfile(final String name){

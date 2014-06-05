@@ -109,7 +109,7 @@ public class BannerActivity extends BaseActivity {
 		protected String doInBackground(Integer... args)
 		{
 			
-			ShowOld show = db.getShow(seriesId, profile);
+			ShowOld show = new ShowOld();//db.getShow(seriesId, profile);
 			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
 			
 			return "";

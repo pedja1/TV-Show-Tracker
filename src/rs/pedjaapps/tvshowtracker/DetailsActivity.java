@@ -150,12 +150,12 @@ public class DetailsActivity extends BaseActivity
 			return true;
 		case 0:
 			startActivity(new Intent(this, BannerActivity.class)
-					.putExtra("seriesId", seriesId + "")
+					.putExtra("seriesId", /*seriesId + */"")
 					.putExtra("type", "banner").putExtra("profile", profile));
 			return true;
 		case 1:
 			startActivity(new Intent(this, BannerActivity.class).putExtra(
-					"seriesId", seriesId + "").putExtra("type", "fanart"));
+					"seriesId", /*seriesId + */"").putExtra("type", "fanart"));
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -237,13 +237,13 @@ public class DetailsActivity extends BaseActivity
 			adapter = new ActorsAdapter(this.getActivity(),
 					R.layout.details_actors_row);
 			ListView list = (ListView) rootView.findViewById(R.id.list);
-			for (ActorOld a : actors)
+			/*for (ActorOld a : actors)
 			{
 
 				adapter.add(new ActorOld(a.getActorId(), a.getName(), a.getRole(),
 						a.getImage(), profile, seriesId+""));
 
-			}
+			}*/
 
 			list.setAdapter(adapter);
 
@@ -266,11 +266,11 @@ public class DetailsActivity extends BaseActivity
 		{
 			View rootView = inflater.inflate(R.layout.details_episodes,
 					container, false);
-			adapter = new EpisodesAdapter(this.getActivity(), seriesId + "", db);
+			adapter = new EpisodesAdapter(this.getActivity(), /*seriesId +*/ ""/*, db*/);
 			ListView list = (ListView) rootView.findViewById(R.id.list);
 			
 			List<Integer> seasons = new ArrayList<Integer>();
-			for (EpisodeItem i : episodes)
+			/*for (EpisodeItem i : episodes)
 			{
 				if (i.getSeason() != 0)
 				{
@@ -284,7 +284,7 @@ public class DetailsActivity extends BaseActivity
 							.getImdbId(), i.getOverview(), i.getRating(), i
 							.isWatched(), i.getEpisodeId(), profile, seriesId+""));
 				}
-			}
+			}*/
 
 			list.setAdapter(adapter);
 			list.setOnItemClickListener(new AdapterView.OnItemClickListener()
@@ -339,9 +339,8 @@ public class DetailsActivity extends BaseActivity
 
 		private static void setProgress()
 		{
-			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId + "",
-					profile);
-			int episodeCount = db.getEpisodesCount(seriesId + "", profile);
+			final List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();//db.getAllEpisodes(seriesId + "", profile);
+			int episodeCount = 0;//db.getEpisodesCount(seriesId + "", profile);
 			int watched = 0;
 			for (EpisodeItem e : episodes)
 			{
@@ -391,13 +390,12 @@ public class DetailsActivity extends BaseActivity
 					.findViewById(R.id.rllHeader1);
 			RelativeLayout nextLayout = (RelativeLayout) rootView
 					.findViewById(R.id.rllHeader2);
-			final ShowOld s = db.getShow(seriesId + "", profile);
+			final ShowOld s = new ShowOld();//db.getShow(seriesId + "", profile);
 			getActivity().getActionBar().setTitle(
 					s.getSeriesName());
 			getActivity().getActionBar().setSubtitle(
 					s.getNetwork());
-			final List<EpisodeItem> episodes = db.getAllEpisodes(seriesId + "",
-					profile);
+			final List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();//db.getAllEpisodes(seriesId + "", profile);
 			DisplayImageOptions options = new DisplayImageOptions.Builder()
 					.showStubImage(R.drawable.noimage_large)
 					.showImageForEmptyUri(R.drawable.noimage_large)

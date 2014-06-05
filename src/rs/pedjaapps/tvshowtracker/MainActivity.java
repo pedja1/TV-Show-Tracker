@@ -90,10 +90,10 @@ public class MainActivity extends BaseActivity
             public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
                                     long arg3)
             {
-                /*startActivity(new Intent(MainActivity.this,
+                startActivity(new Intent(MainActivity.this,
 						DetailsActivity.class).putExtra("seriesId",
-						adapter.getItem(arg2).getSeriesId()).putExtra(
-						"profile", profile));*/
+						adapter.getItem(arg2).getTvdb_id()).putExtra(
+						"profile", profile));
                 //TODO start show details activity
 
             }
@@ -813,9 +813,9 @@ public class MainActivity extends BaseActivity
 
                 }
             }
-            db.insertActors(actors);
-            db.insertEpisodes(episodes);
-            db.insertShows(shows);
+            //db.insertActors(actors);
+            //db.insertEpisodes(episodes);
+            //db.insertShows(shows);
             return "";
 
         }
@@ -854,7 +854,7 @@ public class MainActivity extends BaseActivity
     public void onDestroy()
     {
         Tools.setKeepScreenOn(MainActivity.this, false);
-        db.close();
+        //db.close();
         super.onDestroy();
     }
 

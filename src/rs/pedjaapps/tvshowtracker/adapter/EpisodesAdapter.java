@@ -10,7 +10,6 @@ import rs.pedjaapps.tvshowtracker.model.EpisodeOld;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.EpisodeSection;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DatabaseHandler;
 import rs.pedjaapps.tvshowtracker.utils.Tools;
 
 import android.content.*;
@@ -21,16 +20,16 @@ public final class EpisodesAdapter extends ArrayAdapter<EpisodeOld> {
 
 	LayoutInflater inflater;
 	String seriesId;
-	DatabaseHandler db;
+	//DatabaseHandler db;
     boolean checkChangeListenerEnabled = true;
 	
-	public EpisodesAdapter(final Context context, String seriesId, DatabaseHandler db) {
+	public EpisodesAdapter(final Context context, String seriesId/*, DatabaseHandler db*/) {
 
 		super(context, 0);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		this.seriesId = seriesId;
-		this.db = db;
+		//this.db = db;
 	}
 
 	@Override
@@ -67,7 +66,7 @@ public final class EpisodesAdapter extends ArrayAdapter<EpisodeOld> {
 						}
 					}
 					EpisodesAdapter.this.notifyDataSetChanged();
-                    db.insertEpisodes(episodes);
+                    //db.insertEpisodes(episodes);
                     checkChangeListenerEnabled = true;
                     Tools.setRefresh(true);
 				}
@@ -96,7 +95,7 @@ public final class EpisodesAdapter extends ArrayAdapter<EpisodeOld> {
                     List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
                     ei.setWatched(isChecked);
                     episodes.add(ei);
-					db.insertEpisodes(episodes);
+					//db.insertEpisodes(episodes);
 					if(!Tools.isRefresh())
 					Tools.setRefresh(true);
                     }

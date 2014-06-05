@@ -47,12 +47,12 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 	private JsonObject dbToJson()
 	{
 
-		List<String> profiles = db.getAllProfiles();
+		List<String> profiles = new ArrayList<String>();//db.getAllProfiles();
 		List<JsonShow> shows = new ArrayList<JsonShow>();
 
 		for (String p : profiles)
 		{
-			List<ShowOld> tmpShow = db.getAllShows("", p, "id", "");
+			List<ShowOld> tmpShow = new ArrayList<ShowOld>();//db.getAllShows("", p, "id", "");
 			for (ShowOld s : tmpShow)
 			{
 				/*List<EpisodeItem> tmpEpisodes = db.getAllEpisodes(s.getSeriesId()+"", p);
@@ -61,7 +61,7 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 				 {
 
 				 }*/
-				shows.add(new JsonShow(s, db.getAllEpisodes(s.getSeriesId() + "", p), db.getAllActors(s.getSeriesId() + "", p)));
+				//shows.add(new JsonShow(s, new ArrayList<EdpisodeItem>()/*db.getAllEpisodes(s.getSeriesId() + "", p)*/, /*db.getAllActors(s.getSeriesId() + "",*/new ArryaList<ActorOld>(), p)));
 			}
 		}
 
@@ -85,8 +85,8 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 			}
 			else
 			{
-				db.wipeDatabase();
-				db = new DatabaseHandler(BackupActivity.this);
+				//db.wipeDatabase();
+				//db = new DatabaseHandler(BackupActivity.this);
 				String data = FileSystem.readFile(Environment.getExternalStorageDirectory() + "/tvst/", "backup.json");
 				JsonObject obj = gson.fromJson(data, JsonObject.class);
 				int pP = 0;
@@ -99,7 +99,7 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 				int aS = 0;
 				for (String p : obj.getProfiles())
 				{
-					db.addProfile(p);
+					//db.addProfile(p);
 					setProgress(pP, pS, sP, sS, eP, eS, aP, aS);
 					pP++;
 				}
@@ -129,9 +129,9 @@ public class BackupActivity extends BaseActivity implements OnClickListener
 						aP++;
 					}
 				}
-                db.insertActors(actors);
-                db.insertEpisodes(episodes);
-                db.insertShows(shows);
+                //db.insertActors(actors);
+                //db.insertEpisodes(episodes);
+                //db.insertShows(shows);
 
 			}
 			return null;

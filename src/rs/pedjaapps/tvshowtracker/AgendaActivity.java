@@ -127,10 +127,10 @@ public class AgendaActivity extends BaseActivity
 	private List<Agenda> getItems()
 	{
 		a = new ArrayList<Agenda>();
-		List<ShowOld> shows = db.getAllShows("", profile, "id", "");
+		List<ShowOld> shows = new ArrayList<ShowOld>();//.getAllShows("", profile, "id", "");
 		List<String> showTitles = new ArrayList<String>();
 		for(ShowOld s : shows){
-			List<EpisodeItem> episodes = db.getAllEpisodes(s.getSeriesId()+"", profile);
+			List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();//db.getAllEpisodes(s.getSeriesId()+"", profile);
 			for(EpisodeItem e : episodes){
 				if(e.getSeason() != 0){
 					try{
