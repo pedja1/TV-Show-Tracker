@@ -19,4 +19,12 @@
 
 	<style name="Spinner" parent="android:style/Widget.Holo.Spinner">
     </style>
+    <style name="MenuItem">
+        <item name="android:clickable">true</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">20sp</item>
+        <item name="android:padding">15dp</item>
+        <item name="android:background">@drawable/selectable_background_tvst_red</item>
+    </style>
 </resources>

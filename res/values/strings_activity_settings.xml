@@ -4,8 +4,8 @@
 
    
     <string-array name="pref_sort_titles">
-        <item>Dont Sort</item>
-        <item>Series Name</item>
+        <item>Don\'t Sort</item>
+        <item>Show Name</item>
         <item>Next Episode</item>
         <item>Unwatched Episodes</item>
         <item>Network</item>
@@ -15,9 +15,9 @@
     </string-array>
     <string-array name="pref_sort_values">
         <item>id</item>
-        <item>series_name</item>
-        <item>next</item>
-        <item>unwatched</item>
+        <item>show_name</item>
+        <item>next_episode</item>
+        <item>unwatched_episodes</item>
         <item>network</item>
         <item>rating</item>
         <item>runtime</item>

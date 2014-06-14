@@ -15,6 +15,6 @@
             android:adjustViewBounds="true"
             android:focusable="false"
             android:scaleType="centerCrop"
-            android:src="@drawable/noimage" />
+            android:src="@drawable/noimage_banner" />
 
 </LinearLayout>

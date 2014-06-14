@@ -17,7 +17,7 @@ import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.utils.SuggestionProvider;
-import rs.pedjaapps.tvshowtracker.utils.Tools;
+import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class SearchResults extends BaseActivity
 {
@@ -81,7 +81,7 @@ public class SearchResults extends BaseActivity
             String query = intent.getStringExtra(SearchManager.QUERY);
             suggestions.saveRecentQuery(query, null);
             getActionBar().setTitle(getString(R.string.searching, query));
-            if (Tools.isNetworkAvailable(this))
+            if (Utility.isNetworkAvailable(this))
                 new ATGetSearchResults().execute(query);
             else
             {
@@ -104,7 +104,7 @@ public class SearchResults extends BaseActivity
         @Override
         protected void onPreExecute()
         {
-            Tools.setKeepScreenOn(SearchResults.this, true);
+            Utility.setKeepScreenOn(SearchResults.this, true);
             pd = new ProgressDialog(SearchResults.this);
             pd.setIndeterminate(true);
             pd.setCancelable(false);
@@ -117,15 +117,15 @@ public class SearchResults extends BaseActivity
         protected void onPostExecute(JSONUtility.Response result)
         {
             pd.dismiss();
-            Tools.setKeepScreenOn(SearchResults.this, false);
+            Utility.setKeepScreenOn(SearchResults.this, false);
             if(!result.getStatus())
             {
-                Tools.showToast(MainApp.getContext(), result.getError());
+                Utility.showToast(MainApp.getContext(), result.getErrorMessage());
             }
             else
             {
                 finish();
-                Tools.setRefresh(true);
+                Utility.setRefresh(true);
             }
         }
     }

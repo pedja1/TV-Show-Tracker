@@ -1,17 +1,18 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-	android:layout_width="match_parent"
-    android:layout_height="match_parent"
-	android:orientation="vertical"
-	>
-	<LinearLayout
-		android:id="@+id/calendar"
-		android:layout_width="match_parent"
-		android:layout_height="wrap_content"/>
-<ListView 
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              android:background="@color/grey_bg">
+
+    <LinearLayout
+        android:id="@+id/calendar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <ListView
         android:id="@+id/list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/shows_list_background"
         android:divider="#ff000000"
-        android:longClickable="true" />
+        android:longClickable="true"/>
 </LinearLayout>

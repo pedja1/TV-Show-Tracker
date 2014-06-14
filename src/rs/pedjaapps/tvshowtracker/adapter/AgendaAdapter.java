@@ -28,9 +28,9 @@ public final class AgendaAdapter extends ArrayAdapter<Agenda>
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage)
-			.showImageForEmptyUri(R.drawable.noimage)
-			.showImageOnFail(R.drawable.noimage)
+			.showStubImage(drawable.noimage_banner)
+			.showImageForEmptyUri(drawable.noimage_banner)
+			.showImageOnFail(drawable.noimage_banner)
 			.cacheInMemory()
 			
 			.bitmapConfig(Bitmap.Config.ARGB_8888)

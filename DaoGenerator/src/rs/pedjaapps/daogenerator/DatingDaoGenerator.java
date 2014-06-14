@@ -73,6 +73,8 @@ public class DatingDaoGenerator
         userToShow.setName("shows");
 
         Entity image = schema.addEntity("Image");
+        image.implementsInterface("Parcelable");
+        image.setHasKeepSections(true);
         image.addIdProperty();
         image.addStringProperty("poster");
         image.addStringProperty("fanart");
@@ -85,6 +87,8 @@ public class DatingDaoGenerator
         show.addToOne(image, imageId);
 
         Entity actor = schema.addEntity("Actor");
+        actor.implementsInterface("Parcelable");
+        actor.setHasKeepSections(true);
         actor.addIdProperty();
         actor.addStringProperty("name");
         actor.addStringProperty("character");
@@ -95,6 +99,8 @@ public class DatingDaoGenerator
         showToActor.setName("actors");
 
         Entity genre = schema.addEntity("Genre");
+        genre.implementsInterface("Parcelable");
+        genre.setHasKeepSections(true);
         genre.addIdProperty();
         genre.addStringProperty("name");
 
@@ -103,8 +109,10 @@ public class DatingDaoGenerator
         showToGenre.setName("genres");
 
         Entity episode = schema.addEntity("Episode");
+        episode.implementsInterface("Parcelable");
+        episode.setHasKeepSections(true);
         episode.addIdProperty();
-        episode.addIntProperty("season");
+        episode.addIntProperty("season").notNull();
         episode.addIntProperty("episode");
         episode.addIntProperty("tvdb_id");
         episode.addStringProperty("title");

@@ -1,55 +1,60 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.annotation.*;
 import android.app.*;
 import android.content.*;
-import android.net.*;
 import android.os.*;
-import android.preference.*;
+import android.text.Html;
+import android.text.Spannable;
+import android.text.SpannableStringBuilder;
+import android.text.style.ImageSpan;
 import android.util.*;
 import android.view.*;
 import android.widget.*;
 
 import com.crashlytics.android.Crashlytics;
 import com.jeremyfeinstein.slidingmenu.lib.*;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 
-import java.io.*;
 import java.util.*;
-
-import org.w3c.dom.*;
 
 import rs.pedjaapps.tvshowtracker.adapter.*;
 import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 
-public class MainActivity extends BaseActivity
+public class MainActivity extends BaseActivity implements View.OnClickListener
 {
-
+    private static final int REQUEST_CODE_LOGIN = 9001;
     ShowsAdapter adapter;
     GridView list;
-    ProgressBar loading;
-    TextView listEmpty;
+    ProgressBar pbLoading;
+    TextView tvNoShows;
     SearchView searchView;
-    ActionMode mode;
-    String extStorage = Environment.getExternalStorageDirectory().toString();
-    SharedPreferences prefs;
-    String profile;
-    String sort;
+    private SortOrder sort;
     Menu menu;
     boolean menuDisable;
     ArrayAdapter<String> profilesAdapter;
     Spinner profiles;
     Spinner sortSpinner;
     Spinner filter;
+    LinearLayout llUser;
 
     boolean profileFirstSelect = true;
     boolean sortFirstSelect = true;
     boolean filterFirstSelect = true;
+    TextView tvUser;
+    ImageView ivUserPhoto;
 
     SlidingMenu sideMenu;
-
-    private RelativeLayout drawerContent;
+    LinearLayout llUpcomingEpisode;
+    //private boolean hideUpcomingAnimationRunning = false;
+    //Animation showAnimation;
+    //Animation hideAnimation;
+    Episode upcomingEpisode;
+    TextView tvUpcomingEpisode;
+    TextView tvLoginLogout;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -70,7 +75,18 @@ public class MainActivity extends BaseActivity
         sideMenu.attachToActivity(this, SlidingMenu.SLIDING_CONTENT);
         sideMenu.setMenu(R.layout.menu_layout);
 
-        prefs = PreferenceManager.getDefaultSharedPreferences(this);
+        findViewById(R.id.tvMenuCalendar).setOnClickListener(this);
+        tvLoginLogout = (TextView) findViewById(R.id.tvMenuLoginLogout);
+        tvLoginLogout.setOnClickListener(this);
+        findViewById(R.id.tvMenuMissed).setOnClickListener(this);
+        findViewById(R.id.tvMenuSettings).setOnClickListener(this);
+        findViewById(R.id.tvMenuTrending).setOnClickListener(this);
+        tvUser = (TextView)findViewById(R.id.tvFullName);
+        ivUserPhoto = (ImageView)findViewById(R.id.ivUserPhoto);
+        llUser = (LinearLayout)findViewById(R.id.llUser);
+
+        setupUser();
+
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = new SearchView(getActionBar().getThemedContext());
         searchView.setQueryHint(getString(R.string.add_show));
@@ -78,239 +94,164 @@ public class MainActivity extends BaseActivity
         searchView.setIconifiedByDefault(false);
         searchView.setQueryRefinementEnabled(true);
 
-        loading = (ProgressBar) findViewById(R.id.pgrSearch);
-        listEmpty = (TextView) findViewById(R.id.txtMessage);
+        pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
+        tvNoShows = (TextView) findViewById(R.id.tvNoShows);
+        setNoImageText();
         adapter = new ShowsAdapter(this, R.layout.shows_list_row);
-        list = (GridView) findViewById(R.id.list);
+        list = (GridView) findViewById(R.id.lvShows);
         list.setAdapter(adapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener()
         {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2,
-                                    long arg3)
+            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
             {
                 startActivity(new Intent(MainActivity.this,
-						DetailsActivity.class).putExtra("seriesId",
-						adapter.getItem(arg2).getTvdb_id()).putExtra(
-						"profile", profile));
-                //TODO start show details activity
-
-            }
-
-        });
-
-        list.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener()
-        {
-
-            @Override
-            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,
-                                           int position, long arg3)
-            {
-                if (mode != null)
-                {
-                    mode.finish();
-                }
-                mode = startActionMode(new ListActionMode(position));
-                return true;
+						ShowDetailsActivity.class).putExtra(ShowDetailsActivity.EXTRA_TVDB_ID,
+						adapter.getItem(arg2).getTvdb_id()));
             }
         });
-        drawerContent = (RelativeLayout) findViewById(R.id.left_drawer);
+        llUpcomingEpisode = (LinearLayout)findViewById(R.id.llUpcomingEpisode);
+        tvUpcomingEpisode = (TextView)findViewById(R.id.tvUpcomingEpisode);
 
-        ListView drawerList = (ListView) findViewById(R.id.drawer_list);
-        DrawerAdapter dAdapter = new DrawerAdapter(this, R.layout.drawer_menu_item);
-        dAdapter.add(new DrawerItem(getString(R.string.calendar), R.drawable.ic_action_agenda));
-        dAdapter.add(new DrawerItem(getString(R.string.backlog), R.drawable.ic_action_backlog));
-        dAdapter.add(new DrawerItem(getString(R.string.Settings), R.drawable.ic_action_settings));
-        dAdapter.add(new DrawerItem(getString(R.string.about), R.drawable.ic_action_about));
-        drawerList.setAdapter(dAdapter);
-        Tools.setListViewHeightBasedOnChildren(drawerList);
-        drawerList.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        /*showAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_in);
+        hideAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_out);
+        showAnimation.setAnimationListener(new Animation.AnimationListener()
         {
             @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l)
+            public void onAnimationStart(Animation animation)
             {
-                switch (i)
-                {
-                    case 0:
-                        startActivity(new Intent(MainActivity.this, AgendaActivity.class).putExtra(
-                                "profile", profile));
-                        break;
-                    case 1:
-                        //startActivity(new Intent(MainActivity.this, AgendaActivity.class).putExtra(
-                        //"profile", profile));
-                        Toast.makeText(MainActivity.this, "TODO: backlog", Toast.LENGTH_LONG).show();
-                        break;
-                    case 2:
-                        startActivity(new Intent(MainActivity.this, SettingsActivity.class));
-                        break;
-                    case 3:
-                        startActivity(new Intent(MainActivity.this, About.class));
-                        break;
-                }
-                closeDrawer();
+                //hideUpcomingAnimationRunning = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                llUpcomingEpisode.setVisibility(View.VISIBLE);
+                //hideUpcomingAnimationRunning = false;
+            }
+
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
+
             }
         });
-
-        findViewById(R.id.poweredBy).setOnClickListener(new View.OnClickListener()
+        hideAnimation.setAnimationListener(new Animation.AnimationListener()
         {
             @Override
-            public void onClick(View view)
+            public void onAnimationStart(Animation animation)
             {
-                startActivity(new Intent(Intent.ACTION_VIEW, Uri.parse(Constants.TRAKT_URL)));
+                //hideUpcomingAnimationRunning = true;
             }
-        });
 
-        profiles = (Spinner) findViewById(R.id.profile);
-        profilesAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item);
-        profiles.setAdapter(profilesAdapter);
-        profiles.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-       {
-           public void onItemSelected(AdapterView<?> p1, View p2, int pos, long p4)
-           {
-               if (profileFirstSelect)
-               {
-                   profileFirstSelect = false;
-               }
-               else
-               {
-                   SharedPreferences.Editor editor = prefs.edit();
-                   editor.putString("profile", profilesAdapter.getItem(pos));
-                   editor.apply();
-                   closeDrawer();
-                   refreshShows();
-               }
-           }
+            @Override
+            public void onAnimationEnd(Animation animation)
+            {
+                llUpcomingEpisode.setVisibility(View.GONE);
+                //hideUpcomingAnimationRunning = false;
+            }
 
-           public void onNothingSelected(AdapterView<?> p1)
-           {
-               // TODO: Implement this method
-           }
-       }
-        );
+            @Override
+            public void onAnimationRepeat(Animation animation)
+            {
 
-        sortSpinner = (Spinner) findViewById(R.id.sort);
-        ArrayAdapter<String> sortAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, getResources().getStringArray(R.array.pref_sort_titles));
-        sortSpinner.setAdapter(sortAdapter);
-        sortSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-      {
+            }
+        });*/
+        //list.setOnScrollListener(scrollListener);
 
-          public void onItemSelected(AdapterView<?> p1, View p2, int pos, long p4)
-          {
-              if (sortFirstSelect)
-              {
-                  sortFirstSelect = false;
-              }
-              else
-              {
-                  List<String> sortOptions = Arrays.asList(getResources().getStringArray(R.array.pref_sort_values));
-                  SharedPreferences.Editor editor = prefs.edit();
-                  editor.putString("sort", sortOptions.get(pos));
-                  editor.apply();
-                  closeDrawer();
-                  refreshShows();
-              }
-          }
-
-          public void onNothingSelected(AdapterView<?> p1)
-          {
-              // TODO: Implement this method
-          }
-      }
-        );
-
-        filter = (Spinner) findViewById(R.id.filter);
-        ArrayAdapter<String> filterAdapter = new ArrayAdapter<String>(this, R.layout.spinner_item, getResources().getStringArray(R.array.pref_filter_titles));
-        filter.setAdapter(filterAdapter);
-        filter.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-         {
-
-             public void onItemSelected(AdapterView<?> p1, View p2, int pos, long p4)
-             {
-                 if (filterFirstSelect)
-                 {
-                     filterFirstSelect = false;
-                 }
-                 else
-                 {
-                     List<String> filterOptions = Arrays.asList(getResources().getStringArray(R.array.pref_filter_values));
-                     SharedPreferences.Editor editor = prefs.edit();
-                     editor.putString("filter", filterOptions.get(pos));
-                     editor.apply();
-                     closeDrawer();
-                     refreshShows();
-                 }
-             }
-
-             public void onNothingSelected(AdapterView<?> p1)
-             {
-                 // TODO: Implement this method
-             }
-         }
-        );
-
-        Tools.setRefresh(true);
+        Utility.setRefresh(true);
     }
 
-    private void refreshDrawer()
+    /*private AbsListView.OnScrollListener scrollListener = new AbsListView.OnScrollListener()
     {
-		/*profilesAdapter.clear();
-		profilesAdapter.addAll(db.getAllProfiles());
-        profiles.setSelection(profilesAdapter.getPosition(prefs.getString("profile", "Default")));
-		
-		List<String> sortOptions = Arrays.asList(getResources().getStringArray(R.array.pref_sort_values));
-		List<String> filterOptions = Arrays.asList(getResources().getStringArray(R.array.pref_filter_values));
-		
-		sortSpinner.setSelection(sortOptions.indexOf(prefs.getString("sort", "default")));
-		filter.setSelection(filterOptions.indexOf(prefs.getString("filter", "all")));*/
+
+        @Override
+        public void onScrollStateChanged(AbsListView absListView, int i)
+        {
+
+        }
+
+        @Override
+        public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+        {
+            if(upcomingEpisode == null)return;
+            if(firstVisibleItem + visibleItemCount >= totalItemCount)
+            {
+                if(llUpcomingEpisode.getVisibility() == View.VISIBLE)
+                {
+                    //hideUpcomingAnimationRunning = true;
+                    llUpcomingEpisode.setAnimation(hideAnimation);
+                    //hideAnimation.reset();
+                    hideAnimation.start();
+                }
+            }
+            else
+            {
+                if(llUpcomingEpisode.getVisibility() != View.VISIBLE)
+                {
+                    //hideUpcomingAnimationRunning = true;
+                    llUpcomingEpisode.setAnimation(showAnimation);
+                    //hideAnimation.reset();
+                    showAnimation.start();
+                }
+            }
+        }
+    };*/
+
+    private void setupUser()
+    {
+        User user = MainApp.getInstance().getActiveUser();
+        if(user.getId() != -1)
+        {
+            getActionBar().setSubtitle(user.getFirst_name() + " " + user.getLast_name());
+            tvUser.setText(user.getFirst_name() + " " + user.getLast_name());
+            DisplayImageOptions options = new DisplayImageOptions.Builder()
+                    .cloneFrom(MainApp.getInstance().displayImageOptions)
+                    .displayer(new RoundedBitmapDisplayer(360))
+                    .build();
+            ImageLoader.getInstance().displayImage(user.getAvatar(), ivUserPhoto, options);
+            llUser.setVisibility(View.VISIBLE);
+            tvLoginLogout.setText(R.string.logout);
+        }
+        else
+        {
+            llUser.setVisibility(View.GONE);
+            tvLoginLogout.setText(R.string.login);
+        }
     }
 
-    private void closeDrawer()
+    private void setNoImageText()
     {
-        sideMenu.toggle(true);
+        String text = getString(R.string.no_shows_message);
+        SpannableStringBuilder builder = new SpannableStringBuilder(Html.fromHtml(text));
+        builder.setSpan(new ImageSpan(this, R.drawable.ic_action_search_dark), 22, 23, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
+        tvNoShows.setText(builder, TextView.BufferType.SPANNABLE);
     }
 
     @Override
     protected void onResume()
     {
-        if (Tools.isRefresh())
+        if (Utility.isRefresh())
         {
             refreshShows();
         }
         super.onResume();
     }
 
-    private void refreshShows()
+    public void refreshShows()
     {
-        profile = prefs.getString("profile", "Default");
-        sort = prefs.getString("sort", "default");
-        StringBuilder b = new StringBuilder();
-        b.append(profile);
-        if (sort.equals("name"))
-        {
-            b.append(" | Sorted by Name");
-        }
-        else if (sort.equals("next"))
-        {
-            b.append(" | Sorted by Next Episode");
-        }
-        else if (sort.equals("unwatched"))
-        {
-            b.append(" | Sorted by Unwatched Episodes");
-        }
-        getActionBar().setSubtitle(b.toString());
+        //profile = prefs.getString("profile", "Default");
+        sort = PrefsManager.getSortOrder();
         new LoadShows().execute();
-        refreshDrawer();
-        Tools.setRefresh(false);
+        Utility.setRefresh(false);
     }
 
     @Override
     public void onRestoreInstanceState(Bundle savedInstanceState)
     {
         // Restore the previously serialized current dropdown position.
-        list.onRestoreInstanceState(savedInstanceState
-                .getParcelable("list_position"));
-
+        list.onRestoreInstanceState(savedInstanceState.getParcelable("list_position"));
     }
 
     @Override
@@ -321,68 +262,39 @@ public class MainActivity extends BaseActivity
         outState.putParcelable("list_position", state);
     }
 
-    @SuppressLint("NewApi")
-    private void setUI(int code)
-    {
-
-        if (code == Constants.UI_CODE_PRELOAD)
-        {
-            //menuDisable = true;
-			/*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-			{
-				this.invalidateOptionsMenu();
-			}*/
-            //list.setEnabled(false);
-            listEmpty.setVisibility(View.GONE);
-            //loading.setVisibility(View.VISIBLE);
-        }
-        else if (code == Constants.UI_CODE_AFTERLOAD)
-        {
-            //menuDisable = false;
-			/*if (Build.VERSION.SDK_INT > Build.VERSION_CODES.HONEYCOMB)
-			{
-				this.invalidateOptionsMenu();
-			}*/
-            //list.setEnabled(true);
-            if (adapter.isEmpty())
-            {
-                listEmpty.setVisibility(View.VISIBLE);
-                loading.setVisibility(View.GONE);
-            }
-            else
-            {
-                listEmpty.setVisibility(View.GONE);
-                loading.setVisibility(View.GONE);
-            }
-        }
-
-    }
-
     private List<Show> getShows()
     {
         long startTime = System.currentTimeMillis();
         ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
         List<Show> shows = showDao.loadAll();
 
-		for (Show s : shows)
-		{
-			s.setNextEpisodeDays(upcomingEpisode(s.getEpisodes(), s.getStatus()));
-			s.setWatchedPercent(watchedPercent(s.getEpisodes()));
-		}
-		
-		/*if (sort.equals("name"))
-		{
-			Collections.sort(shows, new SortByName());
-		}
-		else*/ if (sort.equals("next"))
-		{
-			Collections.sort(shows, new SortByNextEpisode());
-		}
-		else if (sort.equals("unwatched"))
-		{
-			Collections.sort(shows, new SortByUnwatched());
-		}
-        //TODO other sorts
+		upcomingEpisode = Utility.calculateUpcomingEpisodes(shows);
+
+        //TODO query db with sort, it should be faster that sorting list
+		switch (sort)
+        {
+            case show_name:
+                Collections.sort(shows, new Comparators.NameComparator(false));
+                break;
+            case next_episode:
+                Collections.sort(shows, new Comparators.NextEpisodeComparator(true));
+                break;
+            case unwatched_episodes:
+                Collections.sort(shows, new Comparators.WatchComparator(true));
+                break;
+            case network:
+                Collections.sort(shows, new Comparators.NetworkComparator(true));
+                break;
+            case rating:
+                Collections.sort(shows, new Comparators.RatingComparator(false));
+                break;
+            case runtime:
+                Collections.sort(shows, new Comparators.RuntimeComparator(true));
+                break;
+            case status:
+                Collections.sort(shows, new Comparators.StatusComparator(true));
+                break;
+        }
 		Log.d(Constants.LOG_TAG,
 				"MainActivity.java > getShows(): "
 						+ (System.currentTimeMillis() - startTime) + "ms");
@@ -390,46 +302,32 @@ public class MainActivity extends BaseActivity
         return shows;
     }
 
-    static class SortByName implements Comparator<Show>
+    @Override
+    public void onClick(View view)
     {
-        @Override
-        public int compare(Show s1, Show s2)
+        switch (view.getId())
         {
-            String sub1 = s1.getTitle();
-            String sub2 = s2.getTitle();
-            return sub1.compareTo(sub2);
+            case R.id.tvMenuCalendar:
+                break;
+            case R.id.tvMenuLoginLogout:
+                if(MainApp.getInstance().getActiveUser().getId() == -1)
+                {
+                    startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_CODE_LOGIN);
+                }
+                else
+                {
+                    //TODO logout
+                }
+                break;
+            case R.id.tvMenuMissed:
+                break;
+            case R.id.tvMenuSettings:
+                break;
+            case R.id.tvMenuTrending:
+               break;
         }
-
     }
 
-    static class SortByNextEpisode implements Comparator<Show>
-    {
-        @Override
-        public int compare(Show p1, Show p2)
-        {
-            if (p1.getNextEpisodeDays() > p2.getNextEpisodeDays())
-                return 1;
-            if (p1.getNextEpisodeDays() < p2.getNextEpisodeDays())
-                return -1;
-
-            return 0;
-        }
-
-    }
-
-    static class SortByUnwatched implements Comparator<Show>
-    {
-        @Override
-        public int compare(Show p1, Show p2)
-        {
-            if (p1.getWatchedPercent() < p2.getWatchedPercent())
-                return -1;
-            if (p1.getWatchedPercent() > p2.getWatchedPercent())
-                return 1;
-            return 0;
-        }
-
-    }
 
     public class LoadShows extends AsyncTask<String, Void, List<Show>>
     {
@@ -453,7 +351,11 @@ public class MainActivity extends BaseActivity
         @Override
         protected void onPreExecute()
         {
-            setUI(Constants.UI_CODE_PRELOAD);
+            if(adapter.isEmpty())
+            {
+                pbLoading.setVisibility(View.VISIBLE);
+                //tvNoShows.setVisibility(View.VISIBLE);
+            }
         }
 
         @Override
@@ -465,50 +367,25 @@ public class MainActivity extends BaseActivity
                 adapter.add(s);
             }
             adapter.notifyDataSetChanged();
-            setUI(Constants.UI_CODE_AFTERLOAD);
-        }
-    }
-
-    private long upcomingEpisode(List<Episode> episodes, String status)
-    {
-        long startTime = System.currentTimeMillis();
-        long days = 999999999;
-        // ^workaround for sorting.
-        // This way series which doesn't have next episode(or can't be
-        // calculated) will always go last
-        if (status == null || !status.equals("Ended"))
-        {
-            for (Episode e : episodes)
+            if(adapter.isEmpty())
             {
-                Date firstAired = new Date(e.getFirst_aired());
-                if (new Date().before(firstAired) ||
-                        (new Date().getTime() / (1000 * 60 * 60 * 24)) == (firstAired.getTime() / (1000 * 60 * 60 * 24)))
-                {
-                    days = ((firstAired.getTime() - System
-                            .currentTimeMillis()) / (1000 * 60 * 60 * 24));
-                    break;
-                }
+                tvNoShows.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                tvNoShows.setVisibility(View.GONE);
+            }
+            pbLoading.setVisibility(View.GONE);
+            if(upcomingEpisode != null)
+            {
+                tvUpcomingEpisode.setText(Utility.generateUpcomingEpisodeText(upcomingEpisode));
+                llUpcomingEpisode.setVisibility(View.VISIBLE);
+            }
+            else
+            {
+                llUpcomingEpisode.setVisibility(View.GONE);
             }
         }
-        Log.d(Constants.LOG_TAG,
-                "MainActivity.java > upcomingEpisode(): "
-                        + (System.currentTimeMillis() - startTime) + "ms"
-        );
-
-        return days;
-    }
-
-    private int watchedPercent(List<Episode> episodes)
-    {
-        int watched = 0;
-        for (Episode e : episodes)
-        {
-            if (e.getWatched())
-            {
-                watched++;
-            }
-        }
-        return (int) ((double) watched / (double) episodes.size() * 100.0);
     }
 
     @Override
@@ -554,7 +431,7 @@ public class MainActivity extends BaseActivity
         switch (item.getItemId())
         {
             case 1:
-                startActivity(new Intent(this, AgendaActivity.class).putExtra("profile", profile));
+                //startActivity(new Intent(this, AgendaActivity.class).putExtra("profile", profile));
                 return true;
             case 2:
                 startActivity(new Intent(this, SettingsActivity.class));
@@ -577,7 +454,7 @@ public class MainActivity extends BaseActivity
         return super.onOptionsItemSelected(item);
     }
 
-    public class ListActionMode implements ActionMode.Callback
+    /*public class ListActionMode implements ActionMode.Callback
     {
         int id;
         int position;
@@ -590,11 +467,11 @@ public class MainActivity extends BaseActivity
         @Override
         public boolean onCreateActionMode(ActionMode mode, Menu menu)
         {
-            MainActivity.this.mode = mode;
-			/*
-			 * mode.setTitle("Select Items");
-			 * mode.setSubtitle("One item selected");
-			 */
+            //MainActivity.this.mode = mode;
+
+			// mode.setTitle("Select Items");
+			// mode.setSubtitle("One item selected");
+
             menu.add(0, 0, 0, getString(R.string.delete))
                     .setIcon(R.drawable.ic_action_delete)
                     .setShowAsAction(
@@ -630,39 +507,38 @@ public class MainActivity extends BaseActivity
             switch (item.getItemId())
             {
                 case 0:
-				/*db.deleteSeries(adapter.getItem(position).getSeriesId() + "",
-						profile);
-				adapter.remove(adapter.getItem(position));
-				adapter.notifyDataSetChanged();
-				setUI(Constants.UI_CODE_AFTERLOAD);
-				mode.finish();*/
+				//db.deleteSeries(adapter.getItem(position).getSeriesId() + "",profile);
+				//adapter.remove(adapter.getItem(position));
+				//adapter.notifyDataSetChanged();
+				//setUI(Constants.UI_CODE_AFTERLOAD);
+				//mode.finish();
                     break;
                 case 1:
-                    /*if (Tools.isNetworkAvailable(MainActivity.this))
-                    {
-                        List<ShowOld> list = new ArrayList<ShowOld>();
+                    //if (Tools.isNetworkAvailable(MainActivity.this))
+                    //{
+                    //    List<ShowOld> list = new ArrayList<ShowOld>();
                         //list.add(db.getShow(adapter.getItem(position).getSeriesId()
                         //	+ "", profile));
-                        new UpdateShow().execute(list);
-                    }
-                    else
-                    {
-                        Toast.makeText(
-                                MainActivity.this,
-                                "No Internet Connection!\nPlease connect to internet and try again!",
-                                Toast.LENGTH_LONG).show();
-                    }*/
+                    //    new UpdateShow().execute(list);
+                    //}
+                    //else
+                    //{
+                    //    Toast.makeText(
+                    //            MainActivity.this,
+                    //            "No Internet Connection!\nPlease connect to internet and try again!",
+                    //            Toast.LENGTH_LONG).show();
+                    //}
                     //TODo update show
-                    mode.finish();
+                    //mode.finish();
                     break;
             }
 
             return true;
         }
 
-    }
+    }*/
 
-    public class UpdateShow extends AsyncTask<List<ShowOld>, String[], String>
+    /*public class UpdateShow extends AsyncTask<List<ShowOld>, String[], String>
     {
 
         ProgressDialog pd;
@@ -848,12 +724,12 @@ public class MainActivity extends BaseActivity
             new LoadShows().execute();
             Tools.setKeepScreenOn(MainActivity.this, false);
         }
-    }
+    }*/
 
     @Override
     public void onDestroy()
     {
-        Tools.setKeepScreenOn(MainActivity.this, false);
+        Utility.setKeepScreenOn(MainActivity.this, false);
         //db.close();
         super.onDestroy();
     }
@@ -874,4 +750,23 @@ public class MainActivity extends BaseActivity
 		return super.onPrepareOptionsMenu(menu);
 	}*/
 
+    public enum SortOrder
+    {
+        id, show_name, next_episode, unwatched_episodes, network ,rating, runtime, status
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK)
+        {
+            switch (requestCode)
+            {
+                case REQUEST_CODE_LOGIN:
+                    setupUser();
+                    break;
+            }
+        }
+    }
 }

@@ -1,32 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content" >
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
 
     <RelativeLayout
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical" >
+        android:layout_height="wrap_content">
 
         <ImageView
-            android:id="@+id/imgSeriesHeader"
+            android:id="@+id/ivShowImage"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/noimage_large" />
+            android:src="@drawable/noimage_fanart"/>
 
         <RelativeLayout
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/imgSeriesHeader"
-            android:background="#aa000000"
+            android:layout_alignBottom="@+id/ivShowImage"
+            android:background="@drawable/glass_background"
             android:gravity="bottom"
-            android:padding="3.0dip" >
+            android:padding="3dip">
 
             <TextView
-                android:id="@+id/txtSeriesName"
+                android:id="@+id/tvShowName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:shadowColor="@android:color/black"
@@ -34,15 +33,16 @@
                 android:shadowDy="1.0"
                 android:shadowRadius="1.0"
                 android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="#ffffffff"
-                android:textSize="@dimen/padding_large" />
+                android:textColor="@color/white"
+                android:textSize="@dimen/padding_large"
+                android:text="Game of Thrones"/>
 
             <TextView
-                android:id="@+id/txtSeriesStatus"
+                android:id="@+id/tvShowShortInfo"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
-                android:layout_below="@id/txtSeriesName"
+                android:layout_below="@id/tvShowName"
                 android:shadowColor="@android:color/black"
                 android:shadowDx="1.0"
                 android:shadowDy="1.0"
@@ -52,237 +52,247 @@
                 android:textColor="#ffbbbbbb"
                 android:textSize="10.0sp"
                 android:textStyle="bold"
-                android:typeface="normal" />
-
-            <TextView
-                android:id="@+id/txtSeriesRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:shadowColor="@android:color/black"
-                android:shadowDx="1.0"
-                android:shadowDy="1.0"
-                android:shadowRadius="1.0"
-                android:textAppearance="?android:textAppearanceLarge"
-                android:textColor="#ffffffff"
-                android:textSize="@dimen/padding_large" />
-
-            <TextView
-                android:id="@+id/txtSeriesRatingText"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/txtSeriesRating"
-                android:shadowColor="@android:color/black"
-                android:shadowDx="1.0"
-                android:shadowDy="1.0"
-                android:shadowRadius="1.0"
-                android:text="Rating"
-                android:textAllCaps="true"
-                android:textAppearance="?android:textAppearanceSmall"
-                android:textColor="#ffbbbbbb"
-                android:textSize="10.0sp"
-                android:textStyle="bold"
-                android:typeface="normal" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/txtTotalWatched"
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@id/imgSeriesHeader"
-            android:layout_marginBottom="5.0dip"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:text="Episodes wached"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/holo_blue_light"
-            android:textSize="11.0sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
-
-        <RelativeLayout
-            android:id="@+id/containerWatched"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@id/txtTotalWatched"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip" >
-
-            <ProgressBar
-                android:id="@+id/pgrWatched"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2.0dip"
-                android:layout_marginBottom="2.0dip"
-                android:layout_toLeftOf="@+id/txtWatched"
-                android:max="100"
-                android:progress="0" />
-
-            <TextView
-                android:id="@+id/txtWatched"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_alignParentTop="true"
-                android:layout_marginLeft="10.0dip" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/txtLastAired"
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/containerWatched"
-            android:layout_marginBottom="5.0dip"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:text="Last Aired Episode"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/holo_blue_light"
-            android:textSize="11.0sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
-
-        <RelativeLayout
-            android:id="@+id/rllHeader1"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtLastAired"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:background="@drawable/background_listitem"
-            android:clickable="true" >
-
-            <TextView
-                android:id="@+id/txtLastAiredTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:textAppearance="?android:textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/txtLastAiredEpisodeNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/txtLastAiredTitle"
-                android:textAppearance="?android:textAppearanceSmall" />
+                android:typeface="normal"
+                android:text="Sunday 6:00pm (UTC) - HBO"/>
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/txtUpcomingEpisodes"
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_below="@+id/rllHeader1"
-            android:layout_marginBottom="5.0dip"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:layout_marginTop="10.0dip"
-            android:text="Next episode"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/holo_blue_light"
-            android:textColorLink="@color/holo_blue_light"
-            android:textSize="11.0sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
-
-        <RelativeLayout
-            android:id="@+id/rllHeader2"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_below="@+id/txtUpcomingEpisodes"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:background="@drawable/background_listitem"
-            android:clickable="true" >
-
-            <TextView
-                android:id="@+id/txtNextEpisodeTitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:textAppearance="?android:textAppearanceMedium" />
-
-            <TextView
-                android:id="@+id/txtNextEpisodeNumber"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/txtNextEpisodeTitle"
-                android:textAppearance="?android:textAppearanceSmall" />
-        </RelativeLayout>
-
-        <TextView
-            android:id="@+id/txtShowEnded"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="false"
-            android:layout_below="@+id/rllHeader2"
-            android:layout_centerHorizontal="true"
-            android:paddingLeft="5.0dip"
-            android:text="This show has ended"
-            android:textAppearance="?android:textAppearanceMedium"
-            android:visibility="gone" />
         <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_below="@+id/txtShowEnded" >
-
-        <TextView
-            android:id="@+id/txtSummaryHeader"
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="fill_parent"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="5.0dip"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:text="Summary"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/holo_blue_light"
-            android:textSize="11.0sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
+            android:layout_below="@+id/ivShowImage"
+            android:padding="10dp"
+            android:orientation="vertical">
 
-        <TextView
-            android:id="@+id/txtSummary"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:textAppearance="?android:textAppearanceMedium" />
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_card"
+                android:padding="10dp"
+                android:orientation="vertical">
 
-        <TextView
-            style="?android:attr/listSeparatorTextViewStyle"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5.0dip"
-            android:layout_marginLeft="10.0dip"
-            android:layout_marginRight="10.0dip"
-            android:text="IMDB"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/holo_blue_light"
-            android:textSize="11.0sp"
-            android:textStyle="bold"
-            android:typeface="normal" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/Overview"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
 
-        <Button
-            android:id="@+id/btnOpenImdb"
-            android:layout_width="fill_parent"
-            android:layout_height="wrap_content"
-            android:text="More Information" />
-    </LinearLayout>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tvOverview"
+                    android:text="Seven noble families fight for control of the mythical land of Westeros. Friction between the houses leads to full-scale war. All while a very ancient evil awakens in the farthest north. Amidst the war, a neglected military order of misfits, the Night's Watch, is all that stands between the realms of men and icy horrors beyond."/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_card"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/details"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvYear"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvCountry"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvRuntime"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvStatus"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvNetwork"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvAirTime"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvCertification"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvRating"/>
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:src="@color/grey_bg"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_card"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/genres"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:id="@+id/tvGenres"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_card"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/you"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="5dp"
+                    android:singleLine="true"
+                    android:layout_marginBottom="5dp"
+                    android:id="@+id/tvWatchedEpisodes"/>
+
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_card"
+                android:padding="10dp"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="@string/external"
+                    android:textSize="18sp"
+                    android:textStyle="bold"/>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_marginBottom="5dp">
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/imdb_icon"
+                        android:id="@+id/ivImdb"/>
+
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/trakt_icon"
+                        android:layout_marginLeft="5dp"
+                        android:id="@+id/ivTrakt"/>
+
+                </LinearLayout>
+
+            </LinearLayout>
+
+        </LinearLayout>
+
     </RelativeLayout>
 
-    
 
 </ScrollView>

@@ -1,7 +1,7 @@
 package rs.pedjaapps.tvshowtracker.network;
 
-import android.util.Base64;
 import android.util.Log;
+
 
 import com.crashlytics.android.Crashlytics;
 
@@ -35,7 +35,6 @@ import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.network.cookie.PersistentCookieStore;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.MyTimer;
-import rs.pedjaapps.tvshowtracker.utils.PostParams;
 
 
 public class Internet

@@ -17,7 +17,8 @@ public class PrefsManager
 
     public enum Key
     {
-        locale, email
+        locale, email,
+        sort
     }
 
     public static String getLocale()
@@ -28,5 +29,26 @@ public class PrefsManager
     public static String getActiveUserEmail()
     {
         return prefs.getString(Key.email.toString(), defaultUser);
+    }
+
+    public static void setActiveUserEmail(String email)
+    {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Key.email.toString(), email);
+        editor.apply();
+    }
+
+    public static MainActivity.SortOrder getSortOrder()
+    {
+        MainActivity.SortOrder sortOrder = MainActivity.SortOrder.valueOf(prefs.getString(Key.sort.toString(), MainActivity.SortOrder.id.toString()));
+        if(sortOrder == null) sortOrder = MainActivity.SortOrder.id;
+        return sortOrder;
+    }
+
+    public static void setSortOrder(String sortOrder)
+    {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putString(Key.sort.toString(), sortOrder);
+        editor.apply();
     }
 }

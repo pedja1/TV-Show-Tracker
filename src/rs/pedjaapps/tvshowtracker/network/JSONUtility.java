@@ -1,9 +1,5 @@
 package rs.pedjaapps.tvshowtracker.network;
 
-import android.content.SharedPreferences;
-import android.content.res.Resources;
-import android.location.Address;
-import android.os.Handler;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
@@ -13,17 +9,12 @@ import org.json.JSONObject;
 
 import java.net.URLEncoder;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 
-import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.BuildConfig;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
-import rs.pedjaapps.tvshowtracker.model.DaoSession;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
 import rs.pedjaapps.tvshowtracker.model.Genre;
@@ -32,8 +23,9 @@ import rs.pedjaapps.tvshowtracker.model.Image;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
+import rs.pedjaapps.tvshowtracker.model.User;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.Tools;
+import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
 /**
  * Created by pedja on 1/22/14.
@@ -43,10 +35,11 @@ public class JSONUtility
 {
     public enum Key
     {
-        title, first_aired, country, overview, banner, air_day, air_time, images, network, year, url,
+        title, first_aired_utc, country, overview, banner, air_day, air_time, images, network, year, url,
         runtime, status, fanart, poster, certification, imdb_id, tvdb_id, tvrage_id, last_updated, ratings,
         percentage, loved, hated, actors, people, name, character, headshot, genres, seasons, episodes,
-        season, episode, screen, error
+        season, episode, screen, error, error_message, error_code, id, email, first_name, last_name, avatar,
+        password
     }
 
     public enum RequestKey
@@ -54,11 +47,55 @@ public class JSONUtility
         query
     }
 
+    public static Response parseLoginResponse(PostParams params)
+    {
+        Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_LOGIN, params);
+        if(!checkResponse(response))
+        {
+            Response response1 = new Response();
+            response1.status = false;
+            response1.errorMessage = response.responseMessage;
+            return response1;
+        }
+        try
+        {
+            JSONObject jsonObject = new JSONObject(response.responseData);
+            if(jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
+            {
+                User user = new User();
+                if(jsonObject.has(Key.id.toString()))user.setId(jsonObject.getLong(Key.id.toString()));
+                if(jsonObject.has(Key.email.toString()))user.setEmail(jsonObject.getString(Key.email.toString()));
+                if(jsonObject.has(Key.first_name.toString()))user.setFirst_name(jsonObject.getString(Key.first_name.toString()));
+                if(jsonObject.has(Key.last_name.toString()))user.setLast_name(jsonObject.getString(Key.last_name.toString()));
+                if(jsonObject.has(Key.password.toString()))user.setPassword(jsonObject.getString(Key.password.toString()));
+                if(jsonObject.has(Key.avatar.toString()))user.setAvatar(jsonObject.getString(Key.avatar.toString()));
+                MainApp.getInstance().getDaoSession().getUserDao().insertOrReplace(user);
+                PrefsManager.setActiveUserEmail(user.getEmail());
+                MainApp.getInstance().setActiveUser(user);
+            }
+            else
+            {
+                return new Response()
+                        .setErrorCode(jsonObject.getString(Key.error_code.toString()))
+                        .setErrorMessage(jsonObject.getString(Key.error_message.toString()))
+                        .setStatus(false);
+            }
+        }
+        catch (Exception e)
+        {
+            if(BuildConfig.DEBUG)e.printStackTrace();
+            if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            Crashlytics.logException(e);
+            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode("internal_exception");
+        }
+        return new Response().setErrorMessage(null).setErrorCode(null).setStatus(true);
+    }
+
     public static List<Show> parseSearchResults(String query)
     {
         List<Show> shows = new ArrayList<Show>();
         query = URLEncoder.encode(query);
-        Internet.Response response = Internet.getInstance().httpGet(Constants.REQIEST_URL_SEARCH + "?" + RequestKey.query.toString() + "=" + query);
+        Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_SEARCH + "?" + RequestKey.query.toString() + "=" + query);
         if(!checkResponse(response))return null;
         try
         {
@@ -69,7 +106,7 @@ public class JSONUtility
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if(jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
                 if(jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
-                if(jsonObject.has(Key.first_aired.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired.toString()));
+                if(jsonObject.has(Key.first_aired_utc.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired_utc.toString()));
                 if(jsonObject.has(Key.country.toString()))show.setCountry(jsonObject.getString(Key.country.toString()));
                 if(jsonObject.has(Key.overview.toString()))show.setOverview(jsonObject.getString(Key.overview.toString()));
                 if(jsonObject.has(Key.network.toString()))show.setNetwork(jsonObject.getString(Key.network.toString()));
@@ -99,12 +136,12 @@ public class JSONUtility
 
     public static Response parseShow(String tvdbId)
     {
-        Internet.Response response = Internet.getInstance().httpGet(Constants.REQIEST_URL_GET_SHOW_INFO + "/" + tvdbId + "/1");
+        Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_GET_SHOW_INFO + "/" + tvdbId + "/1");
         if(!checkResponse(response))
         {
             Response response1 = new Response();
             response1.status = false;
-            response1.error = response.responseMessage;
+            response1.errorMessage = response.responseMessage;
             return response1;
         }
         try
@@ -112,7 +149,7 @@ public class JSONUtility
             JSONObject jsonObject = new JSONObject(response.responseData);
             if(jsonObject.has(Key.error.toString()))
             {
-                return new Response().setError(jsonObject.getString(Key.error.toString())).setStatus(false);
+                return new Response().setErrorMessage(jsonObject.getString(Key.error.toString())).setStatus(false);
             }
             Show show = new Show();
             List<Episode> episodes = new ArrayList<Episode>();
@@ -121,7 +158,7 @@ public class JSONUtility
             if(jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
             if(jsonObject.has(Key.year.toString()))show.setYear(jsonObject.getInt(Key.year.toString()));
             if(jsonObject.has(Key.url.toString()))show.setUrl(jsonObject.getString(Key.url.toString()));
-            if(jsonObject.has(Key.first_aired.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired.toString()));
+            if(jsonObject.has(Key.first_aired_utc.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired_utc.toString()));
             if(jsonObject.has(Key.country.toString()))show.setCountry(jsonObject.getString(Key.country.toString()));
             if(jsonObject.has(Key.overview.toString()))show.setOverview(jsonObject.getString(Key.overview.toString()));
             if(jsonObject.has(Key.runtime.toString()))show.setRuntime(jsonObject.getInt(Key.runtime.toString()));
@@ -211,7 +248,7 @@ public class JSONUtility
                             if(jEpisode.has(Key.tvdb_id.toString()))episode.setTvdb_id(jEpisode.getInt(Key.tvdb_id.toString()));
                             if(jEpisode.has(Key.title.toString()))episode.setTitle(jEpisode.getString(Key.title.toString()));
                             if(jEpisode.has(Key.overview.toString()))episode.setOverview(jEpisode.getString(Key.overview.toString()));
-                            if(jEpisode.has(Key.first_aired.toString()))episode.setFirst_aired(jEpisode.getLong(Key.first_aired.toString()));
+                            if(jEpisode.has(Key.first_aired_utc.toString()))episode.setFirst_aired(jEpisode.getLong(Key.first_aired_utc.toString()));
                             if(jEpisode.has(Key.url.toString()))episode.setUrl(jEpisode.getString(Key.url.toString()));
                             if(jEpisode.has(Key.screen.toString()))episode.setScreen(jEpisode.getString(Key.screen.toString()));
                             if(jEpisode.has(Key.ratings.toString()))
@@ -236,9 +273,9 @@ public class JSONUtility
             if(BuildConfig.DEBUG)e.printStackTrace();
             if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
             Crashlytics.logException(e);
-            return new Response().setStatus(false).setError(e.getMessage());
+            return new Response().setStatus(false).setErrorMessage(e.getMessage());
         }
-        return new Response().setError(null).setStatus(true);
+        return new Response().setErrorMessage(null).setStatus(true);
     }
 
     public static boolean checkResponse(Internet.Response response)
@@ -249,7 +286,7 @@ public class JSONUtility
     public static class Response
     {
         private boolean status;
-        private String error;
+        private String errorMessage, errorCode;
 
         public Response setStatus(boolean status)
         {
@@ -257,9 +294,15 @@ public class JSONUtility
             return this;
         }
 
-        public Response setError(String error)
+        public Response setErrorMessage(String errorMessage)
         {
-            this.error = error;
+            this.errorMessage = errorMessage;
+            return this;
+        }
+
+        public Response setErrorCode(String errorCode)
+        {
+            this.errorCode = errorCode;
             return this;
         }
 
@@ -268,9 +311,14 @@ public class JSONUtility
             return status;
         }
 
-        public String getError()
+        public String getErrorMessage()
         {
-            return error;
+            return errorMessage;
+        }
+
+        public String getErrorCode()
+        {
+            return errorCode;
         }
     }
 }

@@ -1,4 +1,3 @@
 include ':libs:Caldroid'
-
 include 'DaoGenerator'
 

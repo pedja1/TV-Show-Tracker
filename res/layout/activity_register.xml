@@ -1,0 +1,135 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:app="http://schemas.android.com/apk/res-auto"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:gravity="center_horizontal"
+              android:orientation="vertical"
+              android:paddingBottom="@dimen/activity_vertical_margin"
+              android:paddingLeft="@dimen/activity_horizontal_margin"
+              android:paddingRight="@dimen/activity_horizontal_margin"
+              android:paddingTop="@dimen/activity_vertical_margin"
+              tools:context="rs.pedjaapps.tvshowtracker.RegisterActivity">
+
+    <!-- Login progress -->
+    <ProgressBar
+        android:id="@+id/login_progress"
+        style="?android:attr/progressBarStyleLarge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:visibility="gone"/>
+
+    <ScrollView
+        android:id="@+id/login_form"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        >
+
+        <LinearLayout
+            android:id="@+id/email_login_form"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <FloatLabeledEditText
+                android:id="@+id/email"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fletFloatingHint="@string/prompt_email"
+                app:fletInputType="textEmailAddress"
+                android:maxLines="1"
+                app:fletSingleLine="true"/>
+
+            <FloatLabeledEditText
+                android:id="@+id/password"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fletFloatingHint="@string/prompt_password"
+                app:fletInputType="textPassword"
+                android:maxLines="1"
+                app:fletSingleLine="true"/>
+
+            <FloatLabeledEditText
+                android:id="@+id/passwordRepeat"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fletFloatingHint="@string/prompt_password_repeat"
+                app:fletInputType="textPassword"
+                android:maxLines="1"
+                app:fletSingleLine="true"/>
+
+            <FloatLabeledEditText
+                android:id="@+id/edFirstName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fletFloatingHint="@string/prompt_first_name"
+                app:fletInputType="textPersonName"
+                android:maxLines="1"
+                app:fletSingleLine="true"/>
+
+            <FloatLabeledEditText
+                android:id="@+id/edLastName"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:fletFloatingHint="@string/prompt_last_name"
+                app:fletInputType="textPersonName"
+                android:maxLines="1"
+                app:fletSingleLine="true"
+                app:fletImeActionId="@+id/register"
+                app:fletImeActionLabel="@string/action_register"
+                app:fletImeOptions="actionUnspecified"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Avatar"
+                android:textSize="18sp"
+                android:padding="5dp"/>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="72dp"
+                    android:layout_height="72dp"
+                    android:id="@+id/ivAvatar"
+                    android:src="@drawable/ic_launcher"/>
+
+                <Button
+                    android:id="@+id/btnTakePhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/take_photo"
+                    style="?android:textAppearanceSmall"/>
+
+                <Button
+                    android:id="@+id/btnPickPhoto"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="bottom"
+                    android:text="@string/pick_photo"
+                    style="?android:textAppearanceSmall"/>
+
+            </LinearLayout>
+
+            <Button
+                android:id="@+id/btnRegister"
+                style="?android:textAppearanceSmall"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/action_register"
+                android:textStyle="bold"
+                android:layout_marginTop="16dp"/>
+
+
+        </LinearLayout>
+    </ScrollView>
+
+</LinearLayout>
+
+
+

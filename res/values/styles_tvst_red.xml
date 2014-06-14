@@ -52,8 +52,10 @@
         <item name="android:progressBarStyle">@style/ProgressBar.Tvst_red</item>
     </style>
 
-    <style name="PopupMenu.Tvst_red" parent="@android:style/Widget.Holo.ListPopupWindow">
-        <item name="android:popupBackground">@drawable/menu_dropdown_panel_tvst_red</item>	
+    <style name="PopupMenu.Tvst_red" parent="@android:style/Widget.Holo.Light.ListPopupWindow">
+        <!--
+        <item name="android:popupBackground">@drawable/menu_dropdown_panel_tvst_red</item>
+        -->
     </style>
 
     <style name="DropDownListView.Tvst_red" parent="@android:style/Widget.Holo.ListView.DropDown">

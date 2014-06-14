@@ -21,9 +21,9 @@ public final class BannersAdapter extends ArrayAdapter<ShowOld>
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
 		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage)
-			.showImageForEmptyUri(R.drawable.noimage)
-			.showImageOnFail(R.drawable.noimage)
+			.showStubImage(R.drawable.noimage_banner)
+			.showImageForEmptyUri(R.drawable.noimage_banner)
+			.showImageOnFail(R.drawable.noimage_banner)
 			.cacheOnDisc()
 			.bitmapConfig(Bitmap.Config.ARGB_8888)
 			.build();

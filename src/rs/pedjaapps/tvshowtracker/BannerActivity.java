@@ -23,7 +23,7 @@ public class BannerActivity extends BaseActivity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		
-		if(!Tools.isNetworkAvailable(this)){
+		if(!Utility.isNetworkAvailable(this)){
 			Toast.makeText(this, "No Internet Connection!\nPlease connect to internet and try again!", Toast.LENGTH_LONG).show();
 			finish();
 		}
@@ -110,7 +110,7 @@ public class BannerActivity extends BaseActivity {
 		{
 			
 			ShowOld show = new ShowOld();//db.getShow(seriesId, profile);
-			Tools.DownloadFromUrl("http://thetvdb.com/banners/"+adapter.getItem(args[0]).getBanner(), extStorage+"/TVST"+show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
+			Utility.DownloadFromUrl("http://thetvdb.com/banners/" + adapter.getItem(args[0]).getBanner(), extStorage + "/TVST" + show.getBanner().substring(show.getBanner().lastIndexOf("/"), show.getBanner().length()), false);
 			
 			return "";
 		}
@@ -125,7 +125,7 @@ public class BannerActivity extends BaseActivity {
 		{
 			 setProgressBarIndeterminateVisibility(false);
 			 finish();
-			 Tools.setRefresh(true);
+			 Utility.setRefresh(true);
 		}
 	}
 	

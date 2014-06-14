@@ -9,7 +9,6 @@ import android.text.*;
 import android.view.*;
 import android.widget.*;
 import rs.pedjaapps.tvshowtracker.adapter.*;
-import rs.pedjaapps.tvshowtracker.model.*;
 import rs.pedjaapps.tvshowtracker.utils.*;
 
 public class ProfilesActivity extends BaseActivity {
@@ -95,7 +94,7 @@ public class ProfilesActivity extends BaseActivity {
 				editor.apply();
 				updateList();
 				ProfilesActivity.this.name.setText("");
-				Tools.setRefresh(true);
+				Utility.setRefresh(true);
 			}
 		});
 	builder.setNegativeButton(getResources().getString(android.R.string.cancel), new DialogInterface.OnClickListener() {
