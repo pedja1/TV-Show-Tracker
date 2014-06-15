@@ -63,14 +63,11 @@ public class JSONUtility
             if(jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
             {
                 User user = new User();
-                if(jsonObject.has(Key.id.toString()))user.setId(jsonObject.getLong(Key.id.toString()));
                 if(jsonObject.has(Key.email.toString()))user.setEmail(jsonObject.getString(Key.email.toString()));
                 if(jsonObject.has(Key.first_name.toString()))user.setFirst_name(jsonObject.getString(Key.first_name.toString()));
                 if(jsonObject.has(Key.last_name.toString()))user.setLast_name(jsonObject.getString(Key.last_name.toString()));
-                if(jsonObject.has(Key.password.toString()))user.setPassword(jsonObject.getString(Key.password.toString()));
                 if(jsonObject.has(Key.avatar.toString()))user.setAvatar(jsonObject.getString(Key.avatar.toString()));
-                MainApp.getInstance().getDaoSession().getUserDao().insertOrReplace(user);
-                PrefsManager.setActiveUserEmail(user.getEmail());
+                PrefsManager.setActiveUser(user);
                 MainApp.getInstance().setActiveUser(user);
             }
             else
@@ -190,7 +187,6 @@ public class JSONUtility
                 if(ratings.has(Key.loved.toString()))show.setLoved(ratings.getInt(Key.loved.toString()));
                 if(ratings.has(Key.hated.toString()))show.setHated(ratings.getInt(Key.hated.toString()));
             }
-            show.setUser_id(MainApp.getInstance().getActiveUser().getId());
             ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
             long showId = showDao.insertOrReplace(show);
             if(jsonObject.has(Key.people.toString()))

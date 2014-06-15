@@ -202,10 +202,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
     private void setupUser()
     {
         User user = MainApp.getInstance().getActiveUser();
-        if(user.getId() != -1)
+        if(!PrefsManager.defaultUser.equals(user.getEmail()))
         {
-            getActionBar().setSubtitle(user.getFirst_name() + " " + user.getLast_name());
-            tvUser.setText(user.getFirst_name() + " " + user.getLast_name());
+            getActionBar().setSubtitle(user.getFullName());
+            tvUser.setText(user.getFullName());
             DisplayImageOptions options = new DisplayImageOptions.Builder()
                     .cloneFrom(MainApp.getInstance().displayImageOptions)
                     .displayer(new RoundedBitmapDisplayer(360))
@@ -310,7 +310,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
             case R.id.tvMenuCalendar:
                 break;
             case R.id.tvMenuLoginLogout:
-                if(MainApp.getInstance().getActiveUser().getId() == -1)
+                if(PrefsManager.defaultUser.equals(MainApp.getInstance().getActiveUser().getEmail()))
                 {
                     startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_CODE_LOGIN);
                 }

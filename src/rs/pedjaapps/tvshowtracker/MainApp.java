@@ -1,25 +1,19 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.app.ActivityManager;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.os.Build;
 
-
-import com.nostra13.universalimageloader.cache.disc.naming.Md5FileNameGenerator;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-import com.nostra13.universalimageloader.core.assist.QueueProcessingType;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.model.DaoMaster;
 import rs.pedjaapps.tvshowtracker.model.DaoSession;
 import rs.pedjaapps.tvshowtracker.model.User;
-import rs.pedjaapps.tvshowtracker.model.UserDao;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
@@ -55,29 +49,7 @@ public class MainApp extends Application
 
     private User initUser()
     {
-        String email = PrefsManager.getActiveUserEmail();
-        if(email.equals(PrefsManager.defaultUser))
-        {
-            return createDefaultUser();
-        }
-        else
-        {
-            UserDao userDao = getDaoSession().getUserDao();
-            QueryBuilder<User> queryBuilder = userDao.queryBuilder();
-            queryBuilder.where(UserDao.Properties.Email.eq(email));
-            User user = queryBuilder.build().unique();
-            return user == null ? createDefaultUser() : user;
-        }
-    }
-
-    private User createDefaultUser()
-    {
-        User user = new User();
-        user.setEmail(PrefsManager.defaultUser);
-        user.setFirst_name(getString(R.string._default));
-        user.setLast_name(getString(R.string.user));
-        user.setId(-1);
-        return user;
+        return PrefsManager.getActiveUser();
     }
 
     public User getActiveUser()

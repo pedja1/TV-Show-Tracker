@@ -8,7 +8,6 @@ import android.util.Log;
 import de.greenrobot.dao.AbstractDaoMaster;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 
-import rs.pedjaapps.tvshowtracker.model.UserDao;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
@@ -24,7 +23,6 @@ public class DaoMaster extends AbstractDaoMaster {
 
     /** Creates underlying database table using DAOs. */
     public static void createAllTables(SQLiteDatabase db, boolean ifNotExists) {
-        UserDao.createTable(db, ifNotExists);
         ShowDao.createTable(db, ifNotExists);
         ImageDao.createTable(db, ifNotExists);
         ActorDao.createTable(db, ifNotExists);
@@ -34,7 +32,6 @@ public class DaoMaster extends AbstractDaoMaster {
     
     /** Drops underlying database table using DAOs. */
     public static void dropAllTables(SQLiteDatabase db, boolean ifExists) {
-        UserDao.dropTable(db, ifExists);
         ShowDao.dropTable(db, ifExists);
         ImageDao.dropTable(db, ifExists);
         ActorDao.dropTable(db, ifExists);
@@ -71,7 +68,6 @@ public class DaoMaster extends AbstractDaoMaster {
 
     public DaoMaster(SQLiteDatabase db) {
         super(db, SCHEMA_VERSION);
-        registerDaoClass(UserDao.class);
         registerDaoClass(ShowDao.class);
         registerDaoClass(ImageDao.class);
         registerDaoClass(ActorDao.class);

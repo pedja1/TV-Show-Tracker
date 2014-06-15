@@ -10,8 +10,6 @@ import de.greenrobot.dao.AbstractDao;
 import de.greenrobot.dao.Property;
 import de.greenrobot.dao.internal.SqlUtils;
 import de.greenrobot.dao.internal.DaoConfig;
-import de.greenrobot.dao.query.Query;
-import de.greenrobot.dao.query.QueryBuilder;
 
 import rs.pedjaapps.tvshowtracker.model.Show;
 
@@ -49,13 +47,11 @@ public class ShowDao extends AbstractDao<Show, Long> {
         public final static Property Votes = new Property(18, Integer.class, "votes", false, "VOTES");
         public final static Property Loved = new Property(19, Integer.class, "loved", false, "LOVED");
         public final static Property Hated = new Property(20, Integer.class, "hated", false, "HATED");
-        public final static Property User_id = new Property(21, long.class, "user_id", false, "USER_ID");
-        public final static Property Image_id = new Property(22, Long.class, "image_id", false, "IMAGE_ID");
+        public final static Property Image_id = new Property(21, Long.class, "image_id", false, "IMAGE_ID");
     };
 
     private DaoSession daoSession;
 
-    private Query<Show> user_ShowsQuery;
 
     public ShowDao(DaoConfig config) {
         super(config);
@@ -91,8 +87,7 @@ public class ShowDao extends AbstractDao<Show, Long> {
                 "'VOTES' INTEGER," + // 18: votes
                 "'LOVED' INTEGER," + // 19: loved
                 "'HATED' INTEGER," + // 20: hated
-                "'USER_ID' INTEGER NOT NULL ," + // 21: user_id
-                "'IMAGE_ID' INTEGER);"); // 22: image_id
+                "'IMAGE_ID' INTEGER);"); // 21: image_id
     }
 
     /** Drops the underlying database table. */
@@ -206,11 +201,10 @@ public class ShowDao extends AbstractDao<Show, Long> {
         if (hated != null) {
             stmt.bindLong(21, hated);
         }
-        stmt.bindLong(22, entity.getUser_id());
  
         Long image_id = entity.getImage_id();
         if (image_id != null) {
-            stmt.bindLong(23, image_id);
+            stmt.bindLong(22, image_id);
         }
     }
 
@@ -251,8 +245,7 @@ public class ShowDao extends AbstractDao<Show, Long> {
             cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18), // votes
             cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19), // loved
             cursor.isNull(offset + 20) ? null : cursor.getInt(offset + 20), // hated
-            cursor.getLong(offset + 21), // user_id
-            cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22) // image_id
+            cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21) // image_id
         );
         return entity;
     }
@@ -281,8 +274,7 @@ public class ShowDao extends AbstractDao<Show, Long> {
         entity.setVotes(cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18));
         entity.setLoved(cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19));
         entity.setHated(cursor.isNull(offset + 20) ? null : cursor.getInt(offset + 20));
-        entity.setUser_id(cursor.getLong(offset + 21));
-        entity.setImage_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
+        entity.setImage_id(cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21));
      }
     
     /** @inheritdoc */
@@ -308,20 +300,6 @@ public class ShowDao extends AbstractDao<Show, Long> {
         return true;
     }
     
-    /** Internal query to resolve the "shows" to-many relationship of User. */
-    public List<Show> _queryUser_Shows(long user_id) {
-        synchronized (this) {
-            if (user_ShowsQuery == null) {
-                QueryBuilder<Show> queryBuilder = queryBuilder();
-                queryBuilder.where(Properties.User_id.eq(null));
-                user_ShowsQuery = queryBuilder.build();
-            }
-        }
-        Query<Show> query = user_ShowsQuery.forCurrentThread();
-        query.setParameter(0, user_id);
-        return query.list();
-    }
-
     private String selectDeep;
 
     protected String getSelectDeep() {

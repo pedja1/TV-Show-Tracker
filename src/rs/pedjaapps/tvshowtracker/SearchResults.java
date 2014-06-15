@@ -55,7 +55,7 @@ public class SearchResults extends BaseActivity
                 int tvdbId =  searchAdapter.getItem(position).getTvdb_id();
                 ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
                 QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-                queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(tvdbId), ShowDao.Properties.User_id.eq(MainApp.getInstance().getActiveUser().getId()));
+                queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(tvdbId));
                 List<Show> show = queryBuilder.build().list();
                 if (show.isEmpty())
                     new DownloadShow().execute(tvdbId + "");

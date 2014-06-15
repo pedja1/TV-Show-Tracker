@@ -28,22 +28,13 @@ public class DatingDaoGenerator
     {
         Schema schema = new Schema(1, "rs.pedjaapps.tvshowtracker.model");
 
-        addUser(schema);
+        addShow(schema);
 
         new DaoGenerator().generateAll(schema, "./src-gen");
     }
 
-    private static void addUser(Schema schema)
+    private static void addShow(Schema schema)
     {
-        Entity user = schema.addEntity("User");
-        user.setHasKeepSections(true);
-        user.addLongProperty("id").primaryKey().notNull();
-        user.addStringProperty("email").notNull();
-        user.addStringProperty("password").notNull();
-        user.addStringProperty("avatar");
-        user.addStringProperty("first_name");
-        user.addStringProperty("last_name");
-
         Entity show = schema.addEntity("Show");
         show.setHasKeepSections(true);
         show.addIdProperty();
@@ -67,10 +58,6 @@ public class DatingDaoGenerator
         show.addIntProperty("votes");
         show.addIntProperty("loved");
         show.addIntProperty("hated");
-
-        Property userId = show.addLongProperty("user_id").notNull().getProperty();
-        ToMany userToShow = user.addToMany(show, userId);
-        userToShow.setName("shows");
 
         Entity image = schema.addEntity("Image");
         image.implementsInterface("Parcelable");

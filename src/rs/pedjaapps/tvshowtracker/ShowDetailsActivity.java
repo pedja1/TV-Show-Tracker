@@ -56,7 +56,7 @@ public class ShowDetailsActivity extends BaseActivity
 		{
             ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
             QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-            queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(mTvdbId), ShowDao.Properties.User_id.eq(MainApp.getInstance().getActiveUser().getId()));
+            queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(mTvdbId));
 			return queryBuilder.unique();
 		}
 
