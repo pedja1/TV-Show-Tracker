@@ -35,23 +35,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
     private SortOrder sort;
     Menu menu;
     boolean menuDisable;
-    ArrayAdapter<String> profilesAdapter;
-    Spinner profiles;
-    Spinner sortSpinner;
-    Spinner filter;
-    LinearLayout llUser;
-
-    boolean profileFirstSelect = true;
-    boolean sortFirstSelect = true;
-    boolean filterFirstSelect = true;
-    TextView tvUser;
-    ImageView ivUserPhoto;
 
     SlidingMenu sideMenu;
     LinearLayout llUpcomingEpisode;
-    //private boolean hideUpcomingAnimationRunning = false;
-    //Animation showAnimation;
-    //Animation hideAnimation;
     Episode upcomingEpisode;
     TextView tvUpcomingEpisode;
     TextView tvLoginLogout;
@@ -81,9 +67,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
         findViewById(R.id.tvMenuMissed).setOnClickListener(this);
         findViewById(R.id.tvMenuSettings).setOnClickListener(this);
         findViewById(R.id.tvMenuTrending).setOnClickListener(this);
-        tvUser = (TextView)findViewById(R.id.tvFullName);
-        ivUserPhoto = (ImageView)findViewById(R.id.ivUserPhoto);
-        llUser = (LinearLayout)findViewById(R.id.llUser);
 
         setupUser();
 
@@ -114,109 +97,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
         llUpcomingEpisode = (LinearLayout)findViewById(R.id.llUpcomingEpisode);
         tvUpcomingEpisode = (TextView)findViewById(R.id.tvUpcomingEpisode);
 
-        /*showAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_in);
-        hideAnimation = AnimationUtils.loadAnimation(this, R.anim.bottom_out);
-        showAnimation.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override
-            public void onAnimationStart(Animation animation)
-            {
-                //hideUpcomingAnimationRunning = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-                llUpcomingEpisode.setVisibility(View.VISIBLE);
-                //hideUpcomingAnimationRunning = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation)
-            {
-
-            }
-        });
-        hideAnimation.setAnimationListener(new Animation.AnimationListener()
-        {
-            @Override
-            public void onAnimationStart(Animation animation)
-            {
-                //hideUpcomingAnimationRunning = true;
-            }
-
-            @Override
-            public void onAnimationEnd(Animation animation)
-            {
-                llUpcomingEpisode.setVisibility(View.GONE);
-                //hideUpcomingAnimationRunning = false;
-            }
-
-            @Override
-            public void onAnimationRepeat(Animation animation)
-            {
-
-            }
-        });*/
-        //list.setOnScrollListener(scrollListener);
-
         Utility.setRefresh(true);
     }
 
-    /*private AbsListView.OnScrollListener scrollListener = new AbsListView.OnScrollListener()
-    {
-
-        @Override
-        public void onScrollStateChanged(AbsListView absListView, int i)
-        {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView absListView, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-        {
-            if(upcomingEpisode == null)return;
-            if(firstVisibleItem + visibleItemCount >= totalItemCount)
-            {
-                if(llUpcomingEpisode.getVisibility() == View.VISIBLE)
-                {
-                    //hideUpcomingAnimationRunning = true;
-                    llUpcomingEpisode.setAnimation(hideAnimation);
-                    //hideAnimation.reset();
-                    hideAnimation.start();
-                }
-            }
-            else
-            {
-                if(llUpcomingEpisode.getVisibility() != View.VISIBLE)
-                {
-                    //hideUpcomingAnimationRunning = true;
-                    llUpcomingEpisode.setAnimation(showAnimation);
-                    //hideAnimation.reset();
-                    showAnimation.start();
-                }
-            }
-        }
-    };*/
-
     private void setupUser()
     {
-        User user = MainApp.getInstance().getActiveUser();
-        if(!PrefsManager.defaultUser.equals(user.getEmail()))
+        String user = MainApp.getInstance().getActiveUser();
+        if(!PrefsManager.defaultUser.equals(user))
         {
-            getActionBar().setSubtitle(user.getFullName());
-            tvUser.setText(user.getFullName());
-            DisplayImageOptions options = new DisplayImageOptions.Builder()
-                    .cloneFrom(MainApp.getInstance().displayImageOptions)
-                    .displayer(new RoundedBitmapDisplayer(360))
-                    .build();
-            ImageLoader.getInstance().displayImage(user.getAvatar(), ivUserPhoto, options);
-            llUser.setVisibility(View.VISIBLE);
+            getActionBar().setSubtitle(user);
             tvLoginLogout.setText(R.string.logout);
         }
         else
         {
-            llUser.setVisibility(View.GONE);
             tvLoginLogout.setText(R.string.login);
         }
     }
@@ -310,13 +203,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
             case R.id.tvMenuCalendar:
                 break;
             case R.id.tvMenuLoginLogout:
-                if(PrefsManager.defaultUser.equals(MainApp.getInstance().getActiveUser().getEmail()))
+                if(PrefsManager.defaultUser.equals(MainApp.getInstance().getActiveUser()))
                 {
                     startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_CODE_LOGIN);
                 }
                 else
                 {
-                    //TODO logout
+                    //new ATLogout();
                 }
                 break;
             case R.id.tvMenuMissed:

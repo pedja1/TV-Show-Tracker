@@ -7,6 +7,7 @@ import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
 import android.content.ContentResolver;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
@@ -78,7 +79,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             {
                 if (id == R.id.login || id == EditorInfo.IME_NULL)
                 {
-                    attemptLogin();
+                    attemptLogin(true);
                     return true;
                 }
                 return false;
@@ -91,7 +92,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             @Override
             public void onClick(View view)
             {
-                attemptLogin();
+                attemptLogin(true);
             }
         });
         findViewById(R.id.btnRegister).setOnClickListener(new OnClickListener()
@@ -99,8 +100,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             @Override
             public void onClick(View view)
             {
-                startActivity(new Intent(LoginActivity.this, RegisterActivity.class));
-                //TODO put data from pass and email to intent
+                attemptLogin(false);
             }
         });
 
@@ -127,7 +127,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
      * If there are form errors (invalid email, missing fields, etc.), the
      * errors are presented and no actual login attempt is made.
      */
-    public void attemptLogin()
+    public void attemptLogin(boolean login)
     {
         if (mAuthTask != null)
         {
@@ -179,7 +179,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
+            mAuthTask = new UserLoginTask(email, password, login);
             mAuthTask.execute((Void) null);
         }
     }
@@ -291,11 +291,13 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
 
         private final String mEmail;
         private final String mPassword;
+        private final boolean mLogin;//login or register
 
-        UserLoginTask(String email, String password)
+        UserLoginTask(String email, String password, boolean login)
         {
             mEmail = email;
             mPassword = password;
+            mLogin = login;
         }
 
         @Override
@@ -303,7 +305,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
         {
             PostParams postParams = new PostParams();
             postParams.setParamsForLogin(mEmail, new String(Hex.encodeHex(DigestUtils.sha(mPassword))));
-            return JSONUtility.parseLoginResponse(postParams);
+            if (mLogin)
+            {
+                return JSONUtility.parseLoginResponse(postParams);
+            }
+            else
+            {
+                return JSONUtility.parseRegisterResponse(postParams);
+            }
         }
 
         @Override
@@ -326,8 +335,15 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             }
             else
             {
-                setResult(RESULT_OK);
-                finish();
+                if(!TextUtils.isEmpty(response.getErrorMessage()))
+                {
+                    Utility.showMessageAlertDialog(LoginActivity.this, response.getErrorMessage(), null, null);
+                }
+                else
+                {
+                    setResult(RESULT_OK);
+                    finish();
+                }
             }
         }
 

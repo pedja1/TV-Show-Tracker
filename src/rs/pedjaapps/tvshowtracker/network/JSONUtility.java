@@ -23,7 +23,6 @@ import rs.pedjaapps.tvshowtracker.model.Image;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
-import rs.pedjaapps.tvshowtracker.model.User;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
@@ -39,7 +38,7 @@ public class JSONUtility
         runtime, status, fanart, poster, certification, imdb_id, tvdb_id, tvrage_id, last_updated, ratings,
         percentage, loved, hated, actors, people, name, character, headshot, genres, seasons, episodes,
         season, episode, screen, error, error_message, error_code, id, email, first_name, last_name, avatar,
-        password
+        password, message
     }
 
     public enum RequestKey
@@ -62,13 +61,9 @@ public class JSONUtility
             JSONObject jsonObject = new JSONObject(response.responseData);
             if(jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
             {
-                User user = new User();
-                if(jsonObject.has(Key.email.toString()))user.setEmail(jsonObject.getString(Key.email.toString()));
-                if(jsonObject.has(Key.first_name.toString()))user.setFirst_name(jsonObject.getString(Key.first_name.toString()));
-                if(jsonObject.has(Key.last_name.toString()))user.setLast_name(jsonObject.getString(Key.last_name.toString()));
-                if(jsonObject.has(Key.avatar.toString()))user.setAvatar(jsonObject.getString(Key.avatar.toString()));
-                PrefsManager.setActiveUser(user);
-                MainApp.getInstance().setActiveUser(user);
+                String email = jsonObject.getString(Key.email.toString());
+                PrefsManager.setActiveUser(email);
+                MainApp.getInstance().setActiveUser(email);
             }
             else
             {
@@ -87,6 +82,43 @@ public class JSONUtility
         }
         return new Response().setErrorMessage(null).setErrorCode(null).setStatus(true);
     }
+
+    public static Response parseRegisterResponse(PostParams params)
+    {
+        Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_REGISTER, params);
+        if(!checkResponse(response))
+        {
+            Response response1 = new Response();
+            response1.status = false;
+            response1.errorMessage = response.responseMessage;
+            return response1;
+        }
+        try
+        {
+            JSONObject jsonObject = new JSONObject(response.responseData);
+            if(jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
+            {
+                return new Response()
+                        .setStatus(true)
+                        .setErrorMessage(jsonObject.getString(Key.message.toString()));
+            }
+            else
+            {
+                return new Response()
+                        .setErrorCode(jsonObject.getString(Key.error_code.toString()))
+                        .setErrorMessage(jsonObject.getString(Key.error_message.toString()))
+                        .setStatus(false);
+            }
+        }
+        catch (Exception e)
+        {
+            if(BuildConfig.DEBUG)e.printStackTrace();
+            if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            Crashlytics.logException(e);
+            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode("internal_exception");
+        }
+    }
+
 
     public static List<Show> parseSearchResults(String query)
     {

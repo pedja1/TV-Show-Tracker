@@ -4,11 +4,12 @@
               android:orientation="horizontal"
               android:layout_width="match_parent"
               android:layout_height="wrap_content"
-              android:layout_margin="5dp">
+              android:padding="10dp"
+    android:background="@drawable/background_card">
 
     <ImageView
-        android:layout_width="70dp"
-        android:layout_height="105dp"
+        android:layout_width="48dp"
+        android:layout_height="72dp"
         android:id="@+id/ivActorPhoto"
         android:layout_gravity="left|center_vertical"/>
 
@@ -16,23 +17,20 @@
         android:orientation="vertical"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
-        android:layout_weight="1">
+        android:layout_weight="1"
+        android:layout_marginLeft="8dp">
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceLarge"
-            android:id="@+id/tvName"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"/>
+            android:id="@+id/tvName"/>
 
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:textSize="12sp"
             android:id="@+id/tvRole"
             android:layout_gravity="left|center_vertical"
-            android:layout_marginTop="10dp"
-            android:layout_marginLeft="8dp"/>
+            android:layout_marginTop="5dp"/>
     </LinearLayout>
 </LinearLayout>

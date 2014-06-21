@@ -14,6 +14,7 @@ import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -264,17 +265,17 @@ public class Utility
         return upcomingEpisode.getTitle() + " (" + upcomingEpisode.getShowTitle() + " " + "S"
                 + upcomingEpisode.getSeason() + "E" + upcomingEpisode.getEpisode() + " )" + " - "
                 + MainApp.getContext().getString(R.string.airs) + " "
-                + generateEpisodeAirTime(upcomingEpisode);
+                + generateEpisodeAirsTime(upcomingEpisode);
     }
 
-    private static String generateEpisodeAirTime(Episode episode)
+    public static String generateEpisodeAirsTime(Episode episode)
     {
         long airTime = episode.getAirsIn();
         //long timeSecondsNow = new Date().getTime() / 1000;
         int hours = (int) airTime;
         int days = hours / 24;
 
-        if(hours <= 0)
+        if(hours <= 1)
         {
             return MainApp.getContext().getString(R.string.less_than_an_hour);
         }
@@ -295,6 +296,63 @@ public class Utility
             return MainApp.getContext().getString(R.string.more_than_a_year);
         }
     }
+
+    public static String generateEpisodeAiredTime(long airTime)
+    {
+        if(airTime == 0)return null;
+        int hours = (int) ((airTime - (new Date().getTime() / 1000)) / 3600);
+        int days = hours / 24;
+
+        if (hours > 0)
+        {
+            String prefix = MainApp.getContext().getString(R.string.airs);
+            if(hours <= 1)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.less_than_an_hour);
+            }
+            else if(hours < 24)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.hours, hours);
+            }
+            else if(hours < 48)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.tomorow);
+            }
+            else if(days < 365)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.days, days);
+            }
+            else
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.more_than_a_year);
+            }
+        }
+        else
+        {
+            String prefix = MainApp.getContext().getString(R.string.aired);
+            if(hours >= -1)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.less_than_an_hour_ago);
+            }
+            else if(hours > -24)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.hours_ago, Math.abs(hours));
+            }
+            else if(hours > -48)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.yesterday);
+            }
+            else if(days > -365)
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.days_ago, Math.abs(days));
+            }
+            else
+            {
+                return prefix + " " + MainApp.getContext().getString(R.string.more_than_a_year_ago);
+            }
+        }
+    }
+
 
     public static boolean hasJB()
     {

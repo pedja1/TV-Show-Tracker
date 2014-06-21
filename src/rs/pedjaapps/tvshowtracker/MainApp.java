@@ -10,10 +10,8 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
 
-import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.model.DaoMaster;
 import rs.pedjaapps.tvshowtracker.model.DaoSession;
-import rs.pedjaapps.tvshowtracker.model.User;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
@@ -23,7 +21,7 @@ public class MainApp extends Application
 
     static Context context;
     DaoSession daoSession;
-    private User activeUser;
+    private String activeUser;
     public DisplayImageOptions displayImageOptions;
 
     public static MainApp getInstance()
@@ -47,12 +45,12 @@ public class MainApp extends Application
         activeUser = initUser();
     }
 
-    private User initUser()
+    private String initUser()
     {
         return PrefsManager.getActiveUser();
     }
 
-    public User getActiveUser()
+    public String getActiveUser()
     {
         if(activeUser == null)
         {
@@ -61,7 +59,7 @@ public class MainApp extends Application
         return activeUser;
     }
 
-    public void setActiveUser(User activeUser)
+    public void setActiveUser(String activeUser)
     {
         this.activeUser = activeUser;
     }

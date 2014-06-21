@@ -21,7 +21,6 @@ import rs.pedjaapps.tvshowtracker.model.Show;
  */
 public class ActorsFragment extends Fragment
 {
-    public static final String EXTRA_ACTORS = "actors";
     public static ActorsAdapter adapter;
 
     public static ActorsFragment newInstance()

@@ -7,13 +7,29 @@
     android:background="@drawable/selectable_background_tvst_red"
     android:clickable="true">
 
-    <TextView
-        android:id="@+id/tvTitle"
-        android:layout_width="wrap_content"
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:orientation="vertical"
         android:layout_alignParentLeft="true"
         android:layout_toLeftOf="@+id/cbWatched"
-        android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true">
+
+        <TextView
+            android:id="@+id/tvTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textStyle="bold"/>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="12sp"
+            android:id="@+id/tvAirs"/>
+
+    </LinearLayout>
 
     <CheckBox
         android:id="@+id/cbWatched"

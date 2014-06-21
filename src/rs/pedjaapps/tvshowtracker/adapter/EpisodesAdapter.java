@@ -20,12 +20,13 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
 {
 
     LayoutInflater inflater;
-    boolean checkChangeListenerEnabled = true;
+    public long timeNow;
 
     public EpisodesAdapter(final Context context)
     {
         super(context, 0);
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        timeNow = System.currentTimeMillis() / 1000;
     }
 
     @Override
@@ -81,6 +82,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
                 childHolder = new ViewHolder();
                 childHolder.tvTitle = (TextView)episodeLayout.findViewById(R.id.tvTitle);
                 childHolder.cbWatched = (CheckBox)episodeLayout.findViewById(R.id.cbWatched);
+                childHolder.tvAirs = (TextView)episodeLayout.findViewById(R.id.tvAirs);
                 episodeLayout.setTag(R.id.childHolder, childHolder);
                 holder.llEpisodes.addView(episodeLayout);
             }
@@ -91,16 +93,37 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
                 childHolder = (ViewHolder) episodeLayout.getTag(R.id.childHolder);
             }
             childHolder.tvTitle.setText(e.getTitle() + " | S" + (e.getSeason() < 10 ? "0" : "") + e.getSeason() + "E" + (e.getSeason() < 10 ? "0" : "") + e.getEpisode());
-            childHolder.cbWatched.setChecked(e.isWatched());
-            childHolder.cbWatched.setOnClickListener(new View.OnClickListener()
+            String airTime = generateAirTimeForEpisode(e);
+            if(airTime == null)
             {
-                @Override
-                public void onClick(View view)
+                childHolder.tvAirs.setText("");
+                childHolder.tvAirs.setVisibility(View.GONE);
+            }
+            else
+            {
+                childHolder.tvAirs.setText(airTime);
+                childHolder.tvAirs.setVisibility(View.VISIBLE);
+            }
+
+            if (e.getFirst_aired() != 0 && timeNow > e.getFirst_aired())
+            {
+                childHolder.cbWatched.setEnabled(true);
+                childHolder.cbWatched.setChecked(e.isWatched());
+                childHolder.cbWatched.setOnClickListener(new View.OnClickListener()
                 {
-                    e.setWatched(childHolder.cbWatched.isChecked());
-                    MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplace(e);
-                }
-            });
+                    @Override
+                    public void onClick(View view)
+                    {
+                        e.setWatched(childHolder.cbWatched.isChecked());
+                        MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplace(e);
+                    }
+                });
+            }
+            else
+            {
+                childHolder.cbWatched.setEnabled(false);
+                childHolder.cbWatched.setChecked(false);
+            }
             episodeLayout.setTag(R.id.episode, e);
 
             index++;
@@ -114,6 +137,11 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
         timer.log("EpisodesAdapter.getView(): season " + season.getSeason() + " loaded in");
 
         return convertView;
+    }
+
+    private String generateAirTimeForEpisode(Episode e)
+    {
+        return Utility.generateEpisodeAiredTime(e.getFirst_aired());
     }
 
 
@@ -168,7 +196,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
 
     class ViewHolder
     {
-        TextView tvSeason, tvTitle, tvMarkAll;
+        TextView tvSeason, tvTitle, tvMarkAll, tvAirs;
         LinearLayout llEpisodes;
         CheckBox cbWatched;
     }

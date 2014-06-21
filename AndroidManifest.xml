@@ -53,6 +53,7 @@
         </activity>
         <activity
             android:name="rs.pedjaapps.tvshowtracker.ShowDetailsActivity"
+            android:configChanges="orientation|screenSize"
             android:label="@string/title_activity_details"
             android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
             <meta-data
@@ -113,15 +114,13 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />
         </activity>
-
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.RegisterActivity"
-            android:label="@string/title_activity_register"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:name="rs.pedjaapps.tvshowtracker.EpisodeDetailsActivity"
+            android:label="@string/title_activity_episode_details"
+            android:parentActivityName="rs.pedjaapps.tvshowtracker.ShowDetailsActivity" >
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value=".LoginActivity" />
+                android:value="ShowDetailsActivity" />
         </activity>
     </application>
 

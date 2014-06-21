@@ -9,28 +9,6 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="10dp"
-            android:id="@+id/llUser">
-
-            <ImageView
-                android:layout_width="64dp"
-                android:layout_height="64dp"
-                android:id="@+id/ivUserPhoto"/>
-
-            <TextView
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:id="@+id/tvFullName"
-                android:layout_gravity="center_vertical"
-                android:textSize="18sp"
-                android:layout_marginLeft="10dp"
-                android:singleLine="true"/>
-
-        </LinearLayout>
-
         <TextView
             style="@style/MenuItem"
             android:text="@string/calendar"

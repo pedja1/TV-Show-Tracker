@@ -5,8 +5,6 @@ import android.preference.PreferenceManager;
 
 import rs.pedjaapps.tvshowtracker.MainActivity;
 import rs.pedjaapps.tvshowtracker.MainApp;
-import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.model.User;
 
 /**
  * Created by pedja on 31.5.14..
@@ -28,23 +26,15 @@ public class PrefsManager
         return prefs.getString(Key.locale.toString(), "en");
     }
 
-    public static User getActiveUser()
+    public static String getActiveUser()
     {
-        User user = new User();
-        user.setEmail(prefs.getString(Key.email.toString(), defaultUser));
-        user.setAvatar(prefs.getString(Key.avatar.toString(), null));
-        user.setFirst_name(prefs.getString(Key.first_name.toString(), null));
-        user.setLast_name(prefs.getString(Key.last_name.toString(), null));
-        return user;
+        return prefs.getString(Key.email.toString(), defaultUser);
     }
 
-    public static void setActiveUser(User user)
+    public static void setActiveUser(String email)
     {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(Key.email.toString(), user.getEmail());
-        editor.putString(Key.avatar.toString(), user.getAvatar());
-        editor.putString(Key.first_name.toString(), user.getFirst_name());
-        editor.putString(Key.locale.toString(), user.getLast_name());
+        editor.putString(Key.email.toString(), email);
         editor.apply();
     }
 
