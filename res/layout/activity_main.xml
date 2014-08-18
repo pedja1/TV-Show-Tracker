@@ -31,36 +31,4 @@
         android:visibility="gone"
         android:gravity="center"/>
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:id="@+id/llUpcomingEpisode"
-        android:orientation="vertical"
-        android:padding="5dp"
-        android:background="@drawable/glass_background"
-        android:visibility="gone">
-
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/upcoming_episode"
-            android:textSize="16sp"
-            android:textColor="@color/white"
-            android:textStyle="bold"/>
-
-        <AutoScrollingTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:textAllCaps="true"
-            android:textColor="@color/white"
-            android:textStyle="italic"
-            android:layout_marginTop="3dp"
-            android:id="@+id/tvUpcomingEpisode"
-            android:singleLine="true"
-            android:ellipsize="marquee"
-            android:marqueeRepeatLimit="marquee_forever"/>
-
-    </LinearLayout>
-
 </RelativeLayout>

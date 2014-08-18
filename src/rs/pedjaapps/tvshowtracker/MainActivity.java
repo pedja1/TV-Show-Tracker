@@ -42,6 +42,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
     TextView tvUpcomingEpisode;
     TextView tvLoginLogout;
 
+    PoppyViewHelper poppyViewHelper;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -80,6 +82,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
         pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
         tvNoShows = (TextView) findViewById(R.id.tvNoShows);
         setNoImageText();
+
+        poppyViewHelper = new PoppyViewHelper(this, PoppyViewHelper.PoppyViewPosition.BOTTOM);
+        View poppyView = poppyViewHelper.createPoppyViewOnGridView(R.id.lvShows, R.layout.upcoming_episode_layout);
+
         adapter = new ShowsAdapter(this, R.layout.shows_list_row);
         list = (GridView) findViewById(R.id.lvShows);
         list.setAdapter(adapter);
@@ -94,8 +100,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
 						adapter.getItem(arg2).getTvdb_id()));
             }
         });
-        llUpcomingEpisode = (LinearLayout)findViewById(R.id.llUpcomingEpisode);
-        tvUpcomingEpisode = (TextView)findViewById(R.id.tvUpcomingEpisode);
+        llUpcomingEpisode = (LinearLayout)poppyView.findViewById(R.id.llUpcomingEpisode);
+        tvUpcomingEpisode = (TextView)poppyView.findViewById(R.id.tvUpcomingEpisode);
 
         Utility.setRefresh(true);
     }
