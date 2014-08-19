@@ -1,32 +1,26 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+
+import com.koushikdutta.ion.Ion;
+
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.ShowOld;
-
-import android.content.*;
-import android.graphics.*;
-import android.view.*;
-import android.widget.*;
-import com.nostra13.universalimageloader.core.*;
 
 public final class BannersAdapter extends ArrayAdapter<ShowOld>
 {
 
 	private final int itemLayoutResource;
-    DisplayImageOptions options;
-	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	public BannersAdapter(final Context context, final int itemLayoutResource)
 	{
 		super(context, 0);
 		this.itemLayoutResource = itemLayoutResource;
-		options = new DisplayImageOptions.Builder()
-			.showStubImage(R.drawable.noimage_banner)
-			.showImageForEmptyUri(R.drawable.noimage_banner)
-			.showImageOnFail(R.drawable.noimage_banner)
-			.cacheOnDisc()
-			.bitmapConfig(Bitmap.Config.ARGB_8888)
-			.build();
 	}
 
 	@Override
@@ -36,7 +30,10 @@ public final class BannersAdapter extends ArrayAdapter<ShowOld>
 		final View view = getWorkingView(convertView);
 		final ViewHolder viewHolder = getViewHolder(view);
 		final ShowOld entry = getItem(position);
-		imageLoader.displayImage("http://thetvdb.com/banners/"+entry.getBanner(), viewHolder.bannerView, options);
+        Ion.with(viewHolder.bannerView)
+                .placeholder(R.drawable.noimage_banner)
+                .error(R.drawable.noimage_banner)
+                .load("http://thetvdb.com/banners/"+entry.getBanner());
 		return view;
 	}
 

@@ -1,19 +1,21 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
-import java.text.ParseException;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.ImageView;
+import android.widget.TextView;
+
+import com.koushikdutta.ion.Ion;
+
 import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowOld;
 
-import android.content.*;
-import android.view.*;
-import android.widget.*;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
 
 public final class SearchAdapter extends ArrayAdapter<Show>
 {
@@ -44,7 +46,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
         viewHolder.tvNetwork.setText(show.getNetwork());
         viewHolder.tvAirDay.setText(show.getAir_day() + ", " + show.getAir_time());
         viewHolder.tvOverview.setText(show.getOverview());
-        ImageLoader.getInstance().displayImage(show.getBanner(), viewHolder.ivBanner);
+        Ion.with(viewHolder.ivBanner).load(show.getBanner());
         return view;
     }
 
