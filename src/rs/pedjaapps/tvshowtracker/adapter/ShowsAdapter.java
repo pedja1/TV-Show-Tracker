@@ -1,34 +1,34 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoScrollingTextView;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+
+import com.koushikdutta.ion.Ion;
+
 import rs.pedjaapps.tvshowtracker.MainActivity;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.MyTimer;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-
-import android.content.*;
-import android.view.*;
-import android.widget.*;
-
-import com.nostra13.universalimageloader.core.*;
 
 public final class ShowsAdapter extends ArrayAdapter<Show>
 {
 
     private final int itemLayoutResource;
-    DisplayImageOptions options;
-    protected ImageLoader imageLoader = ImageLoader.getInstance();
 
     public ShowsAdapter(final Context context, final int itemLayoutResource)
     {
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
-        options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
-                .showImageForEmptyUri(R.drawable.noimage_poster_actor)
-                .showImageOnFail(R.drawable.noimage_poster_actor)
-                .showImageOnLoading(R.drawable.noimage_poster_actor).build();
     }
 
     @Override
@@ -39,7 +39,10 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         final Show show = getItem(position);
 
         viewHolder.upcomingEpisodeView.setText(show.getTitle());
-        imageLoader.displayImage(show.getImage().getPoster(), viewHolder.ivPoster, options);
+        Ion.with(viewHolder.ivPoster)
+                .placeholder(R.drawable.noimage_poster_actor)
+                .error(R.drawable.noimage_poster_actor)
+                .load(show.getImage().getPoster());
         viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -56,8 +59,6 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                         {
                             case R.id.update:
                                 break;
-                            /*case R.id.updateImages:
-                                break;*/
                             case R.id.delete:
                                 Utility.showDeleteDialog(getContext(), show, new DialogInterface.OnClickListener()
                                 {
@@ -65,7 +66,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                                     public void onClick(DialogInterface dialogInterface, int i)
                                     {
                                         MainApp.getInstance().getDaoSession().getShowDao().delete(show);
-                                        ((MainActivity)getContext()).refreshShows();
+                                        ((MainActivity) getContext()).refreshShows();
                                     }
                                 });
                                 break;
@@ -130,7 +131,6 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
     {
         public AutoScrollingTextView upcomingEpisodeView;
         public ImageView ivPoster, ivMore;
-
     }
 
 }

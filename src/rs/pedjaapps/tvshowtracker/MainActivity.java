@@ -1,28 +1,41 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.app.*;
-import android.content.*;
-import android.os.*;
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
+import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableStringBuilder;
 import android.text.style.ImageSpan;
-import android.util.*;
-import android.view.*;
-import android.widget.*;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.GridView;
+import android.widget.LinearLayout;
+import android.widget.PoppyViewHelper;
+import android.widget.ProgressBar;
+import android.widget.SearchView;
+import android.widget.TextView;
 
-import com.crashlytics.android.Crashlytics;
-import com.jeremyfeinstein.slidingmenu.lib.*;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
+import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-import rs.pedjaapps.tvshowtracker.adapter.*;
-import rs.pedjaapps.tvshowtracker.model.*;
-import rs.pedjaapps.tvshowtracker.utils.*;
+import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
+import rs.pedjaapps.tvshowtracker.model.Episode;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
+import rs.pedjaapps.tvshowtracker.utils.Comparators;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
+import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener
 {
@@ -87,6 +100,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
 
         adapter = new ShowsAdapter(this, R.layout.shows_list_row);
         list = (GridView) findViewById(R.id.lvShows);
+		//list.setOnScrollListener(new PauseOnScrollListener(ImageLoader.getInstance(), true, true));
         list.setAdapter(adapter);
 
         list.setOnItemClickListener(new AdapterView.OnItemClickListener()
