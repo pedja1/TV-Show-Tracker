@@ -75,7 +75,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         TextView tvCertification = (TextView)view.findViewById(R.id.tvCertification);
         tvCertification.setText(Html.fromHtml(getString(R.string.certification, show.getCertification())));
         TextView tvRating = (TextView)view.findViewById(R.id.tvRating);
-        tvRating.setText(Html.fromHtml(getString(R.string.rating_, show.getRating() != null ? ((double)show.getRating() / 10.0) : "")));
+        tvRating.setText(Html.fromHtml(getString(R.string.rating_, show.getRating() != null ? ((double)show.getRating() / 10.0) + "" : "")));
         TextView tvGenres = (TextView)view.findViewById(R.id.tvGenres);
         tvGenres.setText(generateGenres(show.getGenres()));
         TextView tvWatchedEpisodes = (TextView)view.findViewById(R.id.tvWatchedEpisodes);

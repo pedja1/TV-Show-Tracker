@@ -4,7 +4,6 @@
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
 <classpathentry kind="con" path="com.android.ide.eclipse.adt.LIBRARIES"/>
 <classpathentry kind="output" path="bin"/>
-<classpathentry kind="lib" path="/storage/external_SD/AppProjects/TV-Show-Tracker/libs/Caldroid/libs/android-support-v4.jar"/>
-<classpathentry kind="lib" path="/storage/external_SD/AppProjects/TV-Show-Tracker/libs/Caldroid/libs/joda-time-2.2.jar"/>
-<classpathentry kind="lib" path="/storage/external_SD/AppProjects/TV-Show-Tracker/libs/android-support-v4.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/TV-Show-Tracker/libs/android-support-v4.jar"/>
+<classpathentry kind="lib" path="/storage/emulated/0/AppProjects/TV-Show-Tracker/libs/joda-time-2.4.jar"/>
 </classpath>

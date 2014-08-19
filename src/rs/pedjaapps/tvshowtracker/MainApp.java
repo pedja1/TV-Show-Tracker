@@ -4,12 +4,11 @@ import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-
+import com.crashlytics.android.Crashlytics;
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
-
 import rs.pedjaapps.tvshowtracker.model.DaoMaster;
 import rs.pedjaapps.tvshowtracker.model.DaoSession;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
@@ -40,6 +39,7 @@ public class MainApp extends Application
     {
         super.onCreate();
         context = getApplicationContext();
+		//Crashlytics.start(this);
         initImageLoader();
         mainApp = this;
         activeUser = initUser();

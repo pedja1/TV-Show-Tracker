@@ -7,7 +7,7 @@
 
 	<color name="fbutton_default_color">#3eadeb</color>
     <color name="fbutton_default_shadow_color">#ff3493c8</color>
-    //Color Swatches provided by http://designmodo.github.io/Flat-UI/
+    <!--//Color Swatches provided by http://designmodo.github.io/Flat-UI/-->
     <color name="fbutton_color_turquoise">#1abc9c</color>
     <color name="fbutton_color_green_sea">#16a085</color>
     <color name="fbutton_color_emerald">#2ecc71</color>

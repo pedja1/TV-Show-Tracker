@@ -61,6 +61,6 @@ android {
 }
 
 dependencies {
-    compile 'joda-time:joda-time:2.3'
+    compile 'joda-time:joda-time:2.4'
     compile 'com.android.support:support-v4:19.+'
 }

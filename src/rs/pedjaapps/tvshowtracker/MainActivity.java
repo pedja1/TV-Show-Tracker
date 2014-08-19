@@ -49,7 +49,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
     {
         MainApp.getInstance().getDaoSession();
         super.onCreate(savedInstanceState);
-        Crashlytics.start(this);
 
         setContentView(R.layout.activity_main);
 
