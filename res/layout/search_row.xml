@@ -29,11 +29,10 @@
                 android:layout_alignParentLeft="true"
                 android:layout_alignParentRight="true"
                 android:layout_alignParentTop="true"
-                android:text="The Walking Dead"
                 android:textColor="#ff707070"
                 android:textSize="24.0sp"/>
 
-            <ImageView
+            <com.android.volley.ui.NetworkImageViewPlus
                 android:id="@+id/ivBanner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

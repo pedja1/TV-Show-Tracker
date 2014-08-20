@@ -9,7 +9,7 @@
               android:paddingRight="8dip"
               android:paddingTop="8dip">
 
-    <ImageView
+    <com.android.volley.ui.NetworkImageViewPlus
         android:id="@+id/imgSeriesImage"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"

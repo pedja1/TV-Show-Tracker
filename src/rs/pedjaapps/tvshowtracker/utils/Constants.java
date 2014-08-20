@@ -23,6 +23,7 @@ public class Constants
     public static final String DB_TABLE_NAME = "tvst.db";
     public static final int CONN_TIMEOUT = 2 * 60 * 1000;//2 min
     public static final String TRAKT_URL = "http://trakt.tv";
+    public static final String CACHE_FOLDER_NAME = ".cache";
 
     public static String ENCODING = "UTF-8";
 }

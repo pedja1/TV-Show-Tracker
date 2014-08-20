@@ -3,12 +3,9 @@ package rs.pedjaapps.tvshowtracker;
 import android.app.Application;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.Bitmap;
-import com.crashlytics.android.Crashlytics;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
-import com.nostra13.universalimageloader.core.ImageLoaderConfiguration;
-import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+
+import com.android.volley.cache.DiskLruBasedCache;
+
 import rs.pedjaapps.tvshowtracker.model.DaoMaster;
 import rs.pedjaapps.tvshowtracker.model.DaoSession;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
@@ -21,7 +18,7 @@ public class MainApp extends Application
     static Context context;
     DaoSession daoSession;
     private String activeUser;
-    public DisplayImageOptions displayImageOptions;
+    public DiskLruBasedCache.ImageCacheParams cacheParams;
 
     public static MainApp getInstance()
     {
@@ -66,31 +63,11 @@ public class MainApp extends Application
 
     public void initImageLoader()
     {
-        displayImageOptions = new DisplayImageOptions.Builder()
-                .imageScaleType(ImageScaleType.EXACTLY)
-                //.showImageForEmptyUri(android.R.color.transparent)
-                //.showImageOnFail(android.R.color.transparent)
-                //.showImageOnLoading(android.R.color.transparent)
-                //.resetViewBeforeLoading(true)
-                .bitmapConfig(Bitmap.Config.RGB_565)
-                //.cacheInMemory(true)
-                .cacheOnDisc(true)
-                .build();
-        // This configuration tuning is custom. You can tune every option, you may tune some of them,
-        // or you can create default configuration by
-        //  ImageLoaderConfiguration.createDefault(this);
-        // method.
-        ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                .threadPriority(Thread.NORM_PRIORITY + 1)
-                .memoryCacheSize(13)
-				.threadPoolSize(4)
-                .denyCacheImageMultipleSizesInMemory()
-                //.discCacheFileNameGenerator(new Md5FileNameGenerator())
-                //.tasksProcessingOrder(QueueProcessingType.LIFO)
-                .defaultDisplayImageOptions(displayImageOptions)
-                .build();
-        // Initialize ImageLoader with configuration.
-        ImageLoader.getInstance().init(config);
+        cacheParams = new DiskLruBasedCache.ImageCacheParams(getContext().getApplicationContext(), Constants.CACHE_FOLDER_NAME);
+        cacheParams.setMemCacheSizePercent(0.2f);
+        cacheParams.diskCacheSize = 1024 * 1024 * 200;//200MB, is it ot much?
+        cacheParams.diskCacheEnabled = true;
+        cacheParams.memoryCacheEnabled = false;
     }
 
     public DaoSession getDaoSession()

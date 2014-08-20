@@ -11,39 +11,28 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoScrollingTextView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-import com.android.volley.cache.DiskLruBasedCache;
-import com.android.volley.cache.SimpleImageLoader;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+
+import com.android.volley.cache.plus.SimpleImageLoader;
+import com.android.volley.ui.NetworkImageViewPlus;
+
 import rs.pedjaapps.tvshowtracker.MainActivity;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public final class ShowsAdapter extends ArrayAdapter<Show>
 {
-
-    private final int itemLayoutResource;
-    DisplayImageOptions options;
-    protected ImageLoader imageLoader = ImageLoader.getInstance();
 	SimpleImageLoader mImageFetcher;
+    public static final float IMAGE_RATIO = 0.7f;
 
-    public ShowsAdapter(final Context context, final int itemLayoutResource)
+    public ShowsAdapter(final Context context)
     {
         super(context, 0);
-        this.itemLayoutResource = itemLayoutResource;
-        options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
-                .showImageForEmptyUri(R.drawable.noimage_poster_actor)
-                .showImageOnFail(R.drawable.noimage_poster_actor)
-                .showImageOnLoading(R.drawable.noimage_poster_actor)
-				.build();
-		DiskLruBasedCache.ImageCacheParams cacheParams = new DiskLruBasedCache.ImageCacheParams(getContext().getApplicationContext(), "CacheDirectory");
-		cacheParams.setMemCacheSizePercent(0.5f);
-		cacheParams.diskCacheEnabled = true;
-
-		mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_poster_actor, cacheParams);
-		
+		mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+        //set max image size to screen width divided by number of columns and multiplied by aspect ratio(so that we actually get height of poster)
+        mImageFetcher.setMaxImageSize((int) ((DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num)) * IMAGE_RATIO));
     }
 
     @Override
@@ -54,8 +43,10 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         final Show show = getItem(position);
 
         viewHolder.upcomingEpisodeView.setText(show.getTitle());
-        //imageLoader.displayImage(show.getImage().getPoster(), viewHolder.ivPoster, options);
-		mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
+        viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
+        viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
+        viewHolder.ivPoster.setImageUrl(show.getImage().getPoster(), mImageFetcher);
+		//mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
         viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
             @Override
@@ -107,7 +98,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
             final LayoutInflater inflater = (LayoutInflater) context.getSystemService
                     (Context.LAYOUT_INFLATER_SERVICE);
 
-            workingView = inflater.inflate(itemLayoutResource, null);
+            workingView = inflater.inflate(R.layout.shows_list_row, null);
         }
         else
         {
@@ -128,7 +119,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
             viewHolder = new ViewHolder();
 
             viewHolder.upcomingEpisodeView = (AutoScrollingTextView) workingView.findViewById(R.id.txtUpcomingEpisode);
-            viewHolder.ivPoster = (ImageView) workingView.findViewById(R.id.imgSeriesImage);
+            viewHolder.ivPoster = (NetworkImageViewPlus) workingView.findViewById(R.id.imgSeriesImage);
             viewHolder.ivMore = (ImageView) workingView.findViewById(R.id.ivMore);
 
             workingView.setTag(viewHolder);
@@ -145,7 +136,8 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
     class ViewHolder
     {
         public AutoScrollingTextView upcomingEpisodeView;
-        public ImageView ivPoster, ivMore;
+        public NetworkImageViewPlus ivPoster;
+        ImageView ivMore;
 
     }
 

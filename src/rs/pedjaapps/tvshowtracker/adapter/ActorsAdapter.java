@@ -1,36 +1,34 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
-import rs.pedjaapps.tvshowtracker.MainApp;
-import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.model.Actor;
-
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+import com.android.volley.cache.plus.SimpleImageLoader;
+import com.android.volley.ui.NetworkImageViewPlus;
+
+import rs.pedjaapps.tvshowtracker.MainApp;
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 
 public final class ActorsAdapter extends ArrayAdapter<Actor>
 {
 
     private final int itemLayoutResource;
-    DisplayImageOptions options;
-    protected ImageLoader imageLoader = ImageLoader.getInstance();
+    SimpleImageLoader mImageFetcher;
+    public static final float IMAGE_RATIO = 0.7f;
 
     public ActorsAdapter(final Context context, final int itemLayoutResource)
     {
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
-        options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
-                .showImageForEmptyUri(R.drawable.noimage_banner)
-                .showImageOnFail(R.drawable.noimage_banner)
-                .build();
+        mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+        mImageFetcher.setMaxImageSize((int) ((DisplayManager.screenWidth / 5) * IMAGE_RATIO));
     }
 
     @Override
@@ -39,7 +37,9 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
         final View view = getWorkingView(convertView);
         final ViewHolder viewHolder = getViewHolder(view);
         final Actor actor = getItem(position);
-        imageLoader.displayImage(actor.getImage(), viewHolder.ivActorPhoto, options);
+        viewHolder.ivActorPhoto.setDefaultImageResId(R.drawable.noimage_poster_actor);
+        viewHolder.ivActorPhoto.setErrorImageResId(R.drawable.noimage_poster_actor);
+        viewHolder.ivActorPhoto.setImageUrl(actor.getImage(), mImageFetcher);
         viewHolder.tvName.setText(actor.getName());
         viewHolder.tvRole.setText(actor.getCharacter());
         return view;
@@ -74,7 +74,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
         {
             viewHolder = new ViewHolder();
 
-            viewHolder.ivActorPhoto = (ImageView) workingView.findViewById(R.id.ivActorPhoto);
+            viewHolder.ivActorPhoto = (NetworkImageViewPlus) workingView.findViewById(R.id.ivActorPhoto);
             viewHolder.tvName = (TextView) workingView.findViewById(R.id.tvName);
             viewHolder.tvRole = (TextView) workingView.findViewById(R.id.tvRole);
             workingView.setTag(viewHolder);
@@ -89,7 +89,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
 
     class ViewHolder
     {
-        ImageView ivActorPhoto;
+        NetworkImageViewPlus ivActorPhoto;
         TextView tvName, tvRole;
     }
 

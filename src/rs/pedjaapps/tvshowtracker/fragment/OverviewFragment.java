@@ -10,10 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-import com.nostra13.universalimageloader.core.DisplayImageOptions;
-import com.nostra13.universalimageloader.core.ImageLoader;
+
+import com.android.volley.cache.plus.SimpleImageLoader;
+import com.android.volley.ui.NetworkImageViewPlus;
+
 import java.util.ArrayList;
 import java.util.List;
+
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.ShowDetailsActivity;
@@ -22,6 +25,7 @@ import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.Genre;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 
 /**
  * Created by pedja on 1.6.14..
@@ -79,14 +83,14 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         tvGenres.setText(generateGenres(show.getGenres()));
         TextView tvWatchedEpisodes = (TextView)view.findViewById(R.id.tvWatchedEpisodes);
         tvWatchedEpisodes.setText(Html.fromHtml(getString(R.string.watched_episodes, generateWatchedEpisodes(show.getEpisodes()))));
-        ImageView ivShowPhoto = (ImageView)view.findViewById(R.id.ivShowImage);
-        
-		DisplayImageOptions options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
-			.showImageForEmptyUri(R.drawable.noimage_fanart)
-			.showImageOnFail(R.drawable.noimage_fanart)
-			.showImageOnLoading(R.drawable.noimage_fanart).build();
-		
-		ImageLoader.getInstance().displayImage(show.getImage().getFanart(), ivShowPhoto);
+        NetworkImageViewPlus ivShowPhoto = (NetworkImageViewPlus)view.findViewById(R.id.ivShowImage);
+
+        SimpleImageLoader mImageFetcher = new SimpleImageLoader(getActivity().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+        mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
+
+        ivShowPhoto.setDefaultImageResId(R.drawable.noimage_fanart);
+        ivShowPhoto.setErrorImageResId(R.drawable.noimage_fanart);
+        ivShowPhoto.setImageUrl(show.getImage().getFanart(), mImageFetcher);
         
 		TextView tvShowName = (TextView)view.findViewById(R.id.tvShowName);
         tvShowName.setText(show.getTitle());

@@ -1,32 +1,37 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
+import android.content.Context;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.TextView;
 
+import com.android.volley.cache.plus.SimpleImageLoader;
+import com.android.volley.ui.NetworkImageViewPlus;
+
+import java.text.SimpleDateFormat;
+
+import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowOld;
-
-import android.content.*;
-import android.view.*;
-import android.widget.*;
-
-import com.nostra13.universalimageloader.core.ImageLoader;
+import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 
 public final class SearchAdapter extends ArrayAdapter<Show>
 {
 
     private final int itemLayoutResource;
     Context context;
+    SimpleImageLoader mImageFetcher;
 
     public SearchAdapter(final Context context, final int itemLayoutResource)
     {
-
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
         this.context = context;
+        mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_banner, MainApp.getInstance().cacheParams);
+        mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
     }
 
     @Override
@@ -44,7 +49,9 @@ public final class SearchAdapter extends ArrayAdapter<Show>
         viewHolder.tvNetwork.setText(show.getNetwork());
         viewHolder.tvAirDay.setText(show.getAir_day() + ", " + show.getAir_time());
         viewHolder.tvOverview.setText(show.getOverview());
-        ImageLoader.getInstance().displayImage(show.getBanner(), viewHolder.ivBanner);
+        viewHolder.ivBanner.setDefaultImageResId(R.drawable.noimage_banner);
+        viewHolder.ivBanner.setErrorImageResId(R.drawable.noimage_banner);
+        viewHolder.ivBanner.setImageUrl(show.getBanner(), mImageFetcher);
         return view;
     }
 
@@ -83,7 +90,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
             viewHolder.tvOverview = (TextView) workingView.findViewById(R.id.tvOverview);
             //viewHolder.countryView = (TextView) workingView.findViewById(R.id.country);
             viewHolder.tvAirDay = (TextView) workingView.findViewById(R.id.tvAirTime);
-            viewHolder.ivBanner = (ImageView) workingView.findViewById(R.id.ivBanner);
+            viewHolder.ivBanner = (NetworkImageViewPlus) workingView.findViewById(R.id.ivBanner);
 
             workingView.setTag(viewHolder);
 
@@ -99,7 +106,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
     private class ViewHolder
     {
         TextView tvTitleYear, tvNetwork, tvAirDay, tvOverview;
-        ImageView ivBanner;
+        NetworkImageViewPlus ivBanner;
     }
 
 

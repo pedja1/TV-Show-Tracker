@@ -7,7 +7,7 @@
         android:layout_width="fill_parent"
         android:layout_height="wrap_content">
 
-        <ImageView
+        <com.android.volley.ui.NetworkImageViewPlus
             android:id="@+id/ivShowImage"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"

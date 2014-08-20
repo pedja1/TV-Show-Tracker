@@ -7,7 +7,7 @@
               android:padding="10dp"
     android:background="@drawable/background_card">
 
-    <ImageView
+    <com.android.volley.ui.NetworkImageViewPlus
         android:layout_width="48dp"
         android:layout_height="72dp"
         android:id="@+id/ivActorPhoto"
