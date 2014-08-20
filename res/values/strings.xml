@@ -23,7 +23,7 @@
     <string name="drawer_open">open</string>
     <string name="drawer_closed">closed</string>
     <string name="restore_warning"><b>Warning!</b> Database will be wiped before restore</string>
-    <string name="searching">Searching for %s</string>
+    <string name="searching">Searching for '%s'</string>
     <string name="no_net">No Internet Connection! Please connect to internet and try again!</string>
     <string name="unsupported_encoding">Network Error: Unsupported encoding</string>
     <string name="url_malformed">Network Error: URL is malformed</string>
@@ -92,5 +92,6 @@
     <string name="less_than_an_hour_ago">less than a hour ago.</string>
     <string name="yesterday">yesterday</string>
     <string name="title_activity_episode_details">EpisodeDetailsActivity</string>
+    <string name="search_results">Search Results</string>
 
 </resources>

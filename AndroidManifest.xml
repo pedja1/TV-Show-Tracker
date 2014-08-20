@@ -41,7 +41,7 @@
         <activity
             android:name="rs.pedjaapps.tvshowtracker.SearchResults"
             android:exported="false"
-            android:label="Search Results"
+            android:label="@string/search_results"
             android:launchMode="singleTop" >
             <intent-filter>
                 <action android:name="android.intent.action.SEARCH" />
