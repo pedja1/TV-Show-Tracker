@@ -1,24 +1,24 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
-import android.content.Context;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
-import android.widget.TextView;
-
-import com.koushikdutta.ion.Ion;
-
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.R.drawable;
+import rs.pedjaapps.tvshowtracker.R.id;
+import rs.pedjaapps.tvshowtracker.R.layout;
 import rs.pedjaapps.tvshowtracker.model.Agenda;
 import rs.pedjaapps.tvshowtracker.model.AgendaItem;
 import rs.pedjaapps.tvshowtracker.model.AgendaSection;
+import android.content.*;
+import android.graphics.*;
+import android.view.*;
+import android.widget.*;
+import com.nostra13.universalimageloader.core.*;
 
 public final class AgendaAdapter extends ArrayAdapter<Agenda>
 {
+
+    DisplayImageOptions options;
+	protected ImageLoader imageLoader = ImageLoader.getInstance();
 	
 	LayoutInflater inflater;
 	
@@ -27,6 +27,14 @@ public final class AgendaAdapter extends ArrayAdapter<Agenda>
 		super(context, 0);
 		inflater = (LayoutInflater) context
 				.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		options = new DisplayImageOptions.Builder()
+			.showStubImage(drawable.noimage_banner)
+			.showImageForEmptyUri(drawable.noimage_banner)
+			.showImageOnFail(drawable.noimage_banner)
+			.cacheInMemory()
+			
+			.bitmapConfig(Bitmap.Config.ARGB_8888)
+			.build();
 	}
 
 	@Override
@@ -68,10 +76,7 @@ public final class AgendaAdapter extends ArrayAdapter<Agenda>
 				}
 				AgendaItem ai = (AgendaItem)a;
 				itemHolder.episodeInfo.setText(ai.getNextEpisode());
-                Ion.with(itemHolder.banner)
-                        .placeholder(drawable.noimage_banner)
-                        .error(drawable.noimage_banner)
-                        .load("file://"+ai.getBanner());
+				imageLoader.displayImage("file://"+ai.getBanner(), itemHolder.banner, options);
 				return itemView;
 			case 1:
 			    View sectionView = convertView;

@@ -1,6 +1,10 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
+import rs.pedjaapps.tvshowtracker.MainApp;
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.model.Actor;
+
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,20 +13,24 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.koushikdutta.ion.Ion;
-
-import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.model.Actor;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 public final class ActorsAdapter extends ArrayAdapter<Actor>
 {
 
     private final int itemLayoutResource;
+    DisplayImageOptions options;
+    protected ImageLoader imageLoader = ImageLoader.getInstance();
 
     public ActorsAdapter(final Context context, final int itemLayoutResource)
     {
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
+        options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
+                .showImageForEmptyUri(R.drawable.noimage_banner)
+                .showImageOnFail(R.drawable.noimage_banner)
+                .build();
     }
 
     @Override
@@ -31,10 +39,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
         final View view = getWorkingView(convertView);
         final ViewHolder viewHolder = getViewHolder(view);
         final Actor actor = getItem(position);
-        Ion.with(viewHolder.ivActorPhoto)
-                .placeholder(R.drawable.noimage_banner)
-                .error(R.drawable.noimage_banner)
-                .load(actor.getImage());
+        imageLoader.displayImage(actor.getImage(), viewHolder.ivActorPhoto, options);
         viewHolder.tvName.setText(actor.getName());
         viewHolder.tvRole.setText(actor.getCharacter());
         return view;

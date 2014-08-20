@@ -11,8 +11,7 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-
-import com.koushikdutta.ion.Ion;
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -82,7 +81,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         TextView tvWatchedEpisodes = (TextView)view.findViewById(R.id.tvWatchedEpisodes);
         tvWatchedEpisodes.setText(Html.fromHtml(getString(R.string.watched_episodes, generateWatchedEpisodes(show.getEpisodes()))));
         ImageView ivShowPhoto = (ImageView)view.findViewById(R.id.ivShowImage);
-        Ion.with(ivShowPhoto).placeholder(R.drawable.noimage_fanart).error(R.drawable.noimage_fanart).load(show.getImage().getFanart());
+        ImageLoader.getInstance().displayImage(show.getImage().getFanart(), ivShowPhoto);
         TextView tvShowName = (TextView)view.findViewById(R.id.tvShowName);
         tvShowName.setText(show.getTitle());
         TextView tvShowShortInfo = (TextView)view.findViewById(R.id.tvShowShortInfo);
