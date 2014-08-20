@@ -14,7 +14,7 @@
             android:layout_alignParentTop="true"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:src="@drawable/noimage_fanart"/>
+            />
 
         <RelativeLayout
             android:layout_width="fill_parent"

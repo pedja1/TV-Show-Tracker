@@ -1,18 +1,25 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
 
+import android.content.Context;
+import android.content.DialogInterface;
+import android.view.LayoutInflater;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.AutoScrollingTextView;
+import android.widget.ImageView;
+import android.widget.PopupMenu;
+import com.android.volley.cache.DiskLruBasedCache;
+import com.android.volley.cache.SimpleImageLoader;
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
+import com.nostra13.universalimageloader.core.ImageLoader;
 import rs.pedjaapps.tvshowtracker.MainActivity;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.utils.MyTimer;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-
-import android.content.*;
-import android.view.*;
-import android.widget.*;
-
-import com.nostra13.universalimageloader.core.*;
 
 public final class ShowsAdapter extends ArrayAdapter<Show>
 {
@@ -20,6 +27,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
     private final int itemLayoutResource;
     DisplayImageOptions options;
     protected ImageLoader imageLoader = ImageLoader.getInstance();
+	SimpleImageLoader mImageFetcher;
 
     public ShowsAdapter(final Context context, final int itemLayoutResource)
     {
@@ -28,7 +36,14 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
                 .showImageForEmptyUri(R.drawable.noimage_poster_actor)
                 .showImageOnFail(R.drawable.noimage_poster_actor)
-                .showImageOnLoading(R.drawable.noimage_poster_actor).build();
+                .showImageOnLoading(R.drawable.noimage_poster_actor)
+				.build();
+		DiskLruBasedCache.ImageCacheParams cacheParams = new DiskLruBasedCache.ImageCacheParams(getContext().getApplicationContext(), "CacheDirectory");
+		cacheParams.setMemCacheSizePercent(0.5f);
+		cacheParams.diskCacheEnabled = true;
+
+		mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_poster_actor, cacheParams);
+		
     }
 
     @Override
@@ -39,7 +54,8 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         final Show show = getItem(position);
 
         viewHolder.upcomingEpisodeView.setText(show.getTitle());
-        imageLoader.displayImage(show.getImage().getPoster(), viewHolder.ivPoster, options);
+        //imageLoader.displayImage(show.getImage().getPoster(), viewHolder.ivPoster, options);
+		mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
         viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
             @Override

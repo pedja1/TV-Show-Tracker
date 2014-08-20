@@ -73,7 +73,7 @@ public class MainApp extends Application
                 //.showImageOnLoading(android.R.color.transparent)
                 //.resetViewBeforeLoading(true)
                 .bitmapConfig(Bitmap.Config.RGB_565)
-                .cacheInMemory(true)
+                //.cacheInMemory(true)
                 .cacheOnDisc(true)
                 .build();
         // This configuration tuning is custom. You can tune every option, you may tune some of them,
@@ -81,9 +81,10 @@ public class MainApp extends Application
         //  ImageLoaderConfiguration.createDefault(this);
         // method.
         ImageLoaderConfiguration config = new ImageLoaderConfiguration.Builder(this)
-                //.threadPriority(Thread.NORM_PRIORITY - 2)
-                .memoryCacheSize(8)
-                //.denyCacheImageMultipleSizesInMemory()
+                .threadPriority(Thread.NORM_PRIORITY + 1)
+                .memoryCacheSize(13)
+				.threadPoolSize(4)
+                .denyCacheImageMultipleSizesInMemory()
                 //.discCacheFileNameGenerator(new Md5FileNameGenerator())
                 //.tasksProcessingOrder(QueueProcessingType.LIFO)
                 .defaultDisplayImageOptions(displayImageOptions)

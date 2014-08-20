@@ -10,14 +10,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
+import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.ImageLoader;
-
 import java.util.ArrayList;
 import java.util.List;
-
-import rs.pedjaapps.tvshowtracker.ShowDetailsActivity;
+import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.ShowDetailsActivity;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.Genre;
@@ -81,8 +80,15 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         TextView tvWatchedEpisodes = (TextView)view.findViewById(R.id.tvWatchedEpisodes);
         tvWatchedEpisodes.setText(Html.fromHtml(getString(R.string.watched_episodes, generateWatchedEpisodes(show.getEpisodes()))));
         ImageView ivShowPhoto = (ImageView)view.findViewById(R.id.ivShowImage);
-        ImageLoader.getInstance().displayImage(show.getImage().getFanart(), ivShowPhoto);
-        TextView tvShowName = (TextView)view.findViewById(R.id.tvShowName);
+        
+		DisplayImageOptions options = new DisplayImageOptions.Builder().cloneFrom(MainApp.getInstance().displayImageOptions)
+			.showImageForEmptyUri(R.drawable.noimage_fanart)
+			.showImageOnFail(R.drawable.noimage_fanart)
+			.showImageOnLoading(R.drawable.noimage_fanart).build();
+		
+		ImageLoader.getInstance().displayImage(show.getImage().getFanart(), ivShowPhoto);
+        
+		TextView tvShowName = (TextView)view.findViewById(R.id.tvShowName);
         tvShowName.setText(show.getTitle());
         TextView tvShowShortInfo = (TextView)view.findViewById(R.id.tvShowShortInfo);
         tvShowShortInfo.setText(show.getAir_day() + " " + show.getAir_time() + " - " + show.getNetwork());
