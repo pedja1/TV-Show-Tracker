@@ -27,8 +27,4 @@
         <item name="android:padding">15dp</item>
         <item name="android:background">@drawable/selectable_background_tvst_red</item>
     </style>
-
-    <style name="TranslucentActionBar" parent="android:Theme.Holo">
-            <item name="android:windowActionBarOverlay">true</item>
-    </style>
 </resources>

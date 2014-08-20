@@ -1,12 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <declare-styleable name="ParallaxScroll">
-        <attr name="parallax_factor" format="float" />
-        <attr name="alpha_factor" format="float" />
-        <attr name="inner_parallax_factor" format="float" />
-        <attr name="parallax_views_num" format="integer" />
-        <attr name="circular_parallax" format="boolean" />
-    </declare-styleable>
+
     <declare-styleable name="FloatLabeledEditText">
         <attr name="fletFloatingHint" format="string" />
         <attr name="fletSingleLine" format="boolean" />
