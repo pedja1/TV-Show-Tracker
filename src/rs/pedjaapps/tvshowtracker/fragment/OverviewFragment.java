@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.NotifyingScrollView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.android.volley.cache.plus.SimpleImageLoader;
@@ -83,7 +85,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         tvGenres.setText(generateGenres(show.getGenres()));
         TextView tvWatchedEpisodes = (TextView)view.findViewById(R.id.tvWatchedEpisodes);
         tvWatchedEpisodes.setText(Html.fromHtml(getString(R.string.watched_episodes, generateWatchedEpisodes(show.getEpisodes()))));
-        NetworkImageViewPlus ivShowPhoto = (NetworkImageViewPlus)view.findViewById(R.id.ivShowImage);
+        final NetworkImageViewPlus ivShowPhoto = (NetworkImageViewPlus)view.findViewById(R.id.ivShowImage);
 
         SimpleImageLoader mImageFetcher = new SimpleImageLoader(getActivity().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
         mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
@@ -100,6 +102,19 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         ivImdb.setOnClickListener(this);
         ImageView ivTrakt = (ImageView)view.findViewById(R.id.ivTrakt);
         ivTrakt.setOnClickListener(this);
+
+        ((NotifyingScrollView)view).setOnScrollChangedListener(new NotifyingScrollView.OnScrollChangedListener()
+        {
+            @Override
+            public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt)
+            {
+                final int headerHeight = ivShowPhoto.getHeight() - getActivity().getActionBar().getHeight();
+                final float ratio = (float) Math.min(Math.max(t, 0), headerHeight) / headerHeight;
+                final int newAlpha = (int) (ratio * 255);
+                ((ShowDetailsActivity)getActivity()).getActionBarBackgroundDrawable().setAlpha(newAlpha);
+            }
+        });
+
         return view;
     }
 

@@ -4,13 +4,17 @@ import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.ShowDetailsActivity;
@@ -19,8 +23,6 @@ import rs.pedjaapps.tvshowtracker.model.Season;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.Comparators;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-import android.widget.RelativeLayout;
-import android.view.View.OnClickListener;
 
 /**
  * Created by pedja on 7.6.14..
@@ -126,7 +128,7 @@ public class EpisodesFragment extends Fragment
 		TextView tvMarkAll = (TextView) seasonView.findViewById(R.id.tvMarkAll);
 		LinearLayout llEpisodes = (LinearLayout) seasonView.findViewById(R.id.llEpisodes);
 		
-		final List<CheckBox> cbs = new ArrayList<>();
+		final List<CheckBox> cbs = new ArrayList<CheckBox>();
 		
 		for(final Episode e : season.getEpisodes())
 		{

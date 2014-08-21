@@ -1,8 +1,8 @@
 package rs.pedjaapps.tvshowtracker;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
@@ -11,10 +11,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
+
 import com.viewpagerindicator.LinePageIndicator;
-import de.greenrobot.dao.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.Show;
@@ -23,7 +26,7 @@ import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
-public class ShowDetailsActivity extends BaseActivity
+public class ShowDetailsActivity extends BaseActivity implements Drawable.Callback
 {
 
 	ShowDetailsPagerAdapter mShowDetailsPagerAdapter;
@@ -35,15 +38,24 @@ public class ShowDetailsActivity extends BaseActivity
     public static String EXTRA_TVDB_ID = "tvdb_id";
     ProgressBar pbLoading;
     //RelativeLayout rlDetailsContainer;
+    private Drawable mActionBarBackgroundDrawable;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_details);
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
+        {
+            mActionBarBackgroundDrawable.setCallback(this);
+        }
+
+        mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_background_textured_tvst_red);
+        mActionBarBackgroundDrawable.setAlpha(0);
 		
-		getActionBar().setBackgroundDrawable(/*getResources().getDrawable(R.drawable.glass_background)*/new ColorDrawable(Color.TRANSPARENT));
+		getActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 		
         pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
         //rlDetailsContainer = (RelativeLayout)findViewById(R.id.rlDetailsContainer);
@@ -58,7 +70,25 @@ public class ShowDetailsActivity extends BaseActivity
 
 	}
 
-	public class ATLoadShow extends AsyncTask<String, Void, Show>
+    @Override
+    public void invalidateDrawable(Drawable who)
+    {
+        getActionBar().setBackgroundDrawable(who);
+    }
+
+    @Override
+    public void scheduleDrawable(Drawable who, Runnable what, long when)
+    {
+
+    }
+
+    @Override
+    public void unscheduleDrawable(Drawable who, Runnable what)
+    {
+
+    }
+
+    public class ATLoadShow extends AsyncTask<String, Void, Show>
 	{
 
 		@Override
@@ -270,5 +300,10 @@ public class ShowDetailsActivity extends BaseActivity
     public Show getShow()
     {
         return show;
+    }
+
+    public Drawable getActionBarBackgroundDrawable()
+    {
+        return mActionBarBackgroundDrawable;
     }
 }

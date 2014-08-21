@@ -61,14 +61,6 @@
                 android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.BannerActivity"
-            android:label="@string/title_activity_banner"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
-        </activity>
-        <activity
             android:name="rs.pedjaapps.tvshowtracker.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
