@@ -1,21 +1,27 @@
 package rs.pedjaapps.tvshowtracker;
 
 import android.content.DialogInterface;
-import android.os.*;
-import android.support.v4.app.*;
-import android.support.v4.view.*;
-import android.view.*;
-import android.widget.*;
-
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
+import android.os.Bundle;
+import android.support.v4.app.NavUtils;
+import android.support.v4.view.ViewPager;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
+import android.view.Window;
+import android.widget.ProgressBar;
 import com.viewpagerindicator.LinePageIndicator;
-
-import java.util.*;
-
 import de.greenrobot.dao.query.QueryBuilder;
-import rs.pedjaapps.tvshowtracker.adapter.*;
-import rs.pedjaapps.tvshowtracker.model.*;
-import rs.pedjaapps.tvshowtracker.utils.*;
+import java.util.Date;
+import java.util.List;
+import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
+import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
+import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class ShowDetailsActivity extends BaseActivity
 {
@@ -33,8 +39,12 @@ public class ShowDetailsActivity extends BaseActivity
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_details);
+		
+		getActionBar().setBackgroundDrawable(/*getResources().getDrawable(R.drawable.glass_background)*/new ColorDrawable(Color.TRANSPARENT));
+		
         pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
         //rlDetailsContainer = (RelativeLayout)findViewById(R.id.rlDetailsContainer);
 
