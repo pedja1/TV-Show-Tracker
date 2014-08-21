@@ -1,9 +1,15 @@
 package rs.pedjaapps.tvshowtracker.adapter;
 
-import java.util.ArrayList;
+import android.content.Context;
+import android.util.Log;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.CheckBox;
+import android.widget.LinearLayout;
+import android.widget.TextView;
 import java.util.Date;
-import java.util.List;
-
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
@@ -11,10 +17,6 @@ import rs.pedjaapps.tvshowtracker.model.Season;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.MyTimer;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-
-import android.content.*;
-import android.view.*;
-import android.widget.*;
 
 public final class EpisodesAdapter extends ArrayAdapter<Season>
 {
@@ -78,6 +80,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
             final ViewHolder childHolder;
             if (holder.llEpisodes.getChildAt(index) == null)
             {
+				MyTimer timer2 = new MyTimer();
                 episodeLayout = inflater.inflate(R.layout.episode_layout, null);
                 childHolder = new ViewHolder();
                 childHolder.tvTitle = (TextView)episodeLayout.findViewById(R.id.tvTitle);
@@ -85,12 +88,15 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
                 childHolder.tvAirs = (TextView)episodeLayout.findViewById(R.id.tvAirs);
                 episodeLayout.setTag(R.id.childHolder, childHolder);
                 holder.llEpisodes.addView(episodeLayout);
+				Log.d(Constants.LOG_TAG, "Inflating Episode Row layout");
+				timer2.log("Inflating took:");
             }
             else
             {
                 episodeLayout = holder.llEpisodes.getChildAt(index);
                 episodeLayout.setVisibility(View.VISIBLE);
                 childHolder = (ViewHolder) episodeLayout.getTag(R.id.childHolder);
+				Log.d(Constants.LOG_TAG, "Reusing Episode Row layout");
             }
             childHolder.tvTitle.setText(e.getTitle() + " | S" + (e.getSeason() < 10 ? "0" : "") + e.getSeason() + "E" + (e.getSeason() < 10 ? "0" : "") + e.getEpisode());
             String airTime = generateAirTimeForEpisode(e);
