@@ -23,6 +23,7 @@ import rs.pedjaapps.tvshowtracker.model.Image;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
+import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
@@ -181,7 +182,7 @@ public class JSONUtility
             {
                 return new Response().setErrorMessage(jsonObject.getString(Key.error.toString())).setStatus(false);
             }
-            Show show = new Show();
+            Show show = insertInDb ? new Show() : new ShowNoDao();
             List<Episode> episodes = new ArrayList<Episode>();
             List<Actor> actors = new ArrayList<Actor>();
             List<Genre> genres = new ArrayList<Genre>();
@@ -215,6 +216,10 @@ public class JSONUtility
                     ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
                     imageId = imageDao.insert(image);
                     show.setImage_id(imageId);
+                }
+                else
+                {
+                    show.setImage(image);
                 }
             }
             if(jsonObject.has(Key.ratings.toString()))
@@ -255,6 +260,10 @@ public class JSONUtility
                         ActorDao actorDao = MainApp.getInstance().getDaoSession().getActorDao();
                         actorDao.insertOrReplaceInTx(actors);
                     }
+                    else
+                    {
+                        ((ShowNoDao)show).setActors(actors);
+                    }
                 }
             }
             if(jsonObject.has(Key.genres.toString()))
@@ -271,6 +280,10 @@ public class JSONUtility
                 {
                     GenreDao genreDao = MainApp.getInstance().getDaoSession().getGenreDao();
                     genreDao.insertOrReplaceInTx(genres);
+                }
+                else
+                {
+                    ((ShowNoDao)show).setGenres(genres);
                 }
             }
             if(jsonObject.has(Key.seasons.toString()))
@@ -309,11 +322,14 @@ public class JSONUtility
                             EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
                             episodeDao.insertOrReplaceInTx(episodes);
                         }
+                        else
+                        {
+                            ((ShowNoDao)show).setEpisodes(episodes);
+                        }
                     }
                 }
             }
-            ShowMemCache.getInstance().addShowToCache(show);
-            return new Response().setErrorMessage(null).setStatus(true).setShow(show);
+            return new Response().setErrorMessage(null).setStatus(true).setShow((ShowNoDao) show);
         }
         catch (Exception e)
         {
@@ -333,7 +349,7 @@ public class JSONUtility
     {
         private boolean status;
         private String errorMessage, errorCode;
-        private Show show;
+        private ShowNoDao show;
 
         public Response setStatus(boolean status)
         {
@@ -368,12 +384,12 @@ public class JSONUtility
             return errorCode;
         }
 
-        public Show getShow()
+        public ShowNoDao getShow()
         {
             return show;
         }
 
-        public Response setShow(Show show)
+        public Response setShow(ShowNoDao show)
         {
             this.show = show;
             return this;

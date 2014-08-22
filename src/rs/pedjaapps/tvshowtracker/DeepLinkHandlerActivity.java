@@ -48,9 +48,16 @@ public class DeepLinkHandlerActivity extends BaseActivity
 
         if(domain.contains("trakt"))
         {
-            //TODO trakt id
-            error();
-            return;
+            List<String> pathSegments = data.getPathSegments();
+            if (!pathSegments.isEmpty() && "show".equals(pathSegments.get(0)))
+            {
+                intent.putExtra(ShowDetailsActivity.EXTRA_SHOW_NAME, pathSegments.get(1));
+            }
+            else
+            {
+                error();
+                return;
+            }
         }
         else if(domain.contains("tvdb"))
         {
@@ -71,5 +78,6 @@ public class DeepLinkHandlerActivity extends BaseActivity
             }
         }
         startActivity(intent);
+        finish();
     }
 }

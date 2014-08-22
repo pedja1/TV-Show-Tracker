@@ -3,6 +3,7 @@ package rs.pedjaapps.tvshowtracker.utils;
 import java.util.concurrent.ConcurrentHashMap;
 
 import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 
 /**
  * Created by pedja on 22.8.14. 13.18.
@@ -13,11 +14,11 @@ public class ShowMemCache
 {
     private static ShowMemCache instance;
 
-    private ConcurrentHashMap<Integer, Show> cache;
+    private ConcurrentHashMap<String, ShowNoDao> cache;
 
     public ShowMemCache()
     {
-        this.cache = new ConcurrentHashMap<Integer, Show>();
+        this.cache = new ConcurrentHashMap<String, ShowNoDao>();
     }
 
     public static ShowMemCache getInstance()
@@ -26,24 +27,20 @@ public class ShowMemCache
         return instance;
     }
 
-    public void addShowToCache(Show show)
+    public void addShowToCache(String key, ShowNoDao show)
     {
-        cache.put(show.getTvdb_id(), show);
+        if(show == null || key == null)return;
+        cache.put(key, show);
     }
 
-    public void removeShowFromCache(int tvdbId)
+    public void removeShowFromCache(String key)
     {
-        cache.remove(tvdbId);
+        cache.remove(key);
     }
 
-    public void removeShowFromCache(Show show)
+    public Show getCachedShow(String key)
     {
-        cache.remove(show.getTvdb_id());
-    }
-
-    public Show getCachedShow(int tvdbId)
-    {
-        return cache.get(tvdbId);
+        return cache.get(key);
     }
 
     public void pop()
