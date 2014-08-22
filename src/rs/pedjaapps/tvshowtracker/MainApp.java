@@ -10,6 +10,7 @@ import rs.pedjaapps.tvshowtracker.model.DaoMaster;
 import rs.pedjaapps.tvshowtracker.model.DaoSession;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
+import com.android.volley.VolleyLog;
 
 public class MainApp extends Application
 {
@@ -68,6 +69,7 @@ public class MainApp extends Application
         cacheParams.diskCacheSize = 1024 * 1024 * 200;//200MB, is it ot much?
         cacheParams.diskCacheEnabled = true;
         cacheParams.memoryCacheEnabled = false;
+		VolleyLog.DEBUG = false;
     }
 
     public DaoSession getDaoSession()

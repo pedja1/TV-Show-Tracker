@@ -8,7 +8,8 @@
 	android:paddingRight="10dp"
 	android:dividerHeight="0dp"
 	android:divider="@null"
-	android:scrollbars="none">
+	android:scrollbars="none"
+    android:paddingTop="?android:attr/actionBarSize">
 
 	<LinearLayout
 		android:layout_height="match_parent"

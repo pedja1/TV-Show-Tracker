@@ -111,6 +111,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
                 final int headerHeight = ivShowPhoto.getHeight() - getActivity().getActionBar().getHeight();
                 final float ratio = (float) Math.min(Math.max(t, 0), headerHeight) / headerHeight;
                 final int newAlpha = (int) (ratio * 255);
+				((ShowDetailsActivity)getActivity()).setActionBarAlpha(newAlpha);
                 ((ShowDetailsActivity)getActivity()).getActionBarBackgroundDrawable().setAlpha(newAlpha);
             }
         });
