@@ -6,54 +6,49 @@ import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v4.view.ViewPager;
-import android.view.GestureDetector;
-import android.view.GestureDetector.SimpleOnGestureListener;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
+
 import com.viewpagerindicator.LinePageIndicator;
-import de.greenrobot.dao.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
+import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class ShowDetailsActivity extends BaseActivity implements Drawable.Callback
 {
 
-	private static final int SD_RTL = 0;
-	private static final int SD_LTR = 1;
-	private static final int SD_NONE = -1;
-	
-	int swipeDirection = SD_NONE;
-	private ScrollDirectionTracker scrollDirectionTracker;
-	
 	ShowDetailsPagerAdapter mShowDetailsPagerAdapter;
 	ViewPager mViewPager;
-	static int mTvdbId;
-	static String profile;
+	private int mTvdbId;
+    private String mImdbId;
     private Show show;
+    private boolean isInMyShows;
 
-    public static String EXTRA_TVDB_ID = "tvdb_id";
+    public static final String EXTRA_TVDB_ID = "tvdb_id";
+    public static final String EXTRA_IMDB_ID = "imdb_id";
+
     ProgressBar pbLoading;
-    //RelativeLayout rlDetailsContainer;
+
     private Drawable mActionBarBackgroundDrawable;
-	int mActionBarAlpha = 0;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
+		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_details);
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
@@ -61,22 +56,27 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
             mActionBarBackgroundDrawable.setCallback(this);
         }
 
-        mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_background_textured_tvst_red).mutate();
-        mActionBarBackgroundDrawable.setAlpha(mActionBarAlpha);
+        mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_background_textured_tvst_red);
+        mActionBarBackgroundDrawable.setAlpha(0);
 		
 		getActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 		
         pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
-        //rlDetailsContainer = (RelativeLayout)findViewById(R.id.rlDetailsContainer);
 
         // Show the Up button in the action bar.
 		getActionBar().setDisplayHomeAsUpEnabled(true);
 
-		mTvdbId = getIntent().getIntExtra(EXTRA_TVDB_ID, 0);
-		// Create the adapter that will return a fragment for each of the three
-		// primary sections of the app.
+		mTvdbId = getIntent().getIntExtra(EXTRA_TVDB_ID, -1);
+        mImdbId = getIntent().getStringExtra(EXTRA_IMDB_ID);
+
+        if(mTvdbId == -1 && mImdbId == null)
+        {
+            //TODO show error and
+            return;
+        }
+
 		new ATLoadShow().execute();
-		
+
 	}
 
     @Override
@@ -99,15 +99,52 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 
     public class ATLoadShow extends AsyncTask<String, Void, Show>
 	{
+        boolean isTvdb;
 
-		@Override
+        public ATLoadShow()
+        {
+            isTvdb = mTvdbId != -1;
+        }
+
+        @Override
 		protected Show doInBackground(String... args)
 		{
             ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
             QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-            queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(mTvdbId));
-			return queryBuilder.unique();
-		}
+            if (isTvdb)
+            {
+                //try db first
+                queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(mTvdbId));
+                Show show = queryBuilder.unique();
+                //no show in db, download
+                if(show == null)
+                {
+                    JSONUtility.Response response = JSONUtility.parseShow(mTvdbId + "", false);
+                    return response.getShow();
+                }
+                else
+                {
+                    isInMyShows = true;
+                    return show;
+                }
+            }
+            else
+            {
+                queryBuilder.where(ShowDao.Properties.Imdb_id.eq(mImdbId));
+                Show show = queryBuilder.unique();
+                //no show in db, download
+                if(show == null)
+                {
+                    JSONUtility.Response response = JSONUtility.parseShow(mTvdbId + "", false);
+                    return response.getShow();
+                }
+                else
+                {
+                    isInMyShows = true;
+                    return show;
+                }
+            }
+        }
 
 		@Override
 		protected void onPreExecute()
@@ -153,116 +190,37 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
         });*/
 		mShowDetailsPagerAdapter = new ShowDetailsPagerAdapter(getSupportFragmentManager(), this);
 		mViewPager = (ViewPager) findViewById(R.id.pager);
-		mViewPager.setOffscreenPageLimit(3);
 		mViewPager.setAdapter(mShowDetailsPagerAdapter);
         LinePageIndicator linePageIndicator = (LinePageIndicator)findViewById(R.id.lines);
         linePageIndicator.setViewPager(mViewPager);
         //SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(DetailsActivity.this);
         //int page = prefs.getInt("details_def_page", 0);
         //mViewPager.setCurrentItem(page, false);
-		linePageIndicator.setOnPageChangeListener(new PageChangeListener());
+		linePageIndicator.setOnPageChangeListener(new ViewPager.OnPageChangeListener()
+        {
+            @Override
+            public void onPageScrollStateChanged(int arg0)
+            {
+
+            }
+
+            @Override
+            public void onPageScrolled(int arg0, float arg1, int arg2)
+            {
+
+            }
+
+            @Override
+            public void onPageSelected(int position)
+            {
+                if (position == 1)
+                {
+                    //OverviewFragment.setProgress();
+                }
+                setSubtitleByPosition(position);
+            }
+        });
         setSubtitleByPosition(0);
-	}
-	
-	private class PageChangeListener implements ViewPager.OnPageChangeListener
-	{
-		
-		int currentPage = 0;
-		
-		public PageChangeListener()
-		{
-			
-		}
-		
-		@Override
-		public void onPageScrollStateChanged(int arg0)
-		{
-			if(arg0 == ViewPager.SCROLL_STATE_IDLE)
-			{
-				currentPage = mViewPager.getCurrentItem();
-			}
-		}
-
-		@Override
-		public void onPageScrolled(int position, float positionOffset, int positionOffsetPixel)
-		{
-			//System.out.println("scrollState " + scrollState);
-			
-			//System.out.println("position: " + position + ", positionOffset: " + positionOffset);
-			int scrollPercent = (int) (positionOffset * 100);
-			int alphaDiff = 255 - mActionBarAlpha;
-			int screenWidth = DisplayManager.screenWidth;
-			//System.out.println("onPageScrolled " + newPage);
-			if(swipeDirection == SD_LTR && currentPage == 1)
-			{
-				System.out.println("swiping left to right");
-                final int newAlpha = (alphaDiff * scrollPercent / 100) + mActionBarAlpha;
-				System.out.println(alphaDiff + " " + newAlpha + " " + scrollPercent);
-				mActionBarBackgroundDrawable.setAlpha(newAlpha);
-			}
-			else if(swipeDirection == SD_RTL && currentPage == 0)
-			{
-				System.out.println("swiping right to left");
-				final int newAlpha = (alphaDiff * scrollPercent / 100 ) + mActionBarAlpha;
-				System.out.println(alphaDiff + " " + newAlpha + " " + scrollPercent);
-				if(scrollPercent > 0)mActionBarBackgroundDrawable.setAlpha(newAlpha);
-			}
-		}
-
-		@Override
-		public void onPageSelected(int position)
-		{
-			System.out.println("onPageSelected" + position);
-
-			if (position == 0)
-			{
-				//OverviewFragment.setProgress();
-				//mActionBarBackgroundDrawable.setAlpha(mActionBarAlpha);
-			}
-			else
-			{
-				//mActionBarBackgroundDrawable.setAlpha(255);
-			}
-			setSubtitleByPosition(position);
-		}
-		
-		
-	}
-
-	@Override
-	public boolean dispatchTouchEvent(MotionEvent ev)
-	{
-		switch(ev.getActionMasked())
-		{
-			case MotionEvent.ACTION_DOWN:
-				scrollDirectionTracker = new ScrollDirectionTracker(ev.getX());
-				break;
-			case MotionEvent.ACTION_MOVE:
-				if(scrollDirectionTracker.firstX < ev.getX())
-				{
-					swipeDirection = SD_LTR;
-				}
-				else if(scrollDirectionTracker.firstX > ev.getX())
-				{
-					swipeDirection = SD_RTL;
-				}
-				else
-				{
-					swipeDirection = SD_NONE;
-				}
-				break;
-		}
-		return super.dispatchTouchEvent(ev);
-	}
-	
-	private class ScrollDirectionTracker
-	{
-		float firstX;
-
-		public ScrollDirectionTracker(float firstX)
-		{
-			this.firstX = firstX;
-		}
 	}
 
     public void setSubtitleByPosition(int pos)
@@ -394,15 +352,4 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
     {
         return mActionBarBackgroundDrawable;
     }
-	
-	public void setActionBarAlpha(int mActionBarAlpha)
-	{
-		this.mActionBarAlpha = mActionBarAlpha;
-	}
-
-	public int getActionBarAlpha()
-	{
-		return mActionBarAlpha;
-	}
-	
 }

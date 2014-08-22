@@ -98,7 +98,7 @@ public class SearchResults extends BaseActivity
         @Override
         protected JSONUtility.Response doInBackground(String... args)
         {
-            return JSONUtility.parseShow(args[0]);
+            return JSONUtility.parseShow(args[0], true);
         }
 
         @Override

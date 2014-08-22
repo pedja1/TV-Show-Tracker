@@ -5,7 +5,7 @@
     <string name="action_settings">Settings</string>
     <string name="title_overview">Details</string>
     <string name="title_episodes">Episodes</string>
-    <string name="title_actors">Cast</string>
+    <string name="title_actors">Actors</string>
     <string name="title_activity_main">MainActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="no_shows_message"><![CDATA[You have no shows.<br>Tap  to add new show.]]></string>
@@ -79,7 +79,7 @@
     <string name="watched_episodes"><![CDATA[<b>Watched Episodes:</b> %s]]></string>
     <string name="overview">Overview</string>
     <string name="episodes">Episodes</string>
-    <string name="actors">Cast</string>
+    <string name="actors">Actors</string>
     <string name="mark_all_watched">mark all watched</string>
     <string name="delete_confirm">Are you sure you want to delete %s\nThis cannot be undone.</string>
     <string name="logout">Logout</string>
@@ -93,5 +93,7 @@
     <string name="yesterday">yesterday</string>
     <string name="title_activity_episode_details">EpisodeDetailsActivity</string>
     <string name="search_results">Search Results</string>
+    <string name="please_wait">Please Wait...</string>
+    <string name="error_handling_url">Error Handling Specified Link</string>
 
 </resources>
