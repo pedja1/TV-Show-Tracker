@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="deep_link_trakt">trakt.tv</string>
+    <string name="deep_link_tvdb">tvdb.com</string>
+    <string name="deep_link_imdb">imdb.com</string>
+    <string name="deep_link_trakt_2">www.trakt.tv</string>
+    <string name="deep_link_tvdb_2">www.tvdb.com</string>
+    <string name="deep_link_imdb_2">www.imdb.com</string>
+    <string name="deep_link_imdb_3">m.imdb.com</string>
+</resources>
