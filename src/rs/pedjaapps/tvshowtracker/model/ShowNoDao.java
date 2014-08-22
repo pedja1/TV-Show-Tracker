@@ -6,7 +6,6 @@ import java.util.List;
 public class ShowNoDao extends Show
 {
     private Image image;
-
     private List<Actor> actors;
     private List<Genre> genres;
     private List<Episode> episodes;

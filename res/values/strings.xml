@@ -95,5 +95,9 @@
     <string name="search_results">Search Results</string>
     <string name="please_wait">Please Wait...</string>
     <string name="error_handling_url">Error Handling Specified Link</string>
-
+	<string name="add_to_fav">Add to \'My Shows\'</string>
+	<string name="remove_from_fav">Remove from \'My Shows\'</string>
+	<string name="show_added_to_fav">Add to \'My Shows\'</string>
+	<string name="show_removeed_from_fav">Remove from \'My Shows\'</string>
+	
 </resources>

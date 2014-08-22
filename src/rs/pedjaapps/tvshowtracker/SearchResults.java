@@ -53,7 +53,7 @@ public class SearchResults extends BaseActivity
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
             {
                 int tvdbId =  searchAdapter.getItem(position).getTvdb_id();
-                ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+                /*ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
                 QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
                 queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(tvdbId));
                 List<Show> show = queryBuilder.build().list();
@@ -61,6 +61,8 @@ public class SearchResults extends BaseActivity
                     new DownloadShow().execute(tvdbId + "");
                 else
                     Toast.makeText(SearchResults.this, getString(R.string.show_exists), Toast.LENGTH_LONG).show();
+					*/
+				startActivity(new Intent(SearchResults.this, ShowDetailsActivity.class).putExtra(ShowDetailsActivity.EXTRA_TVDB_ID, tvdbId));
             }
 
         });

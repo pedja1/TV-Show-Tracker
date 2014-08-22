@@ -12,15 +12,17 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
-
 import com.viewpagerindicator.LinePageIndicator;
-
+import de.greenrobot.dao.query.QueryBuilder;
 import java.util.Date;
 import java.util.List;
-
-import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
+import rs.pedjaapps.tvshowtracker.model.Actor;
+import rs.pedjaapps.tvshowtracker.model.ActorDao;
+import rs.pedjaapps.tvshowtracker.model.Episode;
+import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
@@ -29,6 +31,8 @@ import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
+import rs.pedjaapps.tvshowtracker.model.GenreDao;
+import rs.pedjaapps.tvshowtracker.model.Genre;
 
 public class ShowDetailsActivity extends BaseActivity implements Drawable.Callback
 {
@@ -55,6 +59,8 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 
     private Drawable mActionBarBackgroundDrawable;
 	int mActionBarAlpha = 0;
+	
+	private ATLoadShow atLoadShow;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
@@ -62,6 +68,8 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 		super.onCreate(savedInstanceState);
 		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.activity_details);
+		
+		getActionBar().setTitle("");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
         {
@@ -69,8 +77,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
         }
 
         mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_background_textured_tvst_red).mutate();
-        mActionBarBackgroundDrawable.setAlpha(mActionBarAlpha);
-		
+        
 		getActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 		
         pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
@@ -88,7 +95,8 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
             return;
         }
 
-		new ATLoadShow().execute();
+		atLoadShow = new ATLoadShow();
+		atLoadShow.execute();
 		
 	}
 
@@ -116,11 +124,12 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
         @Override
 		protected Show doInBackground(String... args)
 		{
+			ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+			QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
+			
             Show cachedShow = ShowMemCache.getInstance().getCachedShow(mTvdbId == -1 ? (mImdbId == null ? showName : mImdbId) : mTvdbId + "");
             if(cachedShow == null)
             {
-                ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-                QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
                 if (mTvdbId != -1)
                 {
                     //try db first
@@ -166,6 +175,14 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
             }
             else
             {
+				//check db anyway
+				queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(cachedShow.getTvdb_id()));
+				Show show = queryBuilder.unique();
+				if(show != null)
+				{
+					isInMyShows = true;
+					return show;
+				}
                 return cachedShow;
             }
         }
@@ -201,6 +218,9 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	
 	private void setupViews()
 	{
+		mActionBarBackgroundDrawable.setAlpha(mActionBarAlpha);
+
+		invalidateOptionsMenu();
         getActionBar().setTitle(show.getTitle());
         /*ImageLoader.getInstance().loadImage(show.getImage().getPoster(), new SimpleImageLoadingListener()
         {
@@ -345,8 +365,10 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu)
 	{
-		//menu.add(0, 0, 0, "Download Banner").setShowAsAction(
-		//		MenuItem.SHOW_AS_ACTION_NEVER);
+		MenuItem item = menu.add(0, 0, 0, R.string.add_to_fav);
+		item.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
+		item.setIcon(R.drawable.ic_action_not_fav);
+		item.setVisible(false);
 		/*
 		 * menu.add(0, 1, 1, "Download Header")
 		 * .setShowAsAction(MenuItem.SHOW_AS_ACTION_NEVER);
@@ -355,24 +377,32 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	}
 
 	@Override
+	public boolean onPrepareOptionsMenu(Menu menu)
+	{
+		MenuItem item = menu.findItem(0);
+		item.setIcon(isInMyShows ? R.drawable.ic_action_fav : R.drawable.ic_action_not_fav);
+		item.setTitle(isInMyShows ? R.string.remove_from_fav : R.string.add_to_fav);
+		item.setVisible(show != null);
+		return super.onPrepareOptionsMenu(menu);
+	}
+
+	@Override
 	public boolean onOptionsItemSelected(MenuItem item)
 	{
 		switch (item.getItemId())
 		{
 		case android.R.id.home:
-			// This ID represents the Home or Up button. In the case of this
-			// activity, the Up button is shown. Use NavUtils to allow users
-			// to navigate up one level in the application structure. For
-			// more details, see the Navigation pattern on Android Design:
-			//
-			// http://developer.android.com/design/patterns/navigation.html#up-vs-back
-			//
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case 0:
-			//startActivity(new Intent(this, BannerActivity.class)
-			//		.putExtra("seriesId", /*seriesId + */"")
-			//		.putExtra("type", "banner").putExtra("profile", profile));
+			if(isInMyShows)
+			{
+				removeShowFromDb();
+			}
+			else
+			{
+				addShowToDb();
+			}
 			return true;
 		case 1:
 			//startActivity(new Intent(this, BannerActivity.class).putExtra(
@@ -380,6 +410,61 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	private void removeShowFromDb()
+	{
+		ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+		QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
+		queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(show.getTvdb_id()));
+		showDao.delete(queryBuilder.unique());
+		isInMyShows = false;
+		invalidateOptionsMenu();
+		Utility.showToast(this, R.string.show_removeed_from_fav);
+	}
+
+	private void addShowToDb()
+	{
+		ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+		QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
+		queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(show.getTvdb_id()));
+		
+		if(queryBuilder.unique() != null)
+		{
+			isInMyShows = true;
+			invalidateOptionsMenu();
+			return;
+		}
+		
+		ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
+		long imageId = imageDao.insertOrReplace(show.getImage());
+		show.setImage_id(imageId);
+		long showId = showDao.insertOrReplace(show);
+		
+		EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
+		for(Episode e : show.getEpisodes())
+		{
+			e.setShow_id(showId);
+		}
+		episodeDao.insertOrReplaceInTx(show.getEpisodes());
+		
+		ActorDao actorDao = MainApp.getInstance().getDaoSession().getActorDao();
+		for(Actor a : show.getActors())
+		{
+			a.setShow_id(showId);
+		}
+		actorDao.insertOrReplaceInTx(show.getActors());
+		
+		GenreDao gDao = MainApp.getInstance().getDaoSession().getGenreDao();
+		for(Genre g : show.getGenres())
+		{
+			g.setShow_id(showId);
+		}
+		gDao.insertOrReplaceInTx(show.getGenres());
+		
+		isInMyShows = true;
+		invalidateOptionsMenu();
+		Utility.showToast(this, R.string.show_added_to_fav);
 	}
 
 	private static int getLastAiredEpisodePosition(
@@ -444,6 +529,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	public void onDestroy()
 	{
 		super.onDestroy();
+		if(atLoadShow != null)atLoadShow.cancel(true);
 	}
 
     public Show getShow()
