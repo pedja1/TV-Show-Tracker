@@ -414,10 +414,8 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 
 	private void removeShowFromDb()
 	{
-		ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-		QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-		queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(show.getTvdb_id()));
-		showDao.delete(queryBuilder.unique());
+		Utility.deleteShowFromDb(show);
+		
 		isInMyShows = false;
 		invalidateOptionsMenu();
 		Utility.showToast(this, R.string.show_removeed_from_fav);

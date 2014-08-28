@@ -5,6 +5,8 @@ import android.preference.PreferenceManager;
 
 import rs.pedjaapps.tvshowtracker.MainActivity;
 import rs.pedjaapps.tvshowtracker.MainApp;
+import rs.pedjaapps.tvshowtracker.fragment.ShowGridFragment;
+import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
 
 /**
  * Created by pedja on 31.5.14..
@@ -38,10 +40,10 @@ public class PrefsManager
         editor.apply();
     }
 
-    public static MainActivity.SortOrder getSortOrder()
+    public static MyShowsFragment.SortOrder getSortOrder()
     {
-        MainActivity.SortOrder sortOrder = MainActivity.SortOrder.valueOf(prefs.getString(Key.sort.toString(), MainActivity.SortOrder.id.toString()));
-        if(sortOrder == null) sortOrder = MainActivity.SortOrder.id;
+        MyShowsFragment.SortOrder sortOrder = MyShowsFragment.SortOrder.valueOf(prefs.getString(Key.sort.toString(), MyShowsFragment.SortOrder.id.toString()));
+        if(sortOrder == null) sortOrder = MyShowsFragment.SortOrder.id;
         return sortOrder;
     }
 

@@ -51,7 +51,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
         viewHolder.tvOverview.setText(show.getOverview());
         viewHolder.ivBanner.setDefaultImageResId(R.drawable.noimage_banner);
         viewHolder.ivBanner.setErrorImageResId(R.drawable.noimage_banner);
-        viewHolder.ivBanner.setImageUrl(show.getBanner(), mImageFetcher);
+        viewHolder.ivBanner.setImageUrl(show.getImage().getBanner(), mImageFetcher);
         return view;
     }
 

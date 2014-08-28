@@ -1,30 +1,45 @@
 package rs.pedjaapps.tvshowtracker.utils;
 
-import android.app.*;
-import android.content.*;
+import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.database.Cursor;
-import android.net.*;
-import android.os.*;
+import android.net.ConnectivityManager;
+import android.net.Uri;
+import android.os.Build;
+import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Html;
-import android.util.*;
-import android.view.*;
-import android.widget.*;
-import java.io.*;
-import java.net.*;
+import android.util.Log;
+import android.view.View;
+import android.view.ViewGroup;
+import android.view.WindowManager;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.Toast;
+import java.io.BufferedInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.InputStream;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-
-import org.apache.http.util.*;
-
+import org.apache.http.util.ByteArrayBuffer;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.model.ActorDao;
 import rs.pedjaapps.tvshowtracker.model.Episode;
+import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
+import rs.pedjaapps.tvshowtracker.model.GenreDao;
+import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowDao;
 
 public class Utility
 {
@@ -400,4 +415,21 @@ public class Utility
             return null;
         }
     }
+	
+	public static void deleteShowFromDb(Show show)
+	{
+		ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+		EpisodeDao eDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
+		ActorDao aDao = MainApp.getInstance().getDaoSession().getActorDao();
+		GenreDao gDao = MainApp.getInstance().getDaoSession().getGenreDao();
+		ImageDao iDao = MainApp.getInstance().getDaoSession().getImageDao();
+		if(show != null)
+		{
+			eDao.deleteInTx(show.getEpisodes());
+			aDao.deleteInTx(show.getActors());
+			gDao.deleteInTx(show.getGenres());
+			iDao.delete(show.getImage());
+			showDao.delete(show);
+		}
+	}
 }

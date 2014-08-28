@@ -16,7 +16,6 @@ import rs.pedjaapps.tvshowtracker.adapter.SearchAdapter;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
-import rs.pedjaapps.tvshowtracker.utils.SuggestionProvider;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class SearchResults extends BaseActivity
@@ -45,7 +44,7 @@ public class SearchResults extends BaseActivity
 
         searchListView.setAdapter(searchAdapter);
 
-        handleIntent(getIntent());
+        //handleIntent(getIntent());
 
         searchListView.setOnItemClickListener(new OnItemClickListener()
         {
@@ -77,11 +76,11 @@ public class SearchResults extends BaseActivity
 
     private void handleIntent(Intent intent)
     {
-        SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
+        //SearchRecentSuggestions suggestions = new SearchRecentSuggestions(this, SuggestionProvider.AUTHORITY, SuggestionProvider.MODE);
         if (Intent.ACTION_SEARCH.equals(intent.getAction()))
         {
             String query = intent.getStringExtra(SearchManager.QUERY);
-            suggestions.saveRecentQuery(query, null);
+            //suggestions.saveRecentQuery(query, null);
             getActionBar().setTitle(getString(R.string.searching, query));
             if (Utility.isNetworkAvailable(this))
                 new ATGetSearchResults().execute(query);

@@ -58,6 +58,18 @@ public class PoppyViewHelper
         return mPoppyView;
     }
 
+	public View createPoppyViewOnGridView(GridView gridCiew, int poppyViewResId, OnScrollListener onScrollListener)
+    {
+        mPoppyView = mLayoutInflater.inflate(poppyViewResId, null);
+        initPoppyViewOnGridView(gridCiew, onScrollListener);
+        return mPoppyView;
+    }
+	
+	public View createPoppyViewOnGridView(GridView gridView, int poppyViewResId)
+    {
+        return createPoppyViewOnGridView(gridView, poppyViewResId, null);
+    }
+	
     public View createPoppyViewOnGridView(int listViewId, int poppyViewResId)
     {
         return createPoppyViewOnGridView(listViewId, poppyViewResId, null);

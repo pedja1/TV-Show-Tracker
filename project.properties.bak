@@ -13,7 +13,10 @@
 # Project target.
 target=android-19
 android.library.reference.1=..\\library
+android.library.reference.1=libs/Caldroid
 
 android.library.reference.1=/storage/emulated/0/AppProjects/vpi
+
+android.library.reference.1=/storage/emulated/0/AppProjects/sm
 
 

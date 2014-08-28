@@ -3,60 +3,50 @@ package rs.pedjaapps.tvshowtracker;
 import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
-import android.util.Log;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.app.Fragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.PoppyViewHelper;
-import android.widget.ProgressBar;
+import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
-
-import com.jeremyfeinstein.slidingmenu.lib.SlidingMenu;
-
 import java.util.ArrayList;
-import java.util.Collections;
+import java.util.Arrays;
 import java.util.List;
-
-import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
-import rs.pedjaapps.tvshowtracker.model.Episode;
-import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
-import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
-import rs.pedjaapps.tvshowtracker.utils.Comparators;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.adapter.NavigationDrawerAdapter;
+import rs.pedjaapps.tvshowtracker.model.NDItem;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
-import rs.pedjaapps.tvshowtracker.utils.Utility;
+import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
 
-public class MainActivity extends BaseActivity implements View.OnClickListener
+public class MainActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener
 {
     private static final int REQUEST_CODE_LOGIN = 9001;
-    ShowsAdapter adapter;
-    GridView list;
-    ProgressBar pbLoading;
-    TextView tvNoShows;
+    
     SearchView searchView;
-    private SortOrder sort;
+    TextView tvLoginLogout;
     Menu menu;
     boolean menuDisable;
 
-    SlidingMenu sideMenu;
-    LinearLayout llUpcomingEpisode;
-    Episode upcomingEpisode;
-    TextView tvUpcomingEpisode;
-    TextView tvLoginLogout;
+    //SlidingMenu sideMenu;
+    
+	private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
 
-    PoppyViewHelper poppyViewHelper;
-
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+	
+	private List<NDItem> menuItems;
+    
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
@@ -65,7 +55,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
 
         setContentView(R.layout.activity_main);
 
-        sideMenu = new SlidingMenu(this);
+        /*sideMenu = new SlidingMenu(this);
         sideMenu.setMode(SlidingMenu.LEFT);
         sideMenu.setTouchModeAbove(SlidingMenu.TOUCHMODE_MARGIN);
         sideMenu.setShadowWidthRes(R.dimen.shadow_width);
@@ -82,40 +72,57 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
         findViewById(R.id.tvMenuSettings).setOnClickListener(this);
         findViewById(R.id.tvMenuTrending).setOnClickListener(this);
 
-        setupUser();
+        setupUser();*/
+		
+		mTitle = mDrawerTitle = getTitle();
+        
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        // set a custom shadow that overlays the main content when the drawer opens
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+		menuItems = generateMenuOptions();
+        // set up the drawer's list view with items and click listener
+        mDrawerList.setAdapter(new NavigationDrawerAdapter(this, menuItems));
+        mDrawerList.setOnItemClickListener(this);
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+        getActionBar().setHomeButtonEnabled(true);
+
+        // ActionBarDrawerToggle ties together the the proper interactions
+        // between the sliding drawer and the action bar app icon
+        mDrawerToggle = new ActionBarDrawerToggle(
+			this,                  /* host Activity */
+			mDrawerLayout,         /* DrawerLayout object */
+			R.drawable.ic_drawer,  /* nav drawer image to replace 'Up' caret */
+			R.string.drawer_open,  /* "open drawer" description for accessibility */
+			R.string.drawer_closed  /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
+        if (savedInstanceState == null) {
+            selectItem(0);
+        }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
         searchView = new SearchView(getActionBar().getThemedContext());
         searchView.setQueryHint(getString(R.string.add_show));
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
-        searchView.setQueryRefinementEnabled(true);
+        //searchView.setQueryRefinementEnabled(true);
 
-        pbLoading = (ProgressBar) findViewById(R.id.pbLoading);
-        tvNoShows = (TextView) findViewById(R.id.tvNoShows);
-        setNoImageText();
-
-        poppyViewHelper = new PoppyViewHelper(this, PoppyViewHelper.PoppyViewPosition.BOTTOM);
-        View poppyView = poppyViewHelper.createPoppyViewOnGridView(R.id.lvShows, R.layout.upcoming_episode_layout);
-
-        adapter = new ShowsAdapter(this);
-        list = (GridView) findViewById(R.id.lvShows);
-        list.setAdapter(adapter);
-
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener()
-        {
-            @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
-            {
-                startActivity(new Intent(MainActivity.this,
-						ShowDetailsActivity.class).putExtra(ShowDetailsActivity.EXTRA_TVDB_ID,
-						adapter.getItem(arg2).getTvdb_id()));
-            }
-        });
-        llUpcomingEpisode = (LinearLayout)poppyView.findViewById(R.id.llUpcomingEpisode);
-        tvUpcomingEpisode = (TextView)poppyView.findViewById(R.id.tvUpcomingEpisode);
-
-        Utility.setRefresh(true);
+        
     }
 
     private void setupUser()
@@ -132,86 +139,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
         }
     }
 
-    private void setNoImageText()
-    {
-        String text = getString(R.string.no_shows_message);
-        SpannableStringBuilder builder = new SpannableStringBuilder(Html.fromHtml(text));
-        builder.setSpan(new ImageSpan(this, R.drawable.ic_action_search_dark), 22, 23, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
-        tvNoShows.setText(builder, TextView.BufferType.SPANNABLE);
-    }
-
-    @Override
-    protected void onResume()
-    {
-        if (Utility.isRefresh())
-        {
-            refreshShows();
-        }
-        super.onResume();
-    }
-
-    public void refreshShows()
-    {
-        //profile = prefs.getString("profile", "Default");
-        sort = PrefsManager.getSortOrder();
-        new LoadShows().execute();
-        Utility.setRefresh(false);
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        // Restore the previously serialized current dropdown position.
-        list.onRestoreInstanceState(savedInstanceState.getParcelable("list_position"));
-    }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
-        // Serialize the current dropdown position.
-        Parcelable state = list.onSaveInstanceState();
-        outState.putParcelable("list_position", state);
-    }
-
-    private List<Show> getShows()
-    {
-        long startTime = System.currentTimeMillis();
-        ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-        List<Show> shows = showDao.loadAll();
-
-		upcomingEpisode = Utility.calculateUpcomingEpisodes(shows);
-
-        //TODO query db with sort, it should be faster that sorting list
-		switch (sort)
-        {
-            case show_name:
-                Collections.sort(shows, new Comparators.NameComparator(false));
-                break;
-            case next_episode:
-                Collections.sort(shows, new Comparators.NextEpisodeComparator(true));
-                break;
-            case unwatched_episodes:
-                Collections.sort(shows, new Comparators.WatchComparator(true));
-                break;
-            case network:
-                Collections.sort(shows, new Comparators.NetworkComparator(true));
-                break;
-            case rating:
-                Collections.sort(shows, new Comparators.RatingComparator(false));
-                break;
-            case runtime:
-                Collections.sort(shows, new Comparators.RuntimeComparator(true));
-                break;
-            case status:
-                Collections.sort(shows, new Comparators.StatusComparator(true));
-                break;
-        }
-		Log.d(Constants.LOG_TAG,
-				"MainActivity.java > getShows(): "
-						+ (System.currentTimeMillis() - startTime) + "ms");
-
-        return shows;
-    }
+    
 
     @Override
     public void onClick(View view)
@@ -240,64 +168,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
     }
 
 
-    public class LoadShows extends AsyncTask<String, Void, List<Show>>
-    {
-
-        @Override
-        protected List<Show> doInBackground(String... args)
-        {
-            long startTime = System.currentTimeMillis();
-            List<Show> entry = new ArrayList<Show>();
-            for (Show s : getShows())
-            {
-                entry.add(s);
-            }
-            Log.d(Constants.LOG_TAG,
-                    "MainActivity.java > LoadShows > doInBackground: "
-                            + (System.currentTimeMillis() - startTime) + "ms"
-            );
-            return entry;
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            if(adapter.isEmpty())
-            {
-                pbLoading.setVisibility(View.VISIBLE);
-                //tvNoShows.setVisibility(View.VISIBLE);
-            }
-        }
-
-        @Override
-        protected void onPostExecute(List<Show> result)
-        {
-            adapter.clear();
-            for (Show s : result)
-            {
-                adapter.add(s);
-            }
-            adapter.notifyDataSetChanged();
-            if(adapter.isEmpty())
-            {
-                tvNoShows.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                tvNoShows.setVisibility(View.GONE);
-            }
-            pbLoading.setVisibility(View.GONE);
-            if(upcomingEpisode != null)
-            {
-                tvUpcomingEpisode.setText(Utility.generateUpcomingEpisodeText(upcomingEpisode));
-                llUpcomingEpisode.setVisibility(View.VISIBLE);
-            }
-            else
-            {
-                llUpcomingEpisode.setVisibility(View.GONE);
-            }
-        }
-    }
+    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -365,282 +236,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
         return super.onOptionsItemSelected(item);
     }
 
-    /*public class ListActionMode implements ActionMode.Callback
-    {
-        int id;
-        int position;
-
-        public ListActionMode(int position)
-        {
-            this.position = position;
-        }
-
-        @Override
-        public boolean onCreateActionMode(ActionMode mode, Menu menu)
-        {
-            //MainActivity.this.mode = mode;
-
-			// mode.setTitle("Select Items");
-			// mode.setSubtitle("One item selected");
-
-            menu.add(0, 0, 0, getString(R.string.delete))
-                    .setIcon(R.drawable.ic_action_delete)
-                    .setShowAsAction(
-                            MenuItem.SHOW_AS_ACTION_IF_ROOM
-                                    | MenuItem.SHOW_AS_ACTION_WITH_TEXT
-                    );
-            menu.add(0, 1, 1, getString(R.string.update))
-                    .setIcon(R.drawable.ic_action_update)
-                    .setShowAsAction(
-                            MenuItem.SHOW_AS_ACTION_IF_ROOM
-                                    | MenuItem.SHOW_AS_ACTION_WITH_TEXT
-                    );
-
-            return true;
-
-        }
-
-        @Override
-        public boolean onPrepareActionMode(ActionMode mode, Menu menu)
-        {
-            return true;
-        }
-
-        @Override
-        public void onDestroyActionMode(ActionMode mode)
-        {
-        }
-
-        @Override
-        public boolean onActionItemClicked(ActionMode mode, MenuItem item)
-        {
-
-            switch (item.getItemId())
-            {
-                case 0:
-				//db.deleteSeries(adapter.getItem(position).getSeriesId() + "",profile);
-				//adapter.remove(adapter.getItem(position));
-				//adapter.notifyDataSetChanged();
-				//setUI(Constants.UI_CODE_AFTERLOAD);
-				//mode.finish();
-                    break;
-                case 1:
-                    //if (Tools.isNetworkAvailable(MainActivity.this))
-                    //{
-                    //    List<ShowOld> list = new ArrayList<ShowOld>();
-                        //list.add(db.getShow(adapter.getItem(position).getSeriesId()
-                        //	+ "", profile));
-                    //    new UpdateShow().execute(list);
-                    //}
-                    //else
-                    //{
-                    //    Toast.makeText(
-                    //            MainActivity.this,
-                    //            "No Internet Connection!\nPlease connect to internet and try again!",
-                    //            Toast.LENGTH_LONG).show();
-                    //}
-                    //TODo update show
-                    //mode.finish();
-                    break;
-            }
-
-            return true;
-        }
-
-    }*/
-
-    /*public class UpdateShow extends AsyncTask<List<ShowOld>, String[], String>
-    {
-
-        ProgressDialog pd;
-
-        @Override
-        protected String doInBackground(List<ShowOld>... args)
-        {
-            List<ShowOld> shows = new ArrayList<ShowOld>();
-            List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();
-            List<ActorOld> actors = new ArrayList<ActorOld>();
-            for (int n = 0; n < args[0].size(); n++)
-            {
-                publishProgress(new String[]{n + 1 + "",
-                        args[0].get(n).getSeriesName(), args[0].size() + ""});
-
-                ShowOld s = args[0].get(n);
-                if (!new File(extStorage + "/TVST/actors").exists())
-                {
-                    new File(extStorage + "/TVST/actors").mkdirs();
-                }
-                XMLParser parser = new XMLParser();
-                String xml = parser.getXmlFromUrl("http://thetvdb.com/api/"
-                        + Constants.apiKey + "/series/" + s.getSeriesId()
-                        + "/all/" + s.getLanguage() + ".xml");
-
-                Document doc = parser.getDomElement(xml); // getting DOM element
-
-                NodeList nl = doc.getElementsByTagName("Series");
-                Element e = (Element) nl.item(0);
-                String date = Constants.df.format(new Date());
-                String seriesId = parser.getValue(e, "id");
-                String banner = "";
-                String fanart = "";
-                try
-                {
-                    banner = Tools.DownloadFromUrl(
-                            "http://thetvdb.com/banners/"
-                                    + parser.getValue(e, "banner"),
-                            extStorage
-                                    + "/TVST"
-                                    + parser.getValue(e, "banner")
-                                    .substring(
-                                            parser.getValue(
-                                                    e,
-                                                    "banner")
-                                                    .lastIndexOf(
-                                                            "/")
-                                    ), true
-                    );
-                    fanart = Tools.DownloadFromUrl(
-                            "http://thetvdb.com/banners/"
-                                    + parser.getValue(e, "fanart"),
-                            extStorage
-                                    + "/TVST"
-                                    + parser.getValue(e, "fanart")
-                                    .substring(
-                                            parser.getValue(
-                                                    e,
-                                                    "fanart")
-                                                    .lastIndexOf(
-                                                            "/")
-                                    ), true
-                    );
-                }
-                catch (Exception exc)
-                {
-
-                }
-
-                shows.add(
-                        new ShowOld(
-                                parser.getValue(e, "SeriesName"),
-                                parser.getValue(e, "FirstAired"),
-                                parser.getValue(e, "IMDB_ID"),
-                                parser.getValue(e, "Overview"),
-                                Tools.parseRating(parser.getValue(e, "Rating")),
-                                Integer.parseInt(parser.getValue(e, "id")),
-                                parser.getValue(e, "Language"),
-                                banner,
-                                fanart,
-                                parser.getValue(e, "Network"),
-                                Tools.parseInt(parser.getValue(e, "Runtime")),
-                                parser.getValue(e, "Status"), false, false,
-                                date, parser.getValue(e, "Actors"), profile)
-                );
-
-                nl = doc.getElementsByTagName("Episode");
-
-                for (int i = 0; i < nl.getLength(); i++)
-                {
-                    e = (Element) nl.item(i);
-                    if (!parser.getValue(e, "SeasonNumber").equals("0"))
-                    {
-
-                        episodes.add(
-                                new EpisodeItem(parser.getValue(e,
-                                        "EpisodeName"), Tools
-                                        .parseInt(parser.getValue(e,
-                                                "EpisodeNumber")), Tools
-                                        .parseInt(parser.getValue(e,
-                                                "SeasonNumber")), parser
-                                        .getValue(e, "FirstAired"), parser
-                                        .getValue(e, "IMDB_ID"), parser
-                                        .getValue(e, "Overview"), Tools
-                                        .parseRating(parser.getValue(e,
-                                                "Rating")), false,
-                                        Tools.parseInt(parser.getValue(e,
-                                                "id")), profile, seriesId
-                                )
-                        );
-
-                    }
-                }
-                xml = parser.getXmlFromUrl("http://thetvdb.com/api/"
-                        + Constants.apiKey + "/series/" + s.getSeriesId()
-                        + "/actors.xml");
-                doc = parser.getDomElement(xml);
-                nl = doc.getElementsByTagName("Actor");
-                for (int i = 0; i < nl.getLength(); i++)
-                {
-                    e = (Element) nl.item(i);
-                    String image = "";
-                    try
-                    {
-                        String url = parser.getValue(e, "Image");
-                        image = Tools.DownloadFromUrl(
-                                "http://thetvdb.com/banners/"
-                                        + url,
-                                extStorage
-                                        + "/TVST/actors"
-                                        + url.substring(url.lastIndexOf("/")), true
-                        );
-                    }
-                    catch (Exception ex)
-                    {
-                        ex.printStackTrace();
-                    }
-
-
-                    actors.add(
-                            new ActorOld(
-                                    parser.getValue(e, "id"),
-                                    parser.getValue(e, "Name"),
-                                    parser.getValue(e, "Role"),
-                                    image,
-                                    profile, seriesId)
-                    );
-
-                }
-            }
-            //db.insertActors(actors);
-            //db.insertEpisodes(episodes);
-            //db.insertShows(shows);
-            return "";
-
-        }
-
-        @Override
-        protected void onProgressUpdate(String[]... progress)
-        {
-
-            pd.setMessage("Updating " + (progress[0])[1] + " - "
-                    + (progress[0])[0] + "/" + (progress[0])[2]);
-
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            Tools.setKeepScreenOn(MainActivity.this, true);
-            pd = new ProgressDialog(MainActivity.this);
-            pd.setIndeterminate(true);
-            pd.setCancelable(false);
-            pd.setCanceledOnTouchOutside(false);
-            pd.setTitle("Downloading Show Info");
-            pd.show();
-        }
-
-        @Override
-        protected void onPostExecute(String result)
-        {
-            pd.dismiss();
-            new LoadShows().execute();
-            Tools.setKeepScreenOn(MainActivity.this, false);
-        }
-    }*/
+   
 
     @Override
     public void onDestroy()
     {
-        Utility.setKeepScreenOn(MainActivity.this, false);
+        //Utility.setKeepScreenOn(MainActivity.this, false);
         //db.close();
         super.onDestroy();
     }
@@ -661,10 +262,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
 		return super.onPrepareOptionsMenu(menu);
 	}*/
 
-    public enum SortOrder
-    {
-        id, show_name, next_episode, unwatched_episodes, network ,rating, runtime, status
-    }
+    
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
@@ -680,4 +278,84 @@ public class MainActivity extends BaseActivity implements View.OnClickListener
             }
         }
     }
+	
+	private void selectItem(int position) 
+	{
+        // update the main content by replacing fragments
+        Fragment fragment = null;
+		
+		NDItem menuItem = menuItems.get(position);
+		
+		switch(menuItem.id)
+		{
+			case trending:
+				
+				break;
+			case my_shows:
+				fragment = MyShowsFragment.newInstance();
+				break;
+		}
+
+		if(fragment != null)
+		{
+        	FragmentManager fragmentManager = getSupportFragmentManager();
+        	FragmentTransaction ft = fragmentManager.beginTransaction();
+        	ft.replace(R.id.content_frame, fragment);
+        	ft.commit();
+		}
+
+        // update selected item title, then close the drawer
+        getActionBar().setSubtitle(menuItem.title);
+        mDrawerLayout.closeDrawer(mDrawerList);
+    }
+
+    @Override
+    public void setTitle(CharSequence title) {
+        mTitle = title;
+        getActionBar().setTitle(mTitle);
+    }
+
+    /**
+     * When using the ActionBarDrawerToggle, you must call it during
+     * onPostCreate() and onConfigurationChanged()...
+     */
+
+    @Override
+    protected void onPostCreate(Bundle savedInstanceState) {
+        super.onPostCreate(savedInstanceState);
+        // Sync the toggle state after onRestoreInstanceState has occurred.
+        mDrawerToggle.syncState();
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        // Pass any configuration change to the drawer toggls
+        mDrawerToggle.onConfigurationChanged(newConfig);
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        selectItem(position);
+    }
+	
+	private List<NDItem> generateMenuOptions()
+	{
+		List<NDItem> items = new ArrayList<>();
+		NDItem item = new NDItem();
+		item.title = getString(R.string.trending_shows);
+		item.id = NDItem.Id.trending;
+		item.type = NDItem.TYPE_MAIN;
+		items.add(item);
+		
+		item = new NDItem();
+		item.title = getString(R.string.my_shows);
+		item.id = NDItem.Id.my_shows;
+		item.type = NDItem.TYPE_MAIN;
+		items.add(item);
+		
+		return items;
+	}
+	
 }

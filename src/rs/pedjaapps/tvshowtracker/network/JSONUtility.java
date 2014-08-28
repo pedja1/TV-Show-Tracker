@@ -133,7 +133,7 @@ public class JSONUtility
             JSONArray jsonArray = new JSONArray(response.responseData);
             for(int i = 0; i < jsonArray.length(); i++)
             {
-                Show show = new Show();
+                ShowNoDao show = new ShowNoDao();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if(jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
                 if(jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
@@ -147,10 +147,16 @@ public class JSONUtility
                 if(jsonObject.has(Key.images.toString()))
                 {
                     JSONObject images = jsonObject.getJSONObject(Key.images.toString());
+					Image image = new Image();
                     if(images.has(Key.banner.toString()))
                     {
-                        show.setBanner(images.getString(Key.banner.toString()));
+                        image.setBanner(images.getString(Key.banner.toString()));
                     }
+					if(images.has(Key.poster.toString()))
+                    {
+                        image.setPoster(images.getString(Key.poster.toString()));
+                    }
+					show.setImage(image);
                 }
                 shows.add(show);
             }

@@ -11,16 +11,17 @@ import android.widget.ArrayAdapter;
 import android.widget.AutoScrollingTextView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
-
+import android.widget.TextView;
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
-
 import rs.pedjaapps.tvshowtracker.MainActivity;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
+import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 
 public final class ShowsAdapter extends ArrayAdapter<Show>
 {
@@ -71,8 +72,9 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i)
                                     {
-                                        MainApp.getInstance().getDaoSession().getShowDao().delete(show);
-                                        ((MainActivity)getContext()).refreshShows();
+                                        Utility.deleteShowFromDb(show);
+                                        //((MainActivity)getContext()).refreshShows();
+										//TODO refresh shows
                                     }
                                 });
                                 break;
@@ -85,8 +87,28 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                 menu.show();
             }
         });
+		viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
+		if(show instanceof ShowNoDao)
+		{
+			viewHolder.tvFavorite.setVisibility(View.GONE);
+		}
+		else
+		{
+			viewHolder.tvFavorite.setVisibility(View.VISIBLE);
+		}
         return view;
     }
+	
+	private String calcWatchedPerc(Show show)
+	{
+		int count = show.getEpisodes().size();
+		int watched = 0;
+		for(Episode e : show.getEpisodes())
+		{
+			if(e.isWatched() || e.getSeason() == 0)watched++;
+		}
+		return (watched == 0 ? 0 : (int)(100.0f / ((float)count / (float)watched))) + "%";
+	}
 
     private View getWorkingView(final View convertView)
     {
@@ -121,7 +143,9 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
             viewHolder.upcomingEpisodeView = (AutoScrollingTextView) workingView.findViewById(R.id.txtUpcomingEpisode);
             viewHolder.ivPoster = (NetworkImageViewPlus) workingView.findViewById(R.id.imgSeriesImage);
             viewHolder.ivMore = (ImageView) workingView.findViewById(R.id.ivMore);
-
+			viewHolder.tvWatchedPercent = (TextView) workingView.findViewById(R.id.tvWatchedPercent);
+			viewHolder.tvFavorite = (TextView) workingView.findViewById(R.id.tvFavorite);
+			
             workingView.setTag(viewHolder);
 
         }
@@ -138,6 +162,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         public AutoScrollingTextView upcomingEpisodeView;
         public NetworkImageViewPlus ivPoster;
         ImageView ivMore;
+		TextView tvWatchedPercent, tvFavorite;
 
     }
 

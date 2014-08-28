@@ -23,9 +23,10 @@
         android:icon="@drawable/ic_launcher"
         android:label="@string/app_name"
         android:theme="@style/Theme.Tvst_red" >
-        <provider
-            android:name="rs.pedjaapps.tvshowtracker.utils.SuggestionProvider"
-            android:authorities="rs.pedjaapps.tvshowtracker.SuggestionProvider"
+       
+		<provider
+            android:name="rs.pedjaapps.tvshowtracker.utils.NetSearchSuggestionProvider"
+            android:authorities="rs.pedjaapps.tvshowtracker.NetSearchSuggestionProvider"
             android:exported="false" />
 
         <activity

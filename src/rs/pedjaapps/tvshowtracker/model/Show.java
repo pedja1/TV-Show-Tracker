@@ -50,8 +50,6 @@ public class Show {
     private List<Episode> episodes;
 
     // KEEP FIELDS - put your custom fields here
-    private String banner; //used for search
-
     private int watchedPercent;
     private long nextEpisodeHours;
     // KEEP FIELDS END
@@ -386,16 +384,6 @@ public class Show {
     }
 
     // KEEP METHODS - put your custom methods here
-
-    public String getBanner()
-    {
-        return banner;
-    }
-
-    public void setBanner(String banner)
-    {
-        this.banner = banner;
-    }
 
     public int getWatchedPercent()
     {
