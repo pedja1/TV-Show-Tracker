@@ -46,7 +46,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         viewHolder.upcomingEpisodeView.setText(show.getTitle());
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
-        viewHolder.ivPoster.setImageUrl(show.getImage().getPoster(), mImageFetcher);
+        viewHolder.ivPoster.setImageUrl(show.getImage() != null ? show.getImage().getPoster() : "", mImageFetcher);
 		//mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
         viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
@@ -87,14 +87,17 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                 menu.show();
             }
         });
-		viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
+		
 		if(show instanceof ShowNoDao)
 		{
 			viewHolder.tvFavorite.setVisibility(View.GONE);
+			viewHolder.tvWatchedPercent.setVisibility(View.GONE);
 		}
 		else
 		{
 			viewHolder.tvFavorite.setVisibility(View.VISIBLE);
+			viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
+			viewHolder.tvWatchedPercent.setVisibility(View.VISIBLE);
 		}
         return view;
     }

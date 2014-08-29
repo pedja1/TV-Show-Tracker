@@ -129,26 +129,33 @@ public abstract class ShowGridFragment extends Fragment
         @Override
         protected void onPostExecute(List<Show> result)
         {
-            adapter.clear();
-            for (Show s : result)
-            {
-                adapter.add(s);
-            }
-            adapter.notifyDataSetChanged();
-            if(adapter.isEmpty())
+			System.out.println(result);
+			pbLoading.setVisibility(View.GONE);
+			if(result == null || result.isEmpty())
             {
                 tvNoShows.setVisibility(View.VISIBLE);
+				tvNoShows.setText(noShowsString());
             }
             else
             {
                 tvNoShows.setVisibility(View.GONE);
+				adapter.clear();
+				for (Show s : result)
+				{
+					adapter.add(s);
+				}
+				adapter.notifyDataSetChanged();
             }
-            pbLoading.setVisibility(View.GONE);
+            
             onShowsLoaded(result);
         }
     }
 	
+	protected void onShowsLoaded(List<Show> shows)
+	{
+		//do nothing here
+	}
+	
 	protected abstract List<Show> getShows();
-	protected abstract void onShowsLoaded(List<Show> shows);
 	protected abstract CharSequence noShowsString();
 }

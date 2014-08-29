@@ -27,6 +27,7 @@ import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
+import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by pedja on 1/22/14.
@@ -41,17 +42,17 @@ public class JSONUtility
         percentage, loved, hated, actors, people, name, character, headshot, genres, seasons, episodes,
         season, episode, screen, error, error_message, error_code, id, email, first_name, last_name, avatar,
         password, message
-    }
+		}
 
     public enum RequestKey
     {
         query
-    }
+		}
 
     public static Response parseLoginResponse(PostParams params)
     {
         Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_LOGIN, params);
-        if(!checkResponse(response))
+        if (!checkResponse(response))
         {
             Response response1 = new Response();
             response1.status = false;
@@ -61,7 +62,7 @@ public class JSONUtility
         try
         {
             JSONObject jsonObject = new JSONObject(response.responseData);
-            if(jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
+            if (jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
             {
                 String email = jsonObject.getString(Key.email.toString());
                 PrefsManager.setActiveUser(email);
@@ -70,17 +71,17 @@ public class JSONUtility
             else
             {
                 return new Response()
-                        .setErrorCode(jsonObject.getString(Key.error_code.toString()))
-                        .setErrorMessage(jsonObject.getString(Key.error_message.toString()))
-                        .setStatus(false);
+					//.setErrorCode(jsonObject.getString(Key.error_code.toString()))
+					.setErrorMessage(jsonObject.getString(Key.error_message.toString()))
+					.setStatus(false);
             }
         }
         catch (Exception e)
         {
-            if(BuildConfig.DEBUG)e.printStackTrace();
-            if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
             Crashlytics.logException(e);
-            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode("internal_exception");
+            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode(Response.ErrorCode.internal);
         }
         return new Response().setErrorMessage(null).setErrorCode(null).setStatus(true);
     }
@@ -88,7 +89,7 @@ public class JSONUtility
     public static Response parseRegisterResponse(PostParams params)
     {
         Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_REGISTER, params);
-        if(!checkResponse(response))
+        if (!checkResponse(response))
         {
             Response response1 = new Response();
             response1.status = false;
@@ -98,26 +99,26 @@ public class JSONUtility
         try
         {
             JSONObject jsonObject = new JSONObject(response.responseData);
-            if(jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
+            if (jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
             {
                 return new Response()
-                        .setStatus(true)
-                        .setErrorMessage(jsonObject.getString(Key.message.toString()));
+					.setStatus(true)
+					.setErrorMessage(jsonObject.getString(Key.message.toString()));
             }
             else
             {
                 return new Response()
-                        .setErrorCode(jsonObject.getString(Key.error_code.toString()))
-                        .setErrorMessage(jsonObject.getString(Key.error_message.toString()))
-                        .setStatus(false);
+					//.setErrorCode(jsonObject.getString(Key.error_code.toString()))
+					.setErrorMessage(jsonObject.getString(Key.error_message.toString()))
+					.setStatus(false);
             }
         }
         catch (Exception e)
         {
-            if(BuildConfig.DEBUG)e.printStackTrace();
-            if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
             Crashlytics.logException(e);
-            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode("internal_exception");
+            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode(Response.ErrorCode.internal);
         }
     }
 
@@ -127,32 +128,32 @@ public class JSONUtility
         List<Show> shows = new ArrayList<Show>();
         query = URLEncoder.encode(query);
         Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_SEARCH + "?" + RequestKey.query.toString() + "=" + query);
-        if(!checkResponse(response))return null;
+        if (!checkResponse(response))return null;
         try
         {
             JSONArray jsonArray = new JSONArray(response.responseData);
-            for(int i = 0; i < jsonArray.length(); i++)
+            for (int i = 0; i < jsonArray.length(); i++)
             {
                 ShowNoDao show = new ShowNoDao();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
-                if(jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
-                if(jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
-                if(jsonObject.has(Key.first_aired_utc.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired_utc.toString()));
-                if(jsonObject.has(Key.country.toString()))show.setCountry(jsonObject.getString(Key.country.toString()));
-                if(jsonObject.has(Key.overview.toString()))show.setOverview(jsonObject.getString(Key.overview.toString()));
-                if(jsonObject.has(Key.network.toString()))show.setNetwork(jsonObject.getString(Key.network.toString()));
-                if(jsonObject.has(Key.air_day.toString()))show.setAir_day(jsonObject.getString(Key.air_day.toString()));
-                if(jsonObject.has(Key.air_time.toString()))show.setAir_time(jsonObject.getString(Key.air_time.toString()));
-                if(jsonObject.has(Key.year.toString()))show.setYear(jsonObject.getInt(Key.year.toString()));
-                if(jsonObject.has(Key.images.toString()))
+                if (jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
+                if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
+                if (jsonObject.has(Key.first_aired_utc.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired_utc.toString()));
+                if (jsonObject.has(Key.country.toString()))show.setCountry(jsonObject.getString(Key.country.toString()));
+                if (jsonObject.has(Key.overview.toString()))show.setOverview(jsonObject.getString(Key.overview.toString()));
+                if (jsonObject.has(Key.network.toString()))show.setNetwork(jsonObject.getString(Key.network.toString()));
+                if (jsonObject.has(Key.air_day.toString()))show.setAir_day(jsonObject.getString(Key.air_day.toString()));
+                if (jsonObject.has(Key.air_time.toString()))show.setAir_time(jsonObject.getString(Key.air_time.toString()));
+                if (jsonObject.has(Key.year.toString()))show.setYear(jsonObject.getInt(Key.year.toString()));
+                if (jsonObject.has(Key.images.toString()))
                 {
                     JSONObject images = jsonObject.getJSONObject(Key.images.toString());
 					Image image = new Image();
-                    if(images.has(Key.banner.toString()))
+                    if (images.has(Key.banner.toString()))
                     {
                         image.setBanner(images.getString(Key.banner.toString()));
                     }
-					if(images.has(Key.poster.toString()))
+					if (images.has(Key.poster.toString()))
                     {
                         image.setPoster(images.getString(Key.poster.toString()));
                     }
@@ -164,17 +165,71 @@ public class JSONUtility
         catch (Exception e)
         {
             shows = null;
-            if(BuildConfig.DEBUG)e.printStackTrace();
-            if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
             Crashlytics.logException(e);
         }
         return shows;
     }
 
+	public static Response parseTrendingShows()
+    {
+        List<Show> shows = new ArrayList<Show>();
+        Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_TRENDING);
+		System.out.println(response.responseMessage);
+        if (!checkResponse(response))
+			return new Response()
+				.setStatus(false)
+				.setErrorCode(Response.ErrorCode.internet);
+        try
+        {
+            JSONArray jsonArray = new JSONArray(response.responseData);
+			ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+            for (int i = 0; i < jsonArray.length(); i++)
+            {
+                Show show = new ShowNoDao();
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                if (jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
+				QueryBuilder<Show> builder = showDao.queryBuilder();
+				builder.where(ShowDao.Properties.Tvdb_id.eq(show.getTvdb_id()));
+				Show tmp = builder.unique();
+                if (tmp == null)
+				{
+					if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
+					if (jsonObject.has(Key.images.toString()))
+					{
+						JSONObject images = jsonObject.getJSONObject(Key.images.toString());
+						Image image = new Image();
+						if (images.has(Key.poster.toString()))
+						{
+							image.setPoster(images.getString(Key.poster.toString()));
+						}
+						show.setImage(image);
+					}
+				}
+				else
+				{
+					show = tmp;
+				}
+                shows.add(show);
+            }
+        }
+        catch (Exception e)
+        {
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            Crashlytics.logException(e);
+			return new Response()
+				.setStatus(false)
+				.setErrorCode(Response.ErrorCode.internet);
+        }
+        return new Response().setStatus(true).setResponseObject(shows);
+    }
+
     public static Response parseShow(String tvdbId, boolean insertInDb)
     {
         Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_GET_SHOW_INFO + "/" + tvdbId + "/1");
-        if(!checkResponse(response))
+        if (!checkResponse(response))
         {
             Response response1 = new Response();
             response1.status = false;
@@ -184,7 +239,7 @@ public class JSONUtility
         try
         {
             JSONObject jsonObject = new JSONObject(response.responseData);
-            if(jsonObject.has(Key.error.toString()))
+            if (jsonObject.has(Key.error.toString()))
             {
                 return new Response().setErrorMessage(jsonObject.getString(Key.error.toString())).setStatus(false);
             }
@@ -192,29 +247,29 @@ public class JSONUtility
             List<Episode> episodes = new ArrayList<Episode>();
             List<Actor> actors = new ArrayList<Actor>();
             List<Genre> genres = new ArrayList<Genre>();
-            if(jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
-            if(jsonObject.has(Key.year.toString()))show.setYear(jsonObject.getInt(Key.year.toString()));
-            if(jsonObject.has(Key.url.toString()))show.setUrl(jsonObject.getString(Key.url.toString()));
-            if(jsonObject.has(Key.first_aired_utc.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired_utc.toString()));
-            if(jsonObject.has(Key.country.toString()))show.setCountry(jsonObject.getString(Key.country.toString()));
-            if(jsonObject.has(Key.overview.toString()))show.setOverview(jsonObject.getString(Key.overview.toString()));
-            if(jsonObject.has(Key.runtime.toString()))show.setRuntime(jsonObject.getInt(Key.runtime.toString()));
-            if(jsonObject.has(Key.status.toString()))show.setStatus(jsonObject.getString(Key.status.toString()));
-            if(jsonObject.has(Key.network.toString()))show.setNetwork(jsonObject.getString(Key.network.toString()));
-            if(jsonObject.has(Key.air_day.toString()))show.setAir_day(jsonObject.getString(Key.air_day.toString()));
-            if(jsonObject.has(Key.air_time.toString()))show.setAir_time(jsonObject.getString(Key.air_time.toString()));
-            if(jsonObject.has(Key.certification.toString()))show.setCertification(jsonObject.getString(Key.certification.toString()));
-            if(jsonObject.has(Key.imdb_id.toString()))show.setImdb_id(jsonObject.getString(Key.imdb_id.toString()));
-            if(jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
-            if(jsonObject.has(Key.tvrage_id.toString()))show.setTvrage_id(jsonObject.getInt(Key.tvrage_id.toString()));
-            if(jsonObject.has(Key.last_updated.toString()))show.setLast_updated(jsonObject.getLong(Key.last_updated.toString()));
-            if(jsonObject.has(Key.images.toString()))
+            if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
+            if (jsonObject.has(Key.year.toString()))show.setYear(jsonObject.getInt(Key.year.toString()));
+            if (jsonObject.has(Key.url.toString()))show.setUrl(jsonObject.getString(Key.url.toString()));
+            if (jsonObject.has(Key.first_aired_utc.toString()))show.setFirst_aired(jsonObject.getLong(Key.first_aired_utc.toString()));
+            if (jsonObject.has(Key.country.toString()))show.setCountry(jsonObject.getString(Key.country.toString()));
+            if (jsonObject.has(Key.overview.toString()))show.setOverview(jsonObject.getString(Key.overview.toString()));
+            if (jsonObject.has(Key.runtime.toString()))show.setRuntime(jsonObject.getInt(Key.runtime.toString()));
+            if (jsonObject.has(Key.status.toString()))show.setStatus(jsonObject.getString(Key.status.toString()));
+            if (jsonObject.has(Key.network.toString()))show.setNetwork(jsonObject.getString(Key.network.toString()));
+            if (jsonObject.has(Key.air_day.toString()))show.setAir_day(jsonObject.getString(Key.air_day.toString()));
+            if (jsonObject.has(Key.air_time.toString()))show.setAir_time(jsonObject.getString(Key.air_time.toString()));
+            if (jsonObject.has(Key.certification.toString()))show.setCertification(jsonObject.getString(Key.certification.toString()));
+            if (jsonObject.has(Key.imdb_id.toString()))show.setImdb_id(jsonObject.getString(Key.imdb_id.toString()));
+            if (jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
+            if (jsonObject.has(Key.tvrage_id.toString()))show.setTvrage_id(jsonObject.getInt(Key.tvrage_id.toString()));
+            if (jsonObject.has(Key.last_updated.toString()))show.setLast_updated(jsonObject.getLong(Key.last_updated.toString()));
+            if (jsonObject.has(Key.images.toString()))
             {
                 JSONObject images = jsonObject.getJSONObject(Key.images.toString());
                 Image image = new Image();
-                if(images.has(Key.banner.toString()))image.setBanner(images.getString(Key.banner.toString()));
-                if(images.has(Key.fanart.toString()))image.setFanart(images.getString(Key.fanart.toString()));
-                if(images.has(Key.poster.toString()))image.setPoster(images.getString(Key.poster.toString()));
+                if (images.has(Key.banner.toString()))image.setBanner(images.getString(Key.banner.toString()));
+                if (images.has(Key.fanart.toString()))image.setFanart(images.getString(Key.fanart.toString()));
+                if (images.has(Key.poster.toString()))image.setPoster(images.getString(Key.poster.toString()));
                 show.setImage(image);
                 long imageId;
                 if (insertInDb)
@@ -228,12 +283,12 @@ public class JSONUtility
                     show.setImage(image);
                 }
             }
-            if(jsonObject.has(Key.ratings.toString()))
+            if (jsonObject.has(Key.ratings.toString()))
             {
                 JSONObject ratings = jsonObject.getJSONObject(Key.ratings.toString());
-                if(ratings.has(Key.percentage.toString()))show.setRating(ratings.getInt(Key.percentage.toString()));
-                if(ratings.has(Key.loved.toString()))show.setLoved(ratings.getInt(Key.loved.toString()));
-                if(ratings.has(Key.hated.toString()))show.setHated(ratings.getInt(Key.hated.toString()));
+                if (ratings.has(Key.percentage.toString()))show.setRating(ratings.getInt(Key.percentage.toString()));
+                if (ratings.has(Key.loved.toString()))show.setLoved(ratings.getInt(Key.loved.toString()));
+                if (ratings.has(Key.hated.toString()))show.setHated(ratings.getInt(Key.hated.toString()));
             }
             long showId = 0;
             if (insertInDb)
@@ -241,22 +296,22 @@ public class JSONUtility
                 ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
                 showId = showDao.insertOrReplace(show);
             }
-            if(jsonObject.has(Key.people.toString()))
+            if (jsonObject.has(Key.people.toString()))
             {
                 JSONObject people = jsonObject.getJSONObject(Key.people.toString());
-                if(people.has(Key.actors.toString()))
+                if (people.has(Key.actors.toString()))
                 {
                     JSONArray jActors = people.getJSONArray(Key.actors.toString());
-                    for(int a = 0; a < jActors.length(); a++)
+                    for (int a = 0; a < jActors.length(); a++)
                     {
                         JSONObject jActor = jActors.getJSONObject(a);
                         Actor actor = new Actor();
-                        if(jActor.has(Key.name.toString()))actor.setName(jActor.getString(Key.name.toString()));
-                        if(jActor.has(Key.character.toString()))actor.setCharacter(jActor.getString(Key.character.toString()));
-                        if(jActor.has(Key.images.toString()))
+                        if (jActor.has(Key.name.toString()))actor.setName(jActor.getString(Key.name.toString()));
+                        if (jActor.has(Key.character.toString()))actor.setCharacter(jActor.getString(Key.character.toString()));
+                        if (jActor.has(Key.images.toString()))
                         {
                             JSONObject images = jActor.getJSONObject(Key.images.toString());
-                            if(images.has(Key.headshot.toString()))actor.setImage(images.getString(Key.headshot.toString()));
+                            if (images.has(Key.headshot.toString()))actor.setImage(images.getString(Key.headshot.toString()));
                         }
                         actor.setShow_id(showId);
                         actors.add(actor);
@@ -272,10 +327,10 @@ public class JSONUtility
                     }
                 }
             }
-            if(jsonObject.has(Key.genres.toString()))
+            if (jsonObject.has(Key.genres.toString()))
             {
                 JSONArray jGenres = jsonObject.getJSONArray(Key.genres.toString());
-                for(int g = 0; g < jGenres.length(); g++)
+                for (int g = 0; g < jGenres.length(); g++)
                 {
                     Genre genre = new Genre();
                     genre.setShow_id(showId);
@@ -292,33 +347,33 @@ public class JSONUtility
                     ((ShowNoDao)show).setGenres(genres);
                 }
             }
-            if(jsonObject.has(Key.seasons.toString()))
+            if (jsonObject.has(Key.seasons.toString()))
             {
                 JSONArray seasons = jsonObject.getJSONArray(Key.seasons.toString());
-                for(int s = 0; s < seasons.length(); s++)
+                for (int s = 0; s < seasons.length(); s++)
                 {
                     JSONObject season = seasons.getJSONObject(s);
-                    if(season.has(Key.episodes.toString()))
+                    if (season.has(Key.episodes.toString()))
                     {
                         JSONArray jEpisodes = season.getJSONArray(Key.episodes.toString());
-                        for(int e = 0; e < jEpisodes.length(); e++)
+                        for (int e = 0; e < jEpisodes.length(); e++)
                         {
                             JSONObject jEpisode = jEpisodes.getJSONObject(e);
                             Episode episode = new Episode();
-                            if(jEpisode.has(Key.season.toString()))episode.setSeason(jEpisode.getInt(Key.season.toString()));
-                            if(jEpisode.has(Key.episode.toString()))episode.setEpisode(jEpisode.getInt(Key.episode.toString()));
-                            if(jEpisode.has(Key.tvdb_id.toString()))episode.setTvdb_id(jEpisode.getInt(Key.tvdb_id.toString()));
-                            if(jEpisode.has(Key.title.toString()))episode.setTitle(jEpisode.getString(Key.title.toString()));
-                            if(jEpisode.has(Key.overview.toString()))episode.setOverview(jEpisode.getString(Key.overview.toString()));
-                            if(jEpisode.has(Key.first_aired_utc.toString()))episode.setFirst_aired(jEpisode.getLong(Key.first_aired_utc.toString()));
-                            if(jEpisode.has(Key.url.toString()))episode.setUrl(jEpisode.getString(Key.url.toString()));
-                            if(jEpisode.has(Key.screen.toString()))episode.setScreen(jEpisode.getString(Key.screen.toString()));
-                            if(jEpisode.has(Key.ratings.toString()))
+                            if (jEpisode.has(Key.season.toString()))episode.setSeason(jEpisode.getInt(Key.season.toString()));
+                            if (jEpisode.has(Key.episode.toString()))episode.setEpisode(jEpisode.getInt(Key.episode.toString()));
+                            if (jEpisode.has(Key.tvdb_id.toString()))episode.setTvdb_id(jEpisode.getInt(Key.tvdb_id.toString()));
+                            if (jEpisode.has(Key.title.toString()))episode.setTitle(jEpisode.getString(Key.title.toString()));
+                            if (jEpisode.has(Key.overview.toString()))episode.setOverview(jEpisode.getString(Key.overview.toString()));
+                            if (jEpisode.has(Key.first_aired_utc.toString()))episode.setFirst_aired(jEpisode.getLong(Key.first_aired_utc.toString()));
+                            if (jEpisode.has(Key.url.toString()))episode.setUrl(jEpisode.getString(Key.url.toString()));
+                            if (jEpisode.has(Key.screen.toString()))episode.setScreen(jEpisode.getString(Key.screen.toString()));
+                            if (jEpisode.has(Key.ratings.toString()))
                             {
                                 JSONObject ratings = jEpisode.getJSONObject(Key.ratings.toString());
-                                if(ratings.has(Key.percentage.toString()))episode.setRating(ratings.getInt(Key.percentage.toString()));
-                                if(ratings.has(Key.loved.toString()))episode.setLoved(ratings.getInt(Key.loved.toString()));
-                                if(ratings.has(Key.hated.toString()))episode.setHated(ratings.getInt(Key.hated.toString()));
+                                if (ratings.has(Key.percentage.toString()))episode.setRating(ratings.getInt(Key.percentage.toString()));
+                                if (ratings.has(Key.loved.toString()))episode.setLoved(ratings.getInt(Key.loved.toString()));
+                                if (ratings.has(Key.hated.toString()))episode.setHated(ratings.getInt(Key.hated.toString()));
                             }
                             episode.setShow_id(showId);
                             episodes.add(episode);
@@ -335,12 +390,12 @@ public class JSONUtility
                     }
                 }
             }
-            return new Response().setErrorMessage(null).setStatus(true).setShow((ShowNoDao) show);
+            return new Response().setErrorMessage(null).setStatus(true).setResponseObject((ShowNoDao) show);
         }
         catch (Exception e)
         {
-            if(BuildConfig.DEBUG)e.printStackTrace();
-            if(BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
             Crashlytics.logException(e);
             return new Response().setStatus(false).setErrorMessage(e.getMessage());
         }
@@ -353,9 +408,15 @@ public class JSONUtility
 
     public static class Response
     {
+		public enum ErrorCode
+		{
+			internet, database, internal
+		}
+		
         private boolean status;
-        private String errorMessage, errorCode;
-        private ShowNoDao show;
+        private String errorMessage;
+		private ErrorCode errorCode;
+        private Object responseObject;
 
         public Response setStatus(boolean status)
         {
@@ -369,7 +430,7 @@ public class JSONUtility
             return this;
         }
 
-        public Response setErrorCode(String errorCode)
+        public Response setErrorCode(ErrorCode errorCode)
         {
             this.errorCode = errorCode;
             return this;
@@ -385,19 +446,27 @@ public class JSONUtility
             return errorMessage;
         }
 
-        public String getErrorCode()
+        public ErrorCode getErrorCode()
         {
             return errorCode;
         }
 
         public ShowNoDao getShow()
         {
-            return show;
+            return responseObject instanceof ShowNoDao ? (ShowNoDao)responseObject : null;
         }
+		
+		/**
+		* Make sure responseObject is list since it cant be checked in runtime
+		*/
+		public List<Show> getShowList()
+		{
+			return (List<Show>)responseObject;
+		}
 
-        public Response setShow(ShowNoDao show)
+        public Response setResponseObject(Object responseObject)
         {
-            this.show = show;
+            this.responseObject = responseObject;
             return this;
         }
     }

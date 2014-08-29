@@ -26,6 +26,7 @@ import rs.pedjaapps.tvshowtracker.adapter.NavigationDrawerAdapter;
 import rs.pedjaapps.tvshowtracker.model.NDItem;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
+import rs.pedjaapps.tvshowtracker.fragment.TrendingShowsFragment;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener
 {
@@ -289,7 +290,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		switch(menuItem.id)
 		{
 			case trending:
-				
+				fragment = TrendingShowsFragment.newInstance();
 				break;
 			case my_shows:
 				fragment = MyShowsFragment.newInstance();
