@@ -5,7 +5,7 @@ buildscript {
 
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:0.12.1'
+        classpath 'com.android.tools.build:gradle:0.12.+'
         classpath 'com.crashlytics.tools.gradle:crashlytics-gradle:1.+'
 
     }
@@ -46,7 +46,7 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-project.txt'
         }
         debug {
-            //packageNameSuffix ".debug"
+            //applicationIdSuffix ".debug"
         }
     }
 
@@ -68,15 +68,17 @@ android {
         exclude 'META-INF/LICENSE.txt'
         exclude 'META-INF/NOTICE.txt'
     }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_7
+        targetCompatibility JavaVersion.VERSION_1_7
+    }
 }
 
 dependencies {
-    //compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.2'
     compile 'de.greenrobot:greendao:1.3.7'
     // compile 'com.google.android.gms:play-services:4.+'
     // compile 'com.android.support:appcompat-v7:19.+'
-    // compile 'com.facebook:facebook:3.14.1@aar'
-    // compile 'com.handmark.pulltorefresh.library:PullToRefresh:2.1.1@aar'
     //compile fileTree(dir: 'libs', include: ['*.jar'])
     compile files("libs/httpclientandroidlib-1.2.1.jar")
     compile 'com.android.support:support-v4:19.+'
@@ -84,7 +86,6 @@ dependencies {
     //compile 'com.google.android.gms:play-services:4.2.42'
     //compile 'com.android.support:appcompat-v7:19.+'
     compile 'commons-codec:commons-codec:1.4'
-    compile 'com.jeremyfeinstein.slidingmenu.lib:SlidingMenu:1.0@aar'
     compile 'com.viewpagerindicator:viewpagerindicator:2.4.1@aar'
     compile 'com.nineoldandroids:library:2.4.0'
 	compile project (":volleyplus:library")

@@ -21,7 +21,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
 
     private final int itemLayoutResource;
     SimpleImageLoader mImageFetcher;
-    public static final float IMAGE_RATIO = 0.7f;
+    public static final float IMAGE_RATIO = 1.6f;
 
     public ActorsAdapter(final Context context, final int itemLayoutResource)
     {

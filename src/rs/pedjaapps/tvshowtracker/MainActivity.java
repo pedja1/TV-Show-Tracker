@@ -51,6 +51,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
+        if(PrefsManager.isFirstRun())
+        {
+            startActivity(new Intent(this, LoginActivity.class));
+            //PrefsManager.setFirstRun(false);
+        }
         MainApp.getInstance().getDaoSession();
         super.onCreate(savedInstanceState);
 
@@ -283,6 +288,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	private void selectItem(int position) 
 	{
         // update the main content by replacing fragments
+        mDrawerList.setItemChecked(position, true);
         Fragment fragment = null;
 		
 		NDItem menuItem = menuItems.get(position);
@@ -343,7 +349,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 	
 	private List<NDItem> generateMenuOptions()
 	{
-		List<NDItem> items = new ArrayList<>();
+		List<NDItem> items = new ArrayList<NDItem>();
 		NDItem item = new NDItem();
 		item.title = getString(R.string.trending_shows);
 		item.id = NDItem.Id.trending;

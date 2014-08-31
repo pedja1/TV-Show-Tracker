@@ -5,7 +5,7 @@
     <string name="prompt_email">Email</string>
     <string name="prompt_password">Password</string>
     <string name="prompt_password_repeat">Repeat Password</string>
-    <string name="action_sign_in">Login</string>
+    <string name="action_sign_in">Login with trakt.tv</string>
     <string name="action_register">Register</string>
     <string name="action_sign_in_short">Login</string>
 

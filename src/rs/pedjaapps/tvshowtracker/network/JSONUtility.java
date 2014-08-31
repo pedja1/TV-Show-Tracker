@@ -86,43 +86,6 @@ public class JSONUtility
         return new Response().setErrorMessage(null).setErrorCode(null).setStatus(true);
     }
 
-    public static Response parseRegisterResponse(PostParams params)
-    {
-        Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_REGISTER, params);
-        if (!checkResponse(response))
-        {
-            Response response1 = new Response();
-            response1.status = false;
-            response1.errorMessage = response.responseMessage;
-            return response1;
-        }
-        try
-        {
-            JSONObject jsonObject = new JSONObject(response.responseData);
-            if (jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
-            {
-                return new Response()
-					.setStatus(true)
-					.setErrorMessage(jsonObject.getString(Key.message.toString()));
-            }
-            else
-            {
-                return new Response()
-					//.setErrorCode(jsonObject.getString(Key.error_code.toString()))
-					.setErrorMessage(jsonObject.getString(Key.error_message.toString()))
-					.setStatus(false);
-            }
-        }
-        catch (Exception e)
-        {
-            if (BuildConfig.DEBUG)e.printStackTrace();
-            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
-            Crashlytics.logException(e);
-            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode(Response.ErrorCode.internal);
-        }
-    }
-
-
     public static List<Show> parseSearchResults(String query)
     {
         List<Show> shows = new ArrayList<Show>();

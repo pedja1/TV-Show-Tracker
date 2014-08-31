@@ -9,12 +9,14 @@ import de.greenrobot.dao.AbstractDaoSession;
 import de.greenrobot.dao.identityscope.IdentityScopeType;
 import de.greenrobot.dao.internal.DaoConfig;
 
+import rs.pedjaapps.tvshowtracker.model.User;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.Image;
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.Genre;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 
+import rs.pedjaapps.tvshowtracker.model.UserDao;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
@@ -30,12 +32,14 @@ import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
  */
 public class DaoSession extends AbstractDaoSession {
 
+    private final DaoConfig userDaoConfig;
     private final DaoConfig showDaoConfig;
     private final DaoConfig imageDaoConfig;
     private final DaoConfig actorDaoConfig;
     private final DaoConfig genreDaoConfig;
     private final DaoConfig episodeDaoConfig;
 
+    private final UserDao userDao;
     private final ShowDao showDao;
     private final ImageDao imageDao;
     private final ActorDao actorDao;
@@ -45,6 +49,9 @@ public class DaoSession extends AbstractDaoSession {
     public DaoSession(SQLiteDatabase db, IdentityScopeType type, Map<Class<? extends AbstractDao<?, ?>>, DaoConfig>
             daoConfigMap) {
         super(db);
+
+        userDaoConfig = daoConfigMap.get(UserDao.class).clone();
+        userDaoConfig.initIdentityScope(type);
 
         showDaoConfig = daoConfigMap.get(ShowDao.class).clone();
         showDaoConfig.initIdentityScope(type);
@@ -61,12 +68,14 @@ public class DaoSession extends AbstractDaoSession {
         episodeDaoConfig = daoConfigMap.get(EpisodeDao.class).clone();
         episodeDaoConfig.initIdentityScope(type);
 
+        userDao = new UserDao(userDaoConfig, this);
         showDao = new ShowDao(showDaoConfig, this);
         imageDao = new ImageDao(imageDaoConfig, this);
         actorDao = new ActorDao(actorDaoConfig, this);
         genreDao = new GenreDao(genreDaoConfig, this);
         episodeDao = new EpisodeDao(episodeDaoConfig, this);
 
+        registerDao(User.class, userDao);
         registerDao(Show.class, showDao);
         registerDao(Image.class, imageDao);
         registerDao(Actor.class, actorDao);
@@ -75,11 +84,16 @@ public class DaoSession extends AbstractDaoSession {
     }
     
     public void clear() {
+        userDaoConfig.getIdentityScope().clear();
         showDaoConfig.getIdentityScope().clear();
         imageDaoConfig.getIdentityScope().clear();
         actorDaoConfig.getIdentityScope().clear();
         genreDaoConfig.getIdentityScope().clear();
         episodeDaoConfig.getIdentityScope().clear();
+    }
+
+    public UserDao getUserDao() {
+        return userDao;
     }
 
     public ShowDao getShowDao() {

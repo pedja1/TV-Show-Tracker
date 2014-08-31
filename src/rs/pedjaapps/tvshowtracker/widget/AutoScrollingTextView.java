@@ -1,8 +1,9 @@
-package android.widget;
+package rs.pedjaapps.tvshowtracker.widget;
 
 import android.content.Context;
 import android.graphics.Rect;
 import android.util.AttributeSet;
+import android.widget.TextView;
 
 /**
  * Created by pedja on 23.4.14..

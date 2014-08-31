@@ -2,17 +2,9 @@
 
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item
-        android:id="@+id/update"
-        android:title="@string/update"/>
-    <!--
+        android:id="@+id/add"
+        android:title="@string/add_to_fav"/>
     <item
-        android:id="@+id/updateImages"
-        android:title="@string/update_images"/>
-    -->
-    <item
-        android:id="@+id/delete"
-        android:title="@string/delete"/>
-    <item
-        android:id="@+id/sync"
-        android:title="@string/sync"/>
+        android:id="@+id/watchlist"
+        android:title="@string/add_to_watchlist"/>
 </menu>

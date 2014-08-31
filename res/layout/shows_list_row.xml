@@ -58,7 +58,7 @@
 		android:paddingTop="3dip"
 		android:orientation="horizontal">
 
-		<AutoScrollingTextView
+		<rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView
 			android:layout_weight="1"
 			android:id="@+id/txtUpcomingEpisode"
 			android:layout_width="0dp"

@@ -5,11 +5,10 @@ import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.app.LoaderManager.LoaderCallbacks;
-import android.content.ContentResolver;
+import android.app.ProgressDialog;
 import android.content.CursorLoader;
-import android.content.DialogInterface;
-import android.content.Intent;
 import android.content.Loader;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -21,13 +20,17 @@ import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.view.ViewTreeObserver;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.inputmethod.EditorInfo;
 import android.widget.ArrayAdapter;
-import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.FButton;
-import android.widget.FloatLabeledEditText;
+
+import rs.pedjaapps.tvshowtracker.widget.FButton;
+import rs.pedjaapps.tvshowtracker.widget.FloatLabeledEditText;
+
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.apache.commons.codec.binary.Hex;
@@ -36,16 +39,15 @@ import org.apache.commons.codec.digest.DigestUtils;
 import java.util.ArrayList;
 import java.util.List;
 
-import rs.pedjaapps.tvshowtracker.network.Internet;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.network.PostParams;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 
 /**
  * A login screen that offers login via email/password.
  */
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
 {
 
@@ -57,15 +59,22 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
     // UI references.
     private FloatLabeledEditText mEmailView;
     private FloatLabeledEditText mPasswordView;
-    private View mProgressView;
-    private View mLoginFormView;
+    private ProgressBar pbLoading;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
+        if (hasKat())
+        {
+            setTheme(android.R.style.Theme_Holo_NoActionBar/*_TranslucentDecor*/);
+        }
+        else
+        {
+            setTheme(android.R.style.Theme_Holo_NoActionBar);
+        }
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
-        setupActionBar();
+
 
         // Set up the login form.
         mEmailView = (FloatLabeledEditText) findViewById(R.id.email);
@@ -86,7 +95,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        FButton mEmailSignInButton = (FButton) findViewById(R.id.email_sign_in_button);
         mEmailSignInButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -95,31 +104,18 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
                 attemptLogin(true);
             }
         });
-        findViewById(R.id.btnRegister).setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                attemptLogin(false);
-            }
-        });
+        pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
 
-        mLoginFormView = findViewById(R.id.login_form);
-        mProgressView = findViewById(R.id.login_progress);
+    }
+
+    private boolean hasKat()
+    {
+        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT;
     }
 
     private void populateAutoComplete()
     {
         getLoaderManager().initLoader(0, null, this);
-    }
-
-    /**
-     * Set up the {@link android.app.ActionBar}, if the API is available.
-     */
-    private void setupActionBar()
-    {
-        // Show the Up button in the action bar.
-        getActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
     /**
@@ -179,7 +175,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password, login);
+            mAuthTask = new UserLoginTask(email, password);
             mAuthTask.execute((Void) null);
         }
     }
@@ -194,32 +190,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
      */
     public void showProgress(final boolean show)
     {
-        // On Honeycomb MR2 we have the ViewPropertyAnimator APIs, which allow
-        // for very easy animations. If available, use these APIs to fade-in
-        // the progress spinner.
-        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
-
-        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                show ? 0 : 1).setListener(new AnimatorListenerAdapter()
-        {
-            @Override
-            public void onAnimationEnd(Animator animation)
-            {
-                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            }
-        });
-
-        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-        mProgressView.animate().setDuration(shortAnimTime).alpha(
-                show ? 1 : 0).setListener(new AnimatorListenerAdapter()
-        {
-            @Override
-            public void onAnimationEnd(Animator animation)
-            {
-                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            }
-        });
+        pbLoading.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     @Override
@@ -291,13 +262,11 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
 
         private final String mEmail;
         private final String mPassword;
-        private final boolean mLogin;//login or register
 
-        UserLoginTask(String email, String password, boolean login)
+        UserLoginTask(String email, String password)
         {
             mEmail = email;
             mPassword = password;
-            mLogin = login;
         }
 
         @Override
@@ -305,14 +274,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
         {
             PostParams postParams = new PostParams();
             postParams.setParamsForLogin(mEmail, new String(Hex.encodeHex(DigestUtils.sha(mPassword))));
-            if (mLogin)
-            {
-                return JSONUtility.parseLoginResponse(postParams);
-            }
-            else
-            {
-                return JSONUtility.parseRegisterResponse(postParams);
-            }
+            return JSONUtility.parseLoginResponse(postParams);
         }
 
         @Override

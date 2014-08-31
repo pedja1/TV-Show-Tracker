@@ -8,13 +8,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.AutoScrollingTextView;
+import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
-import rs.pedjaapps.tvshowtracker.MainActivity;
+
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
@@ -26,7 +26,7 @@ import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 public final class ShowsAdapter extends ArrayAdapter<Show>
 {
 	SimpleImageLoader mImageFetcher;
-    public static final float IMAGE_RATIO = 0.7f;
+    public static final float IMAGE_RATIO = 1.6f;
 
     public ShowsAdapter(final Context context)
     {
@@ -46,7 +46,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
         viewHolder.upcomingEpisodeView.setText(show.getTitle());
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
-        viewHolder.ivPoster.setImageUrl(show.getImage() != null ? show.getImage().getPoster() : "", mImageFetcher);
+        viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
 		//mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
         viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
@@ -54,7 +54,7 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
             public void onClick(View view)
             {
                 PopupMenu menu = new PopupMenu(getContext(), viewHolder.ivMore);
-                menu.inflate(R.menu.show_options);
+                menu.inflate(show instanceof ShowNoDao ? R.menu.show_options : R.menu.show_options_fav);
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
                 {
                     @Override
@@ -78,7 +78,9 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                                     }
                                 });
                                 break;
-                            case R.id.sync:
+                            case R.id.add:
+                                break;
+                            case R.id.watchlist:
                                 break;
                         }
                         return true;

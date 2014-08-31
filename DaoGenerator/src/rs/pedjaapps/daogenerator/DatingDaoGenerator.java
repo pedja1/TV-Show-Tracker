@@ -26,15 +26,31 @@ public class DatingDaoGenerator
 
     public static void main(String[] args) throws Exception
     {
-        Schema schema = new Schema(1, "rs.pedjaapps.tvshowtracker.model");
+        Schema schema = new Schema(2, "rs.pedjaapps.tvshowtracker.model");
 
         addShow(schema);
 
-        new DaoGenerator().generateAll(schema, "./src-gen");
+        new DaoGenerator().generateAll(schema, "./src");
     }
 
     private static void addShow(Schema schema)
     {
+        Entity user = schema.addEntity("User");
+        user.setHasKeepSections(true);
+        user.addStringProperty("username").primaryKey().notNull();
+        user.addStringProperty("full_name");
+        user.addStringProperty("gender");
+        user.addIntProperty("age");
+        user.addStringProperty("location");
+        user.addStringProperty("about");
+        user.addLongProperty("joined");
+        user.addLongProperty("last_login");
+        user.addStringProperty("avatar");
+        user.addStringProperty("url");
+        user.addBooleanProperty("true");
+        user.addStringProperty("share_text_watched");
+        user.addStringProperty("share_text_watching");
+
         Entity show = schema.addEntity("Show");
         show.setHasKeepSections(true);
         show.addIdProperty();
@@ -58,6 +74,10 @@ public class DatingDaoGenerator
         show.addIntProperty("votes");
         show.addIntProperty("loved");
         show.addIntProperty("hated");
+
+        Property username = show.addStringProperty("username").notNull().getProperty();
+        ToMany userToShow= user.addToMany(show, username);
+        userToShow.setName("shows");
 
         Entity image = schema.addEntity("Image");
         image.implementsInterface("Parcelable");

@@ -7,7 +7,7 @@ import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.View;
 import android.widget.LinearLayout;
-import android.widget.PoppyViewHelper;
+import rs.pedjaapps.tvshowtracker.widget.PoppyViewHelper;
 import android.widget.TextView;
 import java.util.Collections;
 import java.util.List;

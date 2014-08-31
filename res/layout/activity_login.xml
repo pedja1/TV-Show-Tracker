@@ -1,4 +1,4 @@
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
               xmlns:app="http://schemas.android.com/apk/res-auto"
               xmlns:tools="http://schemas.android.com/tools"
               android:layout_width="match_parent"
@@ -9,107 +9,112 @@
               android:paddingLeft="@dimen/activity_horizontal_margin"
               android:paddingRight="@dimen/activity_horizontal_margin"
               android:paddingTop="@dimen/activity_vertical_margin"
-              tools:context="rs.pedjaapps.tvshowtracker.LoginActivity">
+              tools:context="rs.pedjaapps.tvshowtracker.LoginActivity"
+    android:background="@drawable/login_bg"
+    android:id="@+id/flContent">
 
-    <!-- Login progress -->
-    <ProgressBar
-        android:id="@+id/login_progress"
-        style="?android:attr/progressBarStyleLarge"
+
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="8dp"
-        android:visibility="gone"/>
+        android:layout_gravity="center"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp">
 
-    <ScrollView
-        android:id="@+id/login_form"
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/trakt_logo"
+            android:layout_centerHorizontal="true"
+            android:id="@+id/ivLogo"/>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        >
+        android:layout_height="wrap_content"
+        android:id="@+id/llEmail"
+        android:layout_below="@+id/ivLogo">
 
-        <LinearLayout
-            android:id="@+id/email_login_form"
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_mail"
+            android:layout_gravity="bottom"
+            android:id="@+id/ivEmailIcon"/>
+
+        <rs.pedjaapps.tvshowtracker.widget.FloatLabeledEditText
+            android:id="@+id/email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            app:fletFloatingHint="@string/prompt_email"
+            app:fletInputType="textEmailAddress"
+            android:maxLines="1"
+            app:fletSingleLine="true"
+            android:layout_toRightOf="@+id/ivEmailIcon"
+            android:layout_marginLeft="10dp"
+            app:fletTextColor="@color/white"
+            app:fletHintTextColor="@color/fbutton_color_peter_river"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <ProgressBar
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="?android:attr/progressBarStyleSmall"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:id="@+id/pbLoading"
+            android:layout_marginRight="5dp"
+            android:visibility="gone"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_mail"
-                    android:layout_gravity="bottom"/>
+    </RelativeLayout>
 
-                <FloatLabeledEditText
-                    android:id="@+id/email"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    app:fletFloatingHint="@string/prompt_email"
-                    app:fletInputType="textEmailAddress"
-                    android:maxLines="1"
-                    app:fletSingleLine="true"
-                    android:layout_weight="1"
-                    android:layout_marginLeft="10dp"/>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/llPassword"
+        android:layout_below="@+id/llEmail">
 
-            </LinearLayout>
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_action_password"
+            android:layout_gravity="bottom"/>
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+        <rs.pedjaapps.tvshowtracker.widget.FloatLabeledEditText
+            android:id="@+id/password"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:fletFloatingHint="@string/prompt_password"
+            app:fletImeActionId="@+id/login"
+            app:fletImeActionLabel="@string/action_sign_in_short"
+            app:fletImeOptions="actionUnspecified"
+            app:fletInputType="textPassword"
+            android:maxLines="1"
+            app:fletSingleLine="true"
+            android:layout_marginLeft="10dp"
+            app:fletTextColor="@color/white"
+            app:fletHintTextColor="@color/fbutton_color_peter_river"/>
 
-                <ImageView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:src="@drawable/ic_action_password"
-                    android:layout_gravity="bottom"/>
-
-                <FloatLabeledEditText
-                    android:id="@+id/password"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    app:fletFloatingHint="@string/prompt_password"
-                    app:fletImeActionId="@+id/login"
-                    app:fletImeActionLabel="@string/action_sign_in_short"
-                    app:fletImeOptions="actionUnspecified"
-                    app:fletInputType="textPassword"
-                    android:maxLines="1"
-                    app:fletSingleLine="true"
-                    android:layout_marginLeft="10dp"/>
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:orientation="horizontal">
-
-                <Button
-                    android:id="@+id/email_sign_in_button"
-                    style="?android:textAppearanceSmall"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:text="@string/action_sign_in"
-                    android:textStyle="bold"
-                    android:layout_weight="1"/>
-
-                <Button
-                    android:id="@+id/btnRegister"
-                    style="?android:textAppearanceSmall"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/action_register"
-                    android:textStyle="bold"/>
-
-            </LinearLayout>
+    </LinearLayout>
 
 
-        </LinearLayout>
-    </ScrollView>
+        <rs.pedjaapps.tvshowtracker.widget.FButton
+            android:id="@+id/email_sign_in_button"
+            style="?android:textAppearanceSmall"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/action_sign_in"
+            android:textStyle="bold"
+            android:layout_marginTop="16dp"
+            android:orientation="horizontal"
+            android:layout_below="@+id/llPassword"
+            app:buttonColor="@color/fbutton_color_peter_river"
+            app:shadowColor="@color/fbutton_color_belize_hole"
+            app:shadowEnabled="true"
+            app:shadowHeight="4dp"
+            app:cornerRadius="5dp"
+            android:textColor="@color/white"/>
+    </RelativeLayout>
 
-</LinearLayout>
+</FrameLayout>
 
 
 

@@ -19,7 +19,7 @@ public class PrefsManager
 
     public enum Key
     {
-        locale, email, avatar, first_name, last_name,
+        locale, username, avatar, first_name, last_name, first_run,
         sort
     }
 
@@ -30,13 +30,13 @@ public class PrefsManager
 
     public static String getActiveUser()
     {
-        return prefs.getString(Key.email.toString(), defaultUser);
+        return prefs.getString(Key.username.toString(), defaultUser);
     }
 
     public static void setActiveUser(String email)
     {
         SharedPreferences.Editor editor = prefs.edit();
-        editor.putString(Key.email.toString(), email);
+        editor.putString(Key.username.toString(), email);
         editor.apply();
     }
 
@@ -51,6 +51,18 @@ public class PrefsManager
     {
         SharedPreferences.Editor editor = prefs.edit();
         editor.putString(Key.sort.toString(), sortOrder);
+        editor.apply();
+    }
+
+    public static boolean isFirstRun()
+    {
+        return prefs.getBoolean(Key.first_name.toString(), true);
+    }
+
+    public static void setFirstRun(boolean firstRun)
+    {
+        SharedPreferences.Editor editor = prefs.edit();
+        editor.putBoolean(Key.first_run.toString(), firstRun);
         editor.apply();
     }
 }

@@ -106,7 +106,8 @@
             android:name="rs.pedjaapps.tvshowtracker.LoginActivity"
             android:label="@string/title_activity_login"
             android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity"
-            android:windowSoftInputMode="adjustResize|stateVisible" >
+            android:windowSoftInputMode="adjustResize|stateVisible"
+            android:screenOrientation="portrait">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".MainActivity" />

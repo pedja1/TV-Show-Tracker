@@ -34,6 +34,8 @@ public class Show {
     private Integer votes;
     private Integer loved;
     private Integer hated;
+    /** Not-null value. */
+    private String username;
     private Long image_id;
 
     /** Used to resolve relations */
@@ -61,7 +63,7 @@ public class Show {
         this.id = id;
     }
 
-    public Show(Long id, int tvdb_id, String title, Integer year, String url, Long first_aired, String country, String overview, Integer runtime, String status, String network, String air_day, String air_time, String certification, String imdb_id, Integer tvrage_id, Long last_updated, Integer rating, Integer votes, Integer loved, Integer hated, Long image_id) {
+    public Show(Long id, int tvdb_id, String title, Integer year, String url, Long first_aired, String country, String overview, Integer runtime, String status, String network, String air_day, String air_time, String certification, String imdb_id, Integer tvrage_id, Long last_updated, Integer rating, Integer votes, Integer loved, Integer hated, String username, Long image_id) {
         this.id = id;
         this.tvdb_id = tvdb_id;
         this.title = title;
@@ -83,6 +85,7 @@ public class Show {
         this.votes = votes;
         this.loved = loved;
         this.hated = hated;
+        this.username = username;
         this.image_id = image_id;
     }
 
@@ -258,6 +261,16 @@ public class Show {
 
     public void setHated(Integer hated) {
         this.hated = hated;
+    }
+
+    /** Not-null value. */
+    public String getUsername() {
+        return username;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setUsername(String username) {
+        this.username = username;
     }
 
     public Long getImage_id() {

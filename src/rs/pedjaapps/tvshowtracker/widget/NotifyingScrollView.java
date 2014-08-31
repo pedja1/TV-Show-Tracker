@@ -1,7 +1,8 @@
-package android.widget;
+package rs.pedjaapps.tvshowtracker.widget;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.widget.ScrollView;
 
 /**
  * @author Cyril Mottier

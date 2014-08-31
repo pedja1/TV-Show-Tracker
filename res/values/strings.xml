@@ -100,5 +100,6 @@
 	<string name="show_added_to_fav">Add to \'My Shows\'</string>
 	<string name="show_removeed_from_fav">Remove from \'My Shows\'</string>
 	<string name="my_shows">My Shows</string>
-	
+    <string name="add_to_watchlist">Add to Watchlist</string>
+
 </resources>

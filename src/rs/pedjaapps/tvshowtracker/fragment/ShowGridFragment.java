@@ -4,35 +4,23 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
-import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableStringBuilder;
-import android.text.style.ImageSpan;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.GridView;
-import android.widget.LinearLayout;
-import android.widget.PoppyViewHelper;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import java.util.ArrayList;
-import java.util.Collections;
+
 import java.util.List;
-import rs.pedjaapps.tvshowtracker.MainApp;
+
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.ShowDetailsActivity;
 import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
-import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
-import rs.pedjaapps.tvshowtracker.utils.Comparators;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
-import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
-import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public abstract class ShowGridFragment extends Fragment
 {
@@ -75,6 +63,8 @@ public abstract class ShowGridFragment extends Fragment
 	{
 		super.onActivityCreated(savedInstanceState);
 		refreshShows();
+        // Restore the previously serialized current dropdown position.
+        if(savedInstanceState != null)list.onRestoreInstanceState(savedInstanceState.getParcelable("list_position"));
 	}
 	
 	private void setNoImageText()
@@ -85,13 +75,6 @@ public abstract class ShowGridFragment extends Fragment
     public void refreshShows()
     {
         new LoadShows().execute();
-    }
-
-    @Override
-    public void onRestoreInstanceState(Bundle savedInstanceState)
-    {
-        // Restore the previously serialized current dropdown position.
-        list.onRestoreInstanceState(savedInstanceState.getParcelable("list_position"));
     }
 
     @Override

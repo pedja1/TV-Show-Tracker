@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package android.widget;
+package rs.pedjaapps.tvshowtracker.widget;
 
 import android.content.Context;
 import android.database.DataSetObserver;
@@ -31,6 +31,11 @@ import android.view.SoundEffectConstants;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.accessibility.AccessibilityEvent;
+import android.widget.AbsListView;
+import android.widget.HeaderViewListAdapter;
+import android.widget.ListAdapter;
+import android.widget.ListView;
+import android.widget.SectionIndexer;
 
 import rs.pedjaapps.tvshowtracker.BuildConfig;
 

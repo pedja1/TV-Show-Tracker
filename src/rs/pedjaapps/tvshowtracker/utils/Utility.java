@@ -11,6 +11,7 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Html;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -432,4 +433,55 @@ public class Utility
 			showDao.delete(show);
 		}
 	}
+
+    public enum ImageSize
+    {
+        /**
+         * uncompressed image (poster = 1000x1500, fanart = 1920x1080, some of 1280x720, episode = 400x225,
+         * banner = 758x140)*/
+        UNCOMPRESSED,
+
+        /**
+         * Small posters are 138x203, all the grid views use this size.*/
+        SMALL_POSTER,
+
+        /**
+         * Large posters are 300x450, the movie summary page uses this size.*/
+        LARGE_POSTER,
+
+        /**
+         * Large fanart is 940x529, the show summary uses these.*/
+        SMALL_FANART,
+
+        /**
+         * Small fanart is 218x123, these are used in place of missing episode images.*/
+        LARGE_FANART,
+
+        /**
+         * Small episodes are 218x123, these are used in things like charts and season pages.*/
+        SMALL_EPISODE
+    }
+
+    public static String generatePosterUrl(ImageSize imageSize, String url)
+    {
+        if(TextUtils.isEmpty(url))return url;
+        String append = "";
+        switch (imageSize)
+        {
+            case SMALL_POSTER:
+                append = "-138";
+                break;
+            case LARGE_POSTER:
+                append = "-300";
+                break;
+            case UNCOMPRESSED:
+                break;
+            default:
+                Log.w(Constants.LOG_TAG, "Unsupported image size for poster, using uncompressed");
+                break;
+        }
+        String urlNoExt = url.substring(0, url.lastIndexOf("."));
+        String extension = url.substring(url.lastIndexOf("."), url.length());
+        return urlNoExt + append + extension;
+    }
 }

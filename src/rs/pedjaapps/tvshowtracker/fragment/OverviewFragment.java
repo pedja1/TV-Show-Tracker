@@ -9,7 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.NotifyingScrollView;
+import rs.pedjaapps.tvshowtracker.widget.NotifyingScrollView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 

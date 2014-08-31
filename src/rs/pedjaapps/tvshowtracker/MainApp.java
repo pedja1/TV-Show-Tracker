@@ -6,8 +6,11 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.android.volley.cache.DiskLruBasedCache;
 
+import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.model.DaoMaster;
 import rs.pedjaapps.tvshowtracker.model.DaoSession;
+import rs.pedjaapps.tvshowtracker.model.User;
+import rs.pedjaapps.tvshowtracker.model.UserDao;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 import com.android.volley.VolleyLog;
@@ -18,7 +21,7 @@ public class MainApp extends Application
 
     static Context context;
     DaoSession daoSession;
-    private String activeUser;
+    private User activeUser;
     public DiskLruBasedCache.ImageCacheParams cacheParams;
 
     public static MainApp getInstance()
@@ -43,12 +46,25 @@ public class MainApp extends Application
         activeUser = initUser();
     }
 
-    private String initUser()
+    private User initUser()
     {
-        return PrefsManager.getActiveUser();
+        String username = PrefsManager.getActiveUser();
+        UserDao userDao = getDaoSession().getUserDao();
+        QueryBuilder<User> builder = userDao.queryBuilder();
+        builder.where(UserDao.Properties.Username.eq(username));
+        User user = builder.unique();
+        if(user == null)
+        {
+            user = new User();
+            user.setUsername("-");
+            user.setAvatar("http://slurm.trakt.us/images/avatar-large.jpg");
+            userDao.insert(user);
+            return user;
+        }
+        return user;
     }
 
-    public String getActiveUser()
+    public User getActiveUser()
     {
         if(activeUser == null)
         {
@@ -57,7 +73,7 @@ public class MainApp extends Application
         return activeUser;
     }
 
-    public void setActiveUser(String activeUser)
+    public void setActiveUser(User activeUser)
     {
         this.activeUser = activeUser;
     }
