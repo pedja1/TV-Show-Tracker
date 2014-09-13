@@ -3,18 +3,27 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tvst.api;
+package com.tvst.api.controller;
 
 /**
  *
  * @author pedja
  */
+import com.tvst.api.Constants;
+import com.tvst.api.db.DBUtility;
+import com.tvst.api.JSONKey;
+import com.tvst.api.servlet.MainServlet;
+import com.tvst.api.RequestParam;
+import com.tvst.api.ResponseCode;
+import com.tvst.api.utility.SessionGenerator;
+import com.tvst.api.model.User;
+import com.tvst.api.utility.Utility;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;

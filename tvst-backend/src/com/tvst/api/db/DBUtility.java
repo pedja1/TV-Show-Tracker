@@ -3,9 +3,11 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tvst.api;
+package com.tvst.api.db;
 
-import static com.tvst.api.Controller.logger;
+import com.tvst.api.model.User;
+
+import static com.tvst.api.controller.Controller.logger;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

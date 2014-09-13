@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tvst.api;
+package com.tvst.api.utility;
+
+import com.tvst.api.model.User;
 
 import java.util.Properties;
 import javax.mail.Authenticator;
@@ -29,20 +31,21 @@ public class MailUtility
                 + "Thank you for your registration.<br> To verify your account please click this link:<br>"
                 + user.getRegistration_key() + "</body></html>";
         Properties props = new Properties();
-        props.setProperty("mail.host", "smtp.gmail.com");
-        props.setProperty("mail.smtp.port", "587");
+        props.setProperty("mail.smtp.host", "mail.pedjaapps.net");
+        /*props.setProperty("mail.smtp.port", "587");
         props.setProperty("mail.smtp.auth", "true");
         props.setProperty("mail.smtp.starttls.enable", "true");
 
-        Authenticator auth = new SMTPAuthenticator("login", "password");//TODO change
+        Authenticator auth = new SMTPAuthenticator("login", "password");//TODO change*/
 
-        Session session = Session.getInstance(props, auth);
+        //Session session = Session.getInstance(props, auth);
+        Session session = Session.getDefaultInstance(props);
 
         MimeMessage msg = new MimeMessage(session);
         msg.setText(message);
         msg.setSubject(subject);
         msg.addRecipient(Message.RecipientType.TO, new InternetAddress(user.getEmail()));
-        msg.addHeader("Reply-To", "test@server.com");
+        msg.addHeader("Reply-To", "tvst@pedjaapps.net");
         msg.addHeader("MIME-Version", "1.0");
         msg.addHeader("Content-type", "text/html; charset=iso-8859-1");
         msg.addHeader("Bcc", "predragcokulov@gmail.com");

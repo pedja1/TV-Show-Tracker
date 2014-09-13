@@ -4,7 +4,9 @@
  * and open the template in the editor.
  */
 
-package com.tvst.api;
+package com.tvst.api.utility;
+
+import com.tvst.api.JSONKey;
 
 import org.json.JSONObject;
 

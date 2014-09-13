@@ -3,7 +3,9 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.tvst.api;
+package com.tvst.api.model;
+
+import com.tvst.api.JSONKey;
 
 import java.io.Serializable;
 import org.json.JSONObject;

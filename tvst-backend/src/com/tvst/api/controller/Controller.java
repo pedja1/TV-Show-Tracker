@@ -4,14 +4,14 @@
  * and open the template in the editor.
  */
 
-package com.tvst.api;
+package com.tvst.api.controller;
+
+import com.tvst.api.servlet.MainServlet;
 
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 import javax.servlet.ServletException;
-import javax.servlet.http.Cookie;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.log4j.Logger;
@@ -25,7 +25,7 @@ public abstract class Controller
     
     private static final long serialVersionUID = 1L;
 
-    static Logger logger = Logger.getLogger(Controller.class);
+    public static Logger logger = Logger.getLogger(Controller.class);
     
     MainServlet servlet;
     protected final Map<String, String[]> requestParams = new HashMap<>();

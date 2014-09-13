@@ -4,7 +4,14 @@
  * and open the template in the editor.
  */
 
-package com.tvst.api;
+package com.tvst.api.controller;
+
+import com.tvst.api.db.DBUtility;
+import com.tvst.api.JSONKey;
+import com.tvst.api.servlet.MainServlet;
+import com.tvst.api.RequestParam;
+import com.tvst.api.ResponseCode;
+import com.tvst.api.utility.Utility;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,7 +20,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.json.JSONArray;

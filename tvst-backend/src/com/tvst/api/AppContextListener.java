@@ -9,6 +9,9 @@ package com.tvst.api;
  *
  * @author pedja
  */
+import com.tvst.api.db.DBConnectionManager;
+import com.tvst.api.utility.SessionGenerator;
+
 import java.io.File;
 import java.sql.Connection;
 import java.sql.SQLException;

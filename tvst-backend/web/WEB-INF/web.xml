@@ -5,11 +5,11 @@
          version="3.1">
     <servlet>
         <servlet-name>Home</servlet-name>
-        <servlet-class>com.tvst.api.HomeServlet</servlet-class>
+        <servlet-class>com.tvst.api.servlet.HomeServlet</servlet-class>
     </servlet>
     <servlet>
         <servlet-name>MainServlet</servlet-name>
-        <servlet-class>com.tvst.api.MainServlet</servlet-class>
+        <servlet-class>com.tvst.api.servlet.MainServlet</servlet-class>
     </servlet>
     <servlet-mapping>
         <servlet-name>Home</servlet-name>
@@ -32,7 +32,7 @@
     </context-param>
     <context-param>
         <param-name>dbURL</param-name>
-        <param-value>jdbc:mysql://localhost:3306/test_servlets</param-value>
+        <param-value>jdbc:mysql://localhost:3306/tvst</param-value>
     </context-param>
     <context-param>
         <param-name>log4j-config</param-name>

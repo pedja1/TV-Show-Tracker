@@ -13,5 +13,5 @@ package com.tvst.api;
 public enum JSONKey
 {
     status, error_code, error_message, user_info, id, email, first_name, last_name,
-    warning, message, auth_key, items, deleted, added
+    warning, message, auth_key, items, deleted, added, server_time
 }

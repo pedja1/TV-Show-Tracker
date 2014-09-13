@@ -4,7 +4,16 @@
  * and open the template in the editor.
  */
 
-package com.tvst.api;
+package com.tvst.api.servlet;
+
+import com.tvst.api.Command;
+import com.tvst.api.db.DBUtility;
+import com.tvst.api.RequestParam;
+import com.tvst.api.ResponseCode;
+import com.tvst.api.utility.Utility;
+import com.tvst.api.controller.LoginController;
+import com.tvst.api.controller.RegisterController;
+import com.tvst.api.controller.SyncController;
 
 import java.io.IOException;
 import java.io.PrintWriter;

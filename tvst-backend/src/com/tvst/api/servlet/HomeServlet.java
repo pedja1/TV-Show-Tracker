@@ -4,7 +4,11 @@
  * and open the template in the editor.
  */
 
-package com.tvst.api;
+package com.tvst.api.servlet;
+
+import com.tvst.api.JSONKey;
+
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -35,8 +39,10 @@ public class HomeServlet extends HttpServlet
         response.setContentType("application/json;charset=UTF-8");
         try (PrintWriter out = response.getWriter())
         {
-            /* TODO output your page here. You may use following sample code. */
-            out.println("{bla}");
+            JSONObject object = new JSONObject();
+            object.put(JSONKey.status.toString(), 1);
+            object.put(JSONKey.server_time.toString(), System.currentTimeMillis());
+            out.println(object.toString());
         }
     }
 
