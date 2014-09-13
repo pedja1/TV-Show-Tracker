@@ -47,7 +47,7 @@ public class DatingDaoGenerator
         user.addLongProperty("last_login");
         user.addStringProperty("avatar");
         user.addStringProperty("url");
-        user.addBooleanProperty("true");
+        //user.addBooleanProperty("true");
         user.addStringProperty("share_text_watched");
         user.addStringProperty("share_text_watching");
 

@@ -24,7 +24,6 @@ public class User {
     private Long last_login;
     private String avatar;
     private String url;
-    private Boolean true;
     private String share_text_watched;
     private String share_text_watching;
 
@@ -46,7 +45,7 @@ public class User {
         this.username = username;
     }
 
-    public User(String username, String full_name, String gender, Integer age, String location, String about, Long joined, Long last_login, String avatar, String url, Boolean true, String share_text_watched, String share_text_watching) {
+    public User(String username, String full_name, String gender, Integer age, String location, String about, Long joined, Long last_login, String avatar, String url, String share_text_watched, String share_text_watching) {
         this.username = username;
         this.full_name = full_name;
         this.gender = gender;
@@ -57,7 +56,6 @@ public class User {
         this.last_login = last_login;
         this.avatar = avatar;
         this.url = url;
-        this.true = true;
         this.share_text_watched = share_text_watched;
         this.share_text_watching = share_text_watching;
     }
@@ -148,14 +146,6 @@ public class User {
 
     public void setUrl(String url) {
         this.url = url;
-    }
-
-    public Boolean getTrue() {
-        return true;
-    }
-
-    public void setTrue(Boolean true) {
-        this.true = true;
     }
 
     public String getShare_text_watched() {

@@ -33,9 +33,8 @@ public class UserDao extends AbstractDao<User, String> {
         public final static Property Last_login = new Property(7, Long.class, "last_login", false, "LAST_LOGIN");
         public final static Property Avatar = new Property(8, String.class, "avatar", false, "AVATAR");
         public final static Property Url = new Property(9, String.class, "url", false, "URL");
-        public final static Property True = new Property(10, Boolean.class, "true", false, "TRUE");
-        public final static Property Share_text_watched = new Property(11, String.class, "share_text_watched", false, "SHARE_TEXT_WATCHED");
-        public final static Property Share_text_watching = new Property(12, String.class, "share_text_watching", false, "SHARE_TEXT_WATCHING");
+        public final static Property Share_text_watched = new Property(10, String.class, "share_text_watched", false, "SHARE_TEXT_WATCHED");
+        public final static Property Share_text_watching = new Property(11, String.class, "share_text_watching", false, "SHARE_TEXT_WATCHING");
     };
 
     private DaoSession daoSession;
@@ -64,9 +63,8 @@ public class UserDao extends AbstractDao<User, String> {
                 "'LAST_LOGIN' INTEGER," + // 7: last_login
                 "'AVATAR' TEXT," + // 8: avatar
                 "'URL' TEXT," + // 9: url
-                "'TRUE' INTEGER," + // 10: true
-                "'SHARE_TEXT_WATCHED' TEXT," + // 11: share_text_watched
-                "'SHARE_TEXT_WATCHING' TEXT);"); // 12: share_text_watching
+                "'SHARE_TEXT_WATCHED' TEXT," + // 10: share_text_watched
+                "'SHARE_TEXT_WATCHING' TEXT);"); // 11: share_text_watching
     }
 
     /** Drops the underlying database table. */
@@ -126,19 +124,14 @@ public class UserDao extends AbstractDao<User, String> {
             stmt.bindString(10, url);
         }
  
-        Boolean true = entity.getTrue();
-        if (true != null) {
-            stmt.bindLong(11, true ? 1l: 0l);
-        }
- 
         String share_text_watched = entity.getShare_text_watched();
         if (share_text_watched != null) {
-            stmt.bindString(12, share_text_watched);
+            stmt.bindString(11, share_text_watched);
         }
  
         String share_text_watching = entity.getShare_text_watching();
         if (share_text_watching != null) {
-            stmt.bindString(13, share_text_watching);
+            stmt.bindString(12, share_text_watching);
         }
     }
 
@@ -168,9 +161,8 @@ public class UserDao extends AbstractDao<User, String> {
             cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // last_login
             cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // avatar
             cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // url
-            cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0, // true
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // share_text_watched
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // share_text_watching
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // share_text_watched
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // share_text_watching
         );
         return entity;
     }
@@ -188,9 +180,8 @@ public class UserDao extends AbstractDao<User, String> {
         entity.setLast_login(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
         entity.setAvatar(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
         entity.setUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setTrue(cursor.isNull(offset + 10) ? null : cursor.getShort(offset + 10) != 0);
-        entity.setShare_text_watched(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setShare_text_watching(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setShare_text_watched(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setShare_text_watching(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
      }
     
     /** @inheritdoc */
