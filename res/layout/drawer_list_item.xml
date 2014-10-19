@@ -24,4 +24,5 @@
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
     android:background="?android:attr/activatedBackgroundIndicator"
-    android:minHeight="?android:attr/listPreferredItemHeightSmall"/>
+    android:minHeight="?android:attr/listPreferredItemHeightSmall"
+    android:drawablePadding="20dp"/>

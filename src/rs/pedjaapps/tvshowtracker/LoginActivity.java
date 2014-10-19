@@ -64,14 +64,14 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
     @Override
     protected void onCreate(Bundle savedInstanceState)
     {
-        if (hasKat())
+        /*if (hasKat())
         {
-            setTheme(android.R.style.Theme_Holo_NoActionBar/*_TranslucentDecor*/);
+            setTheme(android.R.style.Theme_Holo_NoActionBar);
         }
         else
         {
             setTheme(android.R.style.Theme_Holo_NoActionBar);
-        }
+        }*/
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
@@ -285,15 +285,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor>
 
             if(!response.getStatus())
             {
-                if("login_invalid".equals(response.getErrorCode()))
-                {
-                    mPasswordView.setError(getString(R.string.error_incorrect_password));
-                    mPasswordView.requestFocus();
-                }
-                else
-                {
-                    Utility.showToast(MainApp.getContext(), response.getErrorMessage());
-                }
+                Utility.showToast(MainApp.getContext(), response.getErrorMessage());
             }
             else
             {

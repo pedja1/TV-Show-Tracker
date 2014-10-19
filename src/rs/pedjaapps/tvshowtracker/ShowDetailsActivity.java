@@ -65,11 +65,11 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
-		getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
 		setContentView(R.layout.activity_details);
 		
-		getActionBar().setTitle("");
+		getSupportActionBar().setTitle("");
 
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.JELLY_BEAN_MR1)
         {
@@ -78,12 +78,12 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 
         mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_background_textured_tvst_red).mutate();
         
-		getActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
+		getSupportActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 		
         pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
 
         // Show the Up button in the action bar.
-		getActionBar().setDisplayHomeAsUpEnabled(true);
+		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		mTvdbId = getIntent().getIntExtra(EXTRA_TVDB_ID, -1);
         mImdbId = getIntent().getStringExtra(EXTRA_IMDB_ID);
@@ -103,7 +103,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
     @Override
     public void invalidateDrawable(Drawable who)
     {
-        getActionBar().setBackgroundDrawable(who);
+        getSupportActionBar().setBackgroundDrawable(who);
     }
 
     @Override
@@ -221,7 +221,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 		mActionBarBackgroundDrawable.setAlpha(mActionBarAlpha);
 
 		invalidateOptionsMenu();
-        getActionBar().setTitle(show.getTitle());
+        getSupportActionBar().setTitle(show.getTitle());
         /*ImageLoader.getInstance().loadImage(show.getImage().getPoster(), new SimpleImageLoadingListener()
         {
             @Override
@@ -351,13 +351,13 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
         switch (pos)
         {
             case 0:
-                getActionBar().setSubtitle(R.string.overview);
+                getSupportActionBar().setSubtitle(R.string.overview);
                 break;
             case 1:
-                getActionBar().setSubtitle(R.string.episodes);
+                getSupportActionBar().setSubtitle(R.string.episodes);
                 break;
             case 2:
-                getActionBar().setSubtitle(R.string.actors);
+                getSupportActionBar().setSubtitle(R.string.actors);
                 break;
         }
     }
@@ -437,6 +437,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 		ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
 		long imageId = imageDao.insertOrReplace(show.getImage());
 		show.setImage_id(imageId);
+        show.setUsername(MainApp.getInstance().getActiveUser().getUsername());
 		long showId = showDao.insertOrReplace(show);
 		
 		EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();

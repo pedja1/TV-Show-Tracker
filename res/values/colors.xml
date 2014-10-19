@@ -30,4 +30,8 @@
     <color name="fbutton_color_asbestos">#7f8c8d</color>
     <color name="fbutton_color_transparent">@android:color/transparent</color>
 
+    <color name="primary">#009688</color>
+    <color name="primary_dark">#00796b</color>
+    <color name="accent">#64ffda</color>
+
 </resources>

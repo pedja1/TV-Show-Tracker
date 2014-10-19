@@ -5,26 +5,50 @@
     android:layout_height="match_parent">
 
     <!-- As the main content view, the view below consumes the entire
-	space available using match_parent in both dimensions. -->
+    space available using match_parent in both dimensions. -->
     <FrameLayout
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"/>
 
     <!-- android:layout_gravity="start" tells DrawerLayout to treat
-	this as a sliding drawer on the left side for left-to-right
-	languages and on the right side for right-to-left languages.
-	The drawer is given a fixed width in dp and extends the full height of
-	the container. A solid background is used for contrast
-	with the content view. -->
-    <ListView
-        android:id="@+id/left_drawer"
-        android:scrollbars="vertical"
-        android:layout_width="280dp"
+    this as a sliding drawer on the left side for left-to-right
+    languages and on the right side for right-to-left languages.
+    The drawer is given a fixed width in dp and extends the full height of
+    the container. A solid background is used for contrast
+    with the content view. -->
+
+    <RelativeLayout
         android:layout_height="match_parent"
+        android:layout_width="280dp"
         android:layout_gravity="left|start"
-        android:choiceMode="singleChoice"
-        android:divider="@null"
-		android:background="@color/white"
-	/>
+        android:id="@+id/left_drawer">
+
+<!--
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="20sp"
+            android:text="@string/locations"
+            android:id="@+id/tvLocations"
+            android:background="#e4e4e4"
+            android:textColor="#4f4f4f"
+            android:paddingLeft="10dp"
+            android:paddingBottom="5dp"
+            android:paddingTop="5dp"
+            android:drawableLeft="@drawable/ic_action_locations"
+            android:gravity="center_vertical"/>
+
+-->
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10dp"
+            android:background="@color/white"
+            android:id="@+id/lvDrawer"/>
+
+    </RelativeLayout>
+
 </android.support.v4.widget.DrawerLayout>

@@ -28,8 +28,8 @@ public class SearchResults extends BaseActivity
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
-        super.onCreate(savedInstanceState);
         requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+        super.onCreate(savedInstanceState);
 
         setContentView(R.layout.search_result);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
@@ -81,7 +81,7 @@ public class SearchResults extends BaseActivity
         {
             String query = intent.getStringExtra(SearchManager.QUERY);
             //suggestions.saveRecentQuery(query, null);
-            getActionBar().setTitle(getString(R.string.searching, query));
+            getSupportActionBar().setTitle(getString(R.string.searching, query));
             if (Utility.isNetworkAvailable(this))
                 new ATGetSearchResults().execute(query);
             else

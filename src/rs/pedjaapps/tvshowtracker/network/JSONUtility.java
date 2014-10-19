@@ -41,7 +41,7 @@ public class JSONUtility
         runtime, status, fanart, poster, certification, imdb_id, tvdb_id, tvrage_id, last_updated, ratings,
         percentage, loved, hated, actors, people, name, character, headshot, genres, seasons, episodes,
         season, episode, screen, error, error_message, error_code, id, email, first_name, last_name, avatar,
-        password, message
+        password, message, success
 		}
 
     public enum RequestKey
@@ -52,27 +52,20 @@ public class JSONUtility
     public static Response parseLoginResponse(PostParams params)
     {
         Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_LOGIN, params);
-        if (!checkResponse(response))
-        {
-            Response response1 = new Response();
-            response1.status = false;
-            response1.errorMessage = response.responseMessage;
-            return response1;
-        }
         try
         {
             JSONObject jsonObject = new JSONObject(response.responseData);
-            if (jsonObject.has(Key.status.toString()) && jsonObject.getInt(Key.status.toString()) == 1)
+            if (Key.success.toString().equals(jsonObject.optString(Key.status.toString())))
             {
                 String email = jsonObject.getString(Key.email.toString());
                 PrefsManager.setActiveUser(email);
-                MainApp.getInstance().setActiveUser(email);
+                //MainApp.getInstance().setActiveUser(email);
             }
             else
             {
                 return new Response()
-					//.setErrorCode(jsonObject.getString(Key.error_code.toString()))
-					.setErrorMessage(jsonObject.getString(Key.error_message.toString()))
+					.setErrorCode(Response.ErrorCode.fromString(jsonObject.optString(Key.status.toString())))
+					.setErrorMessage(jsonObject.optString(Key.error.toString()))
 					.setStatus(false);
             }
         }
@@ -373,7 +366,19 @@ public class JSONUtility
     {
 		public enum ErrorCode
 		{
-			internet, database, internal
+			unknown, internet, database, internal;
+
+            public static ErrorCode fromString(String value)
+            {
+                for(ErrorCode code : values())
+                {
+                    if(code.toString().equals(value))
+                    {
+                        return code;
+                    }
+                }
+                return unknown;
+            }
 		}
 		
         private boolean status;

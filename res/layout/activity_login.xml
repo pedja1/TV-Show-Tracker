@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:src="@drawable/ic_action_mail"
-            android:layout_gravity="bottom"
+            android:layout_alignBottom="@+id/email"
             android:id="@+id/ivEmailIcon"/>
 
         <rs.pedjaapps.tvshowtracker.widget.FloatLabeledEditText
@@ -106,8 +106,8 @@
             android:layout_marginTop="16dp"
             android:orientation="horizontal"
             android:layout_below="@+id/llPassword"
-            app:buttonColor="@color/fbutton_color_peter_river"
-            app:shadowColor="@color/fbutton_color_belize_hole"
+            app:buttonColor="@color/primary"
+            app:shadowColor="@color/primary_dark"
             app:shadowEnabled="true"
             app:shadowHeight="4dp"
             app:cornerRadius="5dp"

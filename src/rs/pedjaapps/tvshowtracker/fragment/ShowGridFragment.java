@@ -4,6 +4,8 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,6 +15,7 @@ import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.R;
@@ -21,11 +24,12 @@ import rs.pedjaapps.tvshowtracker.adapter.ShowsAdapter;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
+import rs.pedjaapps.tvshowtracker.widget.StateSaveRecyclerView;
 
 public abstract class ShowGridFragment extends Fragment
 {
 	ShowsAdapter adapter;
-    GridView list;
+    StateSaveRecyclerView list;
     ProgressBar pbLoading;
     TextView tvNoShows;
 	
@@ -38,20 +42,23 @@ public abstract class ShowGridFragment extends Fragment
         tvNoShows = (TextView) view.findViewById(R.id.tvNoShows);
         setNoImageText();
 		
-		list = (GridView) view.findViewById(R.id.lvShows);
+		list = (StateSaveRecyclerView) view.findViewById(R.id.lvShows);
+
+        GridLayoutManager glm = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_column_num));
+        list.setLayoutManager(glm);
 
         
-        adapter = new ShowsAdapter(getActivity());
+        adapter = new ShowsAdapter(getActivity(), new ArrayList<Show>());
         list.setAdapter(adapter);
 
-        list.setOnItemClickListener(new AdapterView.OnItemClickListener()
+        adapter.setOnItemClickListener(new ShowsAdapter.OnItemClickListener()
 			{
 				@Override
-				public void onItemClick(AdapterView<?> arg0, View arg1, int arg2, long arg3)
+				public void onItemClick(Show show, int position)
 				{
 					startActivity(new Intent(getActivity(),
 											 ShowDetailsActivity.class).putExtra(ShowDetailsActivity.EXTRA_TVDB_ID,
-																				 adapter.getItem(arg2).getTvdb_id()));
+																				 show.getTvdb_id()));
 				}
 			});
         
@@ -59,12 +66,22 @@ public abstract class ShowGridFragment extends Fragment
 	}
 
 	@Override
-	public void onActivityCreated(Bundle savedInstanceState)
+	public void onActivityCreated(final Bundle savedInstanceState)
 	{
 		super.onActivityCreated(savedInstanceState);
 		refreshShows();
         // Restore the previously serialized current dropdown position.
-        if(savedInstanceState != null)list.onRestoreInstanceState(savedInstanceState.getParcelable("list_position"));
+        if(savedInstanceState != null)
+        {
+            list.post(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    list.onRestoreInstanceState(savedInstanceState.getParcelable("list_position"));
+                }
+            });
+        }
 	}
 	
 	private void setNoImageText()

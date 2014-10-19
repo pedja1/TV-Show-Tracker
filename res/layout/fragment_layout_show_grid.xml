@@ -4,7 +4,7 @@
     android:layout_height="fill_parent"
     android:background="@color/grey_bg">
 
-    <GridView
+    <rs.pedjaapps.tvshowtracker.widget.StateSaveRecyclerView
         android:id="@+id/lvShows"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

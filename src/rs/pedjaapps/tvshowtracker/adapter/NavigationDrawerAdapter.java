@@ -16,11 +16,14 @@
 
 package rs.pedjaapps.tvshowtracker.adapter;
 
+import android.app.ActionBar;
 import android.content.Context;
+import android.graphics.drawable.ColorDrawable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 import java.util.List;
 import rs.pedjaapps.tvshowtracker.R;
@@ -44,7 +47,13 @@ public class NavigationDrawerAdapter extends ArrayAdapter<NDItem>
         public TextView mTextView;
     }
 
-	@Override
+    @Override
+    public boolean isEnabled(int position)
+    {
+        return getItemViewType(position) != NDItem.TYPE_SEPARATOR;
+    }
+
+    @Override
 	public int getItemViewType(int position)
 	{
 		return getItem(position).type;
@@ -59,20 +68,43 @@ public class NavigationDrawerAdapter extends ArrayAdapter<NDItem>
     @Override
     public View getView(int position, View convertView, ViewGroup parent)
     {
-        ViewHolder holder;
-        if(convertView == null)
+        int itemViewType = getItemViewType(position);
+        NDItem item = getItem(position);
+
+        if(itemViewType == NDItem.TYPE_SEPARATOR)
         {
-            LayoutInflater vi = LayoutInflater.from(parent.getContext());
-            convertView = vi.inflate(R.layout.drawer_list_item, parent, false);
-            holder = new ViewHolder();
-            holder.mTextView = (TextView) convertView.findViewById(android.R.id.text1);
-            convertView.setTag(holder);
+            if (convertView == null)
+            {
+                LayoutInflater vi = LayoutInflater.from(parent.getContext());
+                convertView = vi.inflate(R.layout.drawer_list_separator, parent, false);
+            }
         }
         else
         {
-            holder = (ViewHolder) convertView.getTag();
+            ViewHolder holder;
+            if (convertView == null)
+            {
+                LayoutInflater vi = LayoutInflater.from(parent.getContext());
+                convertView = vi.inflate(R.layout.drawer_list_item, parent, false);
+                holder = new ViewHolder();
+                holder.mTextView = (TextView) convertView.findViewById(android.R.id.text1);
+                convertView.setTag(holder);
+            }
+            else
+            {
+                holder = (ViewHolder) convertView.getTag();
+            }
+            holder.mTextView.setText(item.title);
+
+            if (itemViewType == NDItem.TYPE_MAIN)
+            {
+                holder.mTextView.setCompoundDrawablesWithIntrinsicBounds(item.iconRes, 0, 0, 0);
+            }
+            else
+            {
+                holder.mTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+            }
         }
-        holder.mTextView.setText(getItem(position).title);
         return convertView;
     }
 }

@@ -1,17 +1,14 @@
 package rs.pedjaapps.tvshowtracker.widget;
 
 import android.app.Activity;
+import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewGroup.LayoutParams;
 import android.view.ViewParent;
-import android.widget.AbsListView;
-import android.widget.AbsListView.OnScrollListener;
 import android.widget.FrameLayout;
-import android.widget.GridView;
-import android.widget.ListView;
 
 import com.nineoldandroids.view.ViewPropertyAnimator;
 
@@ -54,22 +51,22 @@ public class PoppyViewHelper
         this(activity, PoppyViewPosition.BOTTOM);
     }
 
-    public View createPoppyViewOnGridView(int listViewId, int poppyViewResId, OnScrollListener onScrollListener)
+    public View createPoppyViewOnGridView(int listViewId, int poppyViewResId, RecyclerView.OnScrollListener onScrollListener)
     {
-        final GridView listView = (GridView) mActivity.findViewById(listViewId);
+        final RecyclerView listView = (RecyclerView) mActivity.findViewById(listViewId);
         mPoppyView = mLayoutInflater.inflate(poppyViewResId, null);
         initPoppyViewOnGridView(listView, onScrollListener);
         return mPoppyView;
     }
 
-	public View createPoppyViewOnGridView(GridView gridCiew, int poppyViewResId, OnScrollListener onScrollListener)
+	public View createPoppyViewOnGridView(RecyclerView gridCiew, int poppyViewResId, RecyclerView.OnScrollListener onScrollListener)
     {
         mPoppyView = mLayoutInflater.inflate(poppyViewResId, null);
         initPoppyViewOnGridView(gridCiew, onScrollListener);
         return mPoppyView;
     }
 	
-	public View createPoppyViewOnGridView(GridView gridView, int poppyViewResId)
+	public View createPoppyViewOnGridView(RecyclerView gridView, int poppyViewResId)
     {
         return createPoppyViewOnGridView(gridView, poppyViewResId, null);
     }
@@ -77,29 +74,6 @@ public class PoppyViewHelper
     public View createPoppyViewOnGridView(int listViewId, int poppyViewResId)
     {
         return createPoppyViewOnGridView(listViewId, poppyViewResId, null);
-    }
-
-    // for ListView
-
-    public View createPoppyViewOnListView(int listViewId, int poppyViewResId, OnScrollListener onScrollListener)
-    {
-        final ListView listView = (ListView) mActivity.findViewById(listViewId);
-        if (listView.getHeaderViewsCount() != 0)
-        {
-            throw new IllegalArgumentException("use createPoppyViewOnListView with headerResId parameter");
-        }
-        if (listView.getFooterViewsCount() != 0)
-        {
-            throw new IllegalArgumentException("poppyview library doesn't support listview with footer");
-        }
-        mPoppyView = mLayoutInflater.inflate(poppyViewResId, null);
-        initPoppyViewOnListView(listView, onScrollListener);
-        return mPoppyView;
-    }
-
-    public View createPoppyViewOnListView(int listViewId, int poppyViewResId)
-    {
-        return createPoppyViewOnListView(listViewId, poppyViewResId, null);
     }
 
     // common
@@ -120,11 +94,11 @@ public class PoppyViewHelper
         group.invalidate();
     }
 
-    private void onScrollPositionChanged(int oldScrollPosition, int newScrollPosition)
+    private void onScrollPositionChanged(boolean show)
     {
         int newScrollDirection;
 
-        if (newScrollPosition < oldScrollPosition)
+        if (show)
         {
             newScrollDirection = SCROLL_TO_TOP;
         }
@@ -167,94 +141,25 @@ public class PoppyViewHelper
         });
     }
 
-    // for ListView
-
-    private void initPoppyViewOnListView(ListView listView, final OnScrollListener onScrollListener)
+    private void initPoppyViewOnGridView(RecyclerView listView, final RecyclerView.OnScrollListener onScrollListener)
     {
         setPoppyViewOnView(listView);
-        listView.setOnScrollListener(new OnScrollListener()
+        listView.setOnScrollListener(new RecyclerView.OnScrollListener()
         {
-            int mScrollPosition;
-
             @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState)
             {
                 if (onScrollListener != null)
                 {
-                    onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
+                    onScrollListener.onScrollStateChanged(recyclerView, newState);
                 }
-                View topChild = view.getChildAt(0);
-
-                int newScrollPosition;
-                if (topChild == null)
-                {
-                    newScrollPosition = 0;
-                }
-                else
-                {
-                    newScrollPosition = -topChild.getTop() + view.getFirstVisiblePosition() * topChild.getHeight();
-                }
-
-                if (Math.abs(newScrollPosition - mScrollPosition) >= SCROLL_DIRECTION_CHANGE_THRESHOLD)
-                {
-                    onScrollPositionChanged(mScrollPosition, newScrollPosition);
-                }
-
-                mScrollPosition = newScrollPosition;
             }
 
             @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState)
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy)
             {
-                if (onScrollListener != null)
-                {
-                    onScrollListener.onScrollStateChanged(view, scrollState);
-                }
-            }
-        });
-    }
-
-    private void initPoppyViewOnGridView(GridView listView, final OnScrollListener onScrollListener)
-    {
-        setPoppyViewOnView(listView);
-        listView.setOnScrollListener(new OnScrollListener()
-        {
-            int mScrollPosition;
-
-            @Override
-            public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-            {
-                if (onScrollListener != null)
-                {
-                    onScrollListener.onScroll(view, firstVisibleItem, visibleItemCount, totalItemCount);
-                }
-                View topChild = view.getChildAt(0);
-
-                int newScrollPosition;
-                if (topChild == null)
-                {
-                    newScrollPosition = 0;
-                }
-                else
-                {
-                    newScrollPosition = -topChild.getTop() + view.getFirstVisiblePosition() * topChild.getHeight();
-                }
-
-                if (Math.abs(newScrollPosition - mScrollPosition) >= SCROLL_DIRECTION_CHANGE_THRESHOLD)
-                {
-                    onScrollPositionChanged(mScrollPosition, newScrollPosition);
-                }
-
-                mScrollPosition = newScrollPosition;
-            }
-
-            @Override
-            public void onScrollStateChanged(AbsListView view, int scrollState)
-            {
-                if (onScrollListener != null)
-                {
-                    onScrollListener.onScrollStateChanged(view, scrollState);
-                }
+                onScrollPositionChanged(dy < 0);
+                System.out.println(dy);
             }
         });
     }

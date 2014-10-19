@@ -44,7 +44,6 @@ public class MyShowsFragment extends ShowGridFragment
         View poppyView = poppyViewHelper.createPoppyViewOnGridView(list, R.layout.upcoming_episode_layout);
 		llUpcomingEpisode = (LinearLayout)poppyView.findViewById(R.id.llUpcomingEpisode);
         tvUpcomingEpisode = (TextView)poppyView.findViewById(R.id.tvUpcomingEpisode);
-		
 	}
 	
 	@Override

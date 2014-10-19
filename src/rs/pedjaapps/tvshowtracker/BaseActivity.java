@@ -2,8 +2,9 @@ package rs.pedjaapps.tvshowtracker;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
+import android.support.v7.app.ActionBarActivity;
 
-public class BaseActivity extends FragmentActivity
+public class BaseActivity extends ActionBarActivity
 {
 	
 	@Override

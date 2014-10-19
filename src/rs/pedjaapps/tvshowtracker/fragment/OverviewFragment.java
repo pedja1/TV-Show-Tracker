@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.ActionBarActivity;
 import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -108,7 +109,7 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
             @Override
             public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt)
             {
-                final int headerHeight = ivShowPhoto.getHeight() - getActivity().getActionBar().getHeight();
+                final int headerHeight = ivShowPhoto.getHeight() - ((ActionBarActivity)getActivity()).getSupportActionBar().getHeight();
                 final float ratio = (float) Math.min(Math.max(t, 0), headerHeight) / headerHeight;
                 final int newAlpha = (int) (ratio * 255);
 				((ShowDetailsActivity)getActivity()).setActionBarAlpha(newAlpha);

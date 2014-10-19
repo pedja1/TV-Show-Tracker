@@ -3,6 +3,7 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,6 +16,8 @@ import android.widget.TextView;
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
 
+import java.util.List;
+
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
@@ -23,37 +26,63 @@ import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 
-public final class ShowsAdapter extends ArrayAdapter<Show>
+public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder>
 {
 	SimpleImageLoader mImageFetcher;
     public static final float IMAGE_RATIO = 1.6f;
 
-    public ShowsAdapter(final Context context)
+    Context context;
+
+    List<Show> shows;
+
+    public OnItemClickListener onItemClickListener;
+
+    public ShowsAdapter(final Context context, List<Show> shows)
     {
-        super(context, 0);
-		mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+        this.context = context;
+        this.shows = shows;
+		mImageFetcher = new SimpleImageLoader(context.getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
         //set max image size to screen width divided by number of columns and multiplied by aspect ratio(so that we actually get height of poster)
         mImageFetcher.setMaxImageSize((int) ((DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num)) * IMAGE_RATIO));
     }
 
+	private String calcWatchedPerc(Show show)
+	{
+		int count = show.getEpisodes().size();
+		int watched = 0;
+		for(Episode e : show.getEpisodes())
+		{
+			if(e.isWatched() || e.getSeason() == 0)watched++;
+		}
+		return (watched == 0 ? 0 : (int)(100.0f / ((float)count / (float)watched))) + "%";
+	}
+
+
     @Override
-    public View getView(final int position, final View convertView, final ViewGroup parent)
+    public ViewHolder onCreateViewHolder(ViewGroup viewGroup, int i)
     {
-        final View view = getWorkingView(convertView);
-        final ViewHolder viewHolder = getViewHolder(view);
-        final Show show = getItem(position);
+        final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
+        View view = inflater.inflate(R.layout.shows_list_row, null);
+        return new ViewHolder(view);
+    }
+
+    @Override
+    public void onBindViewHolder(final ViewHolder viewHolder, final int position)
+    {
+        final Show show = shows.get(position);
 
         viewHolder.upcomingEpisodeView.setText(show.getTitle());
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
-		//mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
+        //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
         viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
             {
-                PopupMenu menu = new PopupMenu(getContext(), viewHolder.ivMore);
+                PopupMenu menu = new PopupMenu(context, viewHolder.ivMore);
                 menu.inflate(show instanceof ShowNoDao ? R.menu.show_options : R.menu.show_options_fav);
                 menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
                 {
@@ -67,14 +96,14 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                             /*case R.id.updateImages:
                                 break;*/
                             case R.id.delete:
-                                Utility.showDeleteDialog(getContext(), show, new DialogInterface.OnClickListener()
+                                Utility.showDeleteDialog(context, show, new DialogInterface.OnClickListener()
                                 {
                                     @Override
                                     public void onClick(DialogInterface dialogInterface, int i)
                                     {
                                         Utility.deleteShowFromDb(show);
                                         //((MainActivity)getContext()).refreshShows();
-										//TODO refresh shows
+                                        //TODO refresh shows
                                     }
                                 });
                                 break;
@@ -89,86 +118,81 @@ public final class ShowsAdapter extends ArrayAdapter<Show>
                 menu.show();
             }
         });
-		
-		if(show instanceof ShowNoDao)
-		{
-			viewHolder.tvFavorite.setVisibility(View.GONE);
-			viewHolder.tvWatchedPercent.setVisibility(View.GONE);
-		}
-		else
-		{
-			viewHolder.tvFavorite.setVisibility(View.VISIBLE);
-			viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
-			viewHolder.tvWatchedPercent.setVisibility(View.VISIBLE);
-		}
-        return view;
-    }
-	
-	private String calcWatchedPerc(Show show)
-	{
-		int count = show.getEpisodes().size();
-		int watched = 0;
-		for(Episode e : show.getEpisodes())
-		{
-			if(e.isWatched() || e.getSeason() == 0)watched++;
-		}
-		return (watched == 0 ? 0 : (int)(100.0f / ((float)count / (float)watched))) + "%";
-	}
 
-    private View getWorkingView(final View convertView)
-    {
-        View workingView;
-
-        if (null == convertView)
+        if(show instanceof ShowNoDao)
         {
-            final Context context = getContext();
-            final LayoutInflater inflater = (LayoutInflater) context.getSystemService
-                    (Context.LAYOUT_INFLATER_SERVICE);
-
-            workingView = inflater.inflate(R.layout.shows_list_row, null);
+            viewHolder.tvFavorite.setVisibility(View.GONE);
+            viewHolder.tvWatchedPercent.setVisibility(View.GONE);
         }
         else
         {
-            workingView = convertView;
+            viewHolder.tvFavorite.setVisibility(View.VISIBLE);
+            viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
+            viewHolder.tvWatchedPercent.setVisibility(View.VISIBLE);
         }
 
-        return workingView;
+        viewHolder.itemView.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                if(onItemClickListener != null)onItemClickListener.onItemClick(show, position);
+            }
+        });
     }
 
-    private ViewHolder getViewHolder(final View workingView)
+    @Override
+    public int getItemCount()
     {
-        final Object tag = workingView.getTag();
-        ViewHolder viewHolder;
-
-
-        if (null == tag || !(tag instanceof ViewHolder))
-        {
-            viewHolder = new ViewHolder();
-
-            viewHolder.upcomingEpisodeView = (AutoScrollingTextView) workingView.findViewById(R.id.txtUpcomingEpisode);
-            viewHolder.ivPoster = (NetworkImageViewPlus) workingView.findViewById(R.id.imgSeriesImage);
-            viewHolder.ivMore = (ImageView) workingView.findViewById(R.id.ivMore);
-			viewHolder.tvWatchedPercent = (TextView) workingView.findViewById(R.id.tvWatchedPercent);
-			viewHolder.tvFavorite = (TextView) workingView.findViewById(R.id.tvFavorite);
-			
-            workingView.setTag(viewHolder);
-
-        }
-        else
-        {
-            viewHolder = (ViewHolder) tag;
-        }
-
-        return viewHolder;
+        return shows.size();
     }
 
-    class ViewHolder
+    public boolean isEmpty()
+    {
+        return shows.isEmpty();
+    }
+
+    public void clear()
+    {
+        shows.clear();
+    }
+
+    public void add(Show s)
+    {
+        shows.add(s);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder
     {
         public AutoScrollingTextView upcomingEpisodeView;
         public NetworkImageViewPlus ivPoster;
         ImageView ivMore;
 		TextView tvWatchedPercent, tvFavorite;
 
+        public ViewHolder(View itemView)
+        {
+            super(itemView);
+            upcomingEpisodeView = (AutoScrollingTextView) itemView.findViewById(R.id.txtUpcomingEpisode);
+            ivPoster = (NetworkImageViewPlus) itemView.findViewById(R.id.imgSeriesImage);
+            ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
+            tvWatchedPercent = (TextView) itemView.findViewById(R.id.tvWatchedPercent);
+            tvFavorite = (TextView) itemView.findViewById(R.id.tvFavorite);
+        }
+    }
+
+    public OnItemClickListener getOnItemClickListener()
+    {
+        return onItemClickListener;
+    }
+
+    public void setOnItemClickListener(OnItemClickListener onItemClickListener)
+    {
+        this.onItemClickListener = onItemClickListener;
+    }
+
+    public static interface OnItemClickListener
+    {
+        public void onItemClick(Show show, int position);
     }
 
 }

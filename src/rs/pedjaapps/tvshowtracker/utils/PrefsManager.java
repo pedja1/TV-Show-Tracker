@@ -56,7 +56,7 @@ public class PrefsManager
 
     public static boolean isFirstRun()
     {
-        return prefs.getBoolean(Key.first_name.toString(), true);
+        return prefs.getBoolean(Key.first_run.toString(), true);
     }
 
     public static void setFirstRun(boolean firstRun)

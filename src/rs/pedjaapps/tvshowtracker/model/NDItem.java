@@ -4,10 +4,11 @@ public class NDItem
 {
 	public static final int TYPE_MAIN = 0;
 	public static final int TYPE_OPT = 1;
-	
+	public static final int TYPE_SEPARATOR = 2;
+
 	public enum Id
 	{
-		undefined, trending, my_shows
+		undefined, trending, login_logout, my_watchlist, settings, my_shows
 	}
 	
 	public String title;
