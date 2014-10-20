@@ -20,14 +20,15 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.adapter.NavigationDrawerAdapter;
-import rs.pedjaapps.tvshowtracker.model.NDItem;
-import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
 import rs.pedjaapps.tvshowtracker.fragment.TrendingShowsFragment;
+import rs.pedjaapps.tvshowtracker.model.NDItem;
+import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener
 {
@@ -66,9 +67,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         setContentView(R.layout.activity_main);
 
-        // enable ActionBar app icon to behave as action to toggle nav drawer
-        getSupportActionBar().setHomeButtonEnabled(true);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 		mTitle = mDrawerTitle = getTitle();
         
@@ -78,6 +76,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         // set a custom shadow that overlays the main content when the drawer opens
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+
+        // enable ActionBar app icon to behave as action to toggle nav drawer
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         //tvLoginLogout = (TextView)findViewById(R.id.tvMenuLoginLogout);
         //tvLoginLogout.setOnClickListener(this);
@@ -99,14 +101,23 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ) {
             public void onDrawerClosed(View view) {
                 getSupportActionBar().setTitle(mTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
                 getSupportActionBar().setTitle(mDrawerTitle);
-                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+                supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
+
+        // Defer code dependent on restoration of previous instance state.
+        mDrawerLayout.post(new Runnable() {
+            @Override
+            public void run() {
+                mDrawerToggle.syncState();
+            }
+        });
+
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
@@ -159,18 +170,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 .setActionView(searchView);
         MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM
                 | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        menu.add(0, 3, 3, getString(R.string.update_all)).setIcon(R.drawable.ic_action_sync)
-                .setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
-        return true;
+        item = menu.add(0, 3, 3, getString(R.string.update_all)).setIcon(R.drawable.ic_action_sync);
+        MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        return super.onCreateOptionsMenu(menu);
     }
 	
-	/*@Override
+	@Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(drawerContent);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        //boolean drawerOpen = mDrawerLayout.isDrawerOpen(drawerContent);
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
-    }*/
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
@@ -178,11 +189,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 		/*if(mDrawerLayout.isDrawerOpen(drawerContent))
 		{
 		    mDrawerLayout.closeDrawer(drawerContent);
-		}
-		/*if (mDrawerToggle.onOptionsItemSelected(item)) {
+		}*/
+		if (mDrawerToggle.onOptionsItemSelected(item)) {
 			return true;
-        }*/
-        switch (item.getItemId())
+        }
+        /*switch (item.getItemId())
         {
             case 1:
                 //startActivity(new Intent(this, AgendaActivity.class).putExtra("profile", profile));
@@ -191,7 +202,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                 startActivity(new Intent(this, SettingsActivity.class));
                 return true;
             case 3:
-                /*if (Tools.isNetworkAvailable(this))
+                if (Tools.isNetworkAvailable(this))
                 {
                     new UpdateShow().execute(db.getAllShows(prefs.getString("filter", "all"), profile, prefs.getString("sort", "id"), ""));
                 }
@@ -201,10 +212,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
                             MainActivity.this,
                             "No Internet Connection!\nPlease connect to internet and try again!",
                             Toast.LENGTH_LONG).show();
-                }*/
+                }
                 //TODO update all shows
                 return true;
-        }
+        }*/
         return super.onOptionsItemSelected(item);
     }
 
