@@ -1,6 +1,7 @@
 package rs.pedjaapps.tvshowtracker;
 
 import android.content.DialogInterface;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
@@ -12,16 +13,21 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.widget.ProgressBar;
+
 import com.viewpagerindicator.LinePageIndicator;
-import de.greenrobot.dao.query.QueryBuilder;
+
 import java.util.Date;
 import java.util.List;
+
+import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
 import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
+import rs.pedjaapps.tvshowtracker.model.Genre;
+import rs.pedjaapps.tvshowtracker.model.GenreDao;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
@@ -31,8 +37,6 @@ import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-import rs.pedjaapps.tvshowtracker.model.GenreDao;
-import rs.pedjaapps.tvshowtracker.model.Genre;
 
 public class ShowDetailsActivity extends BaseActivity implements Drawable.Callback
 {
@@ -65,6 +69,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
+		supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
         getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_details);
@@ -76,7 +81,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
             mActionBarBackgroundDrawable.setCallback(this);
         }
 
-        mActionBarBackgroundDrawable = getResources().getDrawable(R.drawable.ab_background_textured_tvst_red).mutate();
+        mActionBarBackgroundDrawable = new ColorDrawable(getResources().getColor(R.color.primary)).mutate();
         
 		getSupportActionBar().setBackgroundDrawable(mActionBarBackgroundDrawable);
 		
