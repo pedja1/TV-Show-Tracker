@@ -54,6 +54,7 @@ public class Show {
     // KEEP FIELDS - put your custom fields here
     private int watchedPercent;
     private long nextEpisodeHours;
+    private Episode upcomingEpisode;
     // KEEP FIELDS END
 
     public Show() {
@@ -417,6 +418,17 @@ public class Show {
     {
         this.nextEpisodeHours = nextEpisodeHours;
     }
+
+    public Episode getUpcomingEpisode()
+    {
+        return upcomingEpisode;
+    }
+
+    public void setUpcomingEpisode(Episode upcomingEpisode)
+    {
+        this.upcomingEpisode = upcomingEpisode;
+    }
+
     // KEEP METHODS END
 
 }

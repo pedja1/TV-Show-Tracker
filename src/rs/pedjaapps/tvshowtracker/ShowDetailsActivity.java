@@ -11,7 +11,6 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.Window;
 import android.widget.ProgressBar;
 
 import com.viewpagerindicator.LinePageIndicator;
@@ -69,8 +68,8 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	@Override
 	protected void onCreate(Bundle savedInstanceState)
 	{
-		supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
-        getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
+		//supportRequestWindowFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
+        //getWindow().requestFeature(Window.FEATURE_ACTION_BAR_OVERLAY | Window.FEATURE_ACTION_BAR);
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_details);
 		

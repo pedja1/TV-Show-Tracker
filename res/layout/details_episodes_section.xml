@@ -24,6 +24,6 @@
         android:layout_weight="0"
         android:text="MARK ALL WATCHED"
         android:textColor="#ffffff"
-		android:background="@drawable/mark_all_selector"/>
+		android:background="?attr/selectableItemBackground"/>
 
 </LinearLayout>

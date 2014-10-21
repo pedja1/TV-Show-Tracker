@@ -9,7 +9,7 @@
 	android:dividerHeight="0dp"
 	android:divider="@null"
 	android:scrollbars="none"
-    android:paddingTop="?android:attr/actionBarSize">
+    android:paddingTop="?attr/actionBarSize">
 
 	<LinearLayout
 		android:layout_height="match_parent"

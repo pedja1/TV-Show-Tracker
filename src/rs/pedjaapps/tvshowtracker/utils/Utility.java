@@ -19,6 +19,9 @@ import android.view.WindowManager;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import org.apache.http.util.ByteArrayBuffer;
+
 import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
@@ -31,7 +34,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import org.apache.http.util.ByteArrayBuffer;
+
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
@@ -264,6 +267,7 @@ public class Utility
                 }
             }
             s.setNextEpisodeHours(hours);
+            s.setUpcomingEpisode(nextEpisode);
             //s.setWatchedPercent(watchedPercent(s.getEpisodes()));
         }
         Collections.sort(upcomingEpisodes, new Comparators.EpisodeHourComparator());

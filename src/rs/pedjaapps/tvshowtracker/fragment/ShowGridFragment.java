@@ -5,13 +5,10 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -46,6 +43,9 @@ public abstract class ShowGridFragment extends Fragment
 
         GridLayoutManager glm = new GridLayoutManager(getActivity(), getResources().getInteger(R.integer.main_column_num));
         list.setLayoutManager(glm);
+
+        ShowsAdapter.Decorator decorator = new ShowsAdapter.Decorator();
+        list.addItemDecoration(decorator);
 
         
         adapter = new ShowsAdapter(getActivity(), new ArrayList<Show>());
@@ -109,6 +109,10 @@ public abstract class ShowGridFragment extends Fragment
         {
             long startTime = System.currentTimeMillis();
             List<Show> entry = getShows();
+
+            //add next episode
+
+
             Log.d(Constants.LOG_TAG,
 				  "MainActivity.java > LoadShows > doInBackground: "
 				  + (System.currentTimeMillis() - startTime) + "ms"
@@ -150,8 +154,8 @@ public abstract class ShowGridFragment extends Fragment
             onShowsLoaded(result);
         }
     }
-	
-	protected void onShowsLoaded(List<Show> shows)
+
+    protected void onShowsLoaded(List<Show> shows)
 	{
 		//do nothing here
 	}

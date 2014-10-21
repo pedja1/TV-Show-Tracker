@@ -7,4 +7,4 @@
           android:paddingRight="10dp"
           android:divider="@null"
 	android:dividerHeight="0dp"
-	android:paddingTop="?android:attr/actionBarSize"/>
+	android:paddingTop="?attr/actionBarSize"/>

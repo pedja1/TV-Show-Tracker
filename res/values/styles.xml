@@ -25,6 +25,15 @@
     <style name="AppTheme.Login" parent="Theme.AppCompat.NoActionBar">
     </style>
 
+    <style name="AppTheme.Overlay">
+        <item name="android:windowActionBarOverlay">true</item>
+        <item name="android:windowContentOverlay">@null</item>
+
+        <!-- Support library compatibility -->
+        <item name="windowActionBarOverlay">true</item>
+
+    </style>
+
 	<style name="Spinner" parent="android:style/Widget.Holo.Spinner">
     </style>
     <style name="MenuItem">

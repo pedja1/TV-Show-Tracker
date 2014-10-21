@@ -3,16 +3,17 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
+import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.PopupMenu;
 import android.widget.TextView;
+
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
 
@@ -22,9 +23,10 @@ import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
+import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
 
 public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder>
 {
@@ -37,13 +39,19 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
 
     public OnItemClickListener onItemClickListener;
 
+    int posterWidth;
+
     public ShowsAdapter(final Context context, List<Show> shows)
     {
         this.context = context;
         this.shows = shows;
+
+        posterWidth = (DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num));
+
 		mImageFetcher = new SimpleImageLoader(context.getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
         //set max image size to screen width divided by number of columns and multiplied by aspect ratio(so that we actually get height of poster)
-        mImageFetcher.setMaxImageSize((int) ((DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num)) * IMAGE_RATIO));
+        mImageFetcher.setMaxImageSize((int) (posterWidth * IMAGE_RATIO));
+
     }
 
 	private String calcWatchedPerc(Show show)
@@ -72,7 +80,14 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     {
         final Show show = shows.get(position);
 
-        viewHolder.upcomingEpisodeView.setText(show.getTitle());
+        viewHolder.tvTitle.setText(show.getTitle());
+        if(show.getUpcomingEpisode() != null)viewHolder.upcomingEpisodeView.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode()));
+
+        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewHolder.ivPoster.getLayoutParams();
+        params.width = posterWidth;
+        params.height = (int) (posterWidth * IMAGE_RATIO);
+        viewHolder.ivPoster.setLayoutParams(params);
+
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
@@ -167,12 +182,13 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         public AutoScrollingTextView upcomingEpisodeView;
         public NetworkImageViewPlus ivPoster;
         ImageView ivMore;
-		TextView tvWatchedPercent, tvFavorite;
+		TextView tvWatchedPercent, tvFavorite, tvTitle;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
             upcomingEpisodeView = (AutoScrollingTextView) itemView.findViewById(R.id.txtUpcomingEpisode);
+            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             ivPoster = (NetworkImageViewPlus) itemView.findViewById(R.id.imgSeriesImage);
             ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
             tvWatchedPercent = (TextView) itemView.findViewById(R.id.tvWatchedPercent);
@@ -193,6 +209,30 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     public static interface OnItemClickListener
     {
         public void onItemClick(Show show, int position);
+    }
+
+    public static class Decorator extends RecyclerView.ItemDecoration
+    {
+        @Override
+        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
+        {
+            int margin =  view.getContext().getResources().getDimensionPixelOffset(R.dimen.dp3);
+            int columnCount = view.getContext().getResources().getInteger(R.integer.main_column_num);
+            int position = ((RecyclerView.LayoutParams)view.getLayoutParams()).getViewPosition();
+            int remainder = position % columnCount;
+            if (position % columnCount == 0)
+            {
+                outRect.set(0, 0, margin, margin);
+            }
+            else if (position % columnCount == columnCount - 1)
+            {
+                outRect.set(margin, 0, 0, margin);
+            }
+            else
+            {
+                outRect.set(0, 0, 0, margin);
+            }
+        }
     }
 
 }
