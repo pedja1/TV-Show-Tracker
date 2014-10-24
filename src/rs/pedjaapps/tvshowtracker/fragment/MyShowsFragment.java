@@ -102,7 +102,7 @@ public class MyShowsFragment extends ShowGridFragment
 	{
 		if(upcomingEpisode != null)
 		{
-			tvUpcomingEpisode.setText(Utility.generateUpcomingEpisodeText(upcomingEpisode));
+			tvUpcomingEpisode.setText(Utility.generateUpcomingEpisodeText(upcomingEpisode, true));
 			llUpcomingEpisode.setVisibility(View.VISIBLE);
 		}
 		else

@@ -81,7 +81,15 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         final Show show = shows.get(position);
 
         viewHolder.tvTitle.setText(show.getTitle());
-        if(show.getUpcomingEpisode() != null)viewHolder.upcomingEpisodeView.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode()));
+        if(show.getUpcomingEpisode() != null)
+		{
+			viewHolder.upcomingEpisodeView.setVisibility(View.VISIBLE);
+			viewHolder.upcomingEpisodeView.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode(), false));
+		}
+		else
+		{
+			viewHolder.upcomingEpisodeView.setVisibility(View.GONE);
+		}
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewHolder.ivPoster.getLayoutParams();
         params.width = posterWidth;
@@ -92,7 +100,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
         //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
-        viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
+        /*viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
         {
             @Override
             public void onClick(View view)
@@ -108,8 +116,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
                         {
                             case R.id.update:
                                 break;
-                            /*case R.id.updateImages:
-                                break;*/
+                       
                             case R.id.delete:
                                 Utility.showDeleteDialog(context, show, new DialogInterface.OnClickListener()
                                 {
@@ -132,7 +139,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
                 });
                 menu.show();
             }
-        });
+        });*/
 
         if(show instanceof ShowNoDao)
         {
@@ -181,7 +188,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     {
         public AutoScrollingTextView upcomingEpisodeView;
         public NetworkImageViewPlus ivPoster;
-        ImageView ivMore;
+        //ImageView ivMore;
 		TextView tvWatchedPercent, tvFavorite, tvTitle;
 
         public ViewHolder(View itemView)
@@ -190,7 +197,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
             upcomingEpisodeView = (AutoScrollingTextView) itemView.findViewById(R.id.txtUpcomingEpisode);
             tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             ivPoster = (NetworkImageViewPlus) itemView.findViewById(R.id.imgSeriesImage);
-            ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
+            //ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
             tvWatchedPercent = (TextView) itemView.findViewById(R.id.tvWatchedPercent);
             tvFavorite = (TextView) itemView.findViewById(R.id.tvFavorite);
         }

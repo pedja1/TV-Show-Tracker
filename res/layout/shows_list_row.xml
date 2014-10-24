@@ -48,10 +48,12 @@
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="42dp"
         android:layout_gravity="bottom"
         android:orientation="vertical"
-        android:padding="2dp">
+        android:padding="2dp"
+		android:background="@color/primary_dark"
+		android:gravity="bottom">
 
             <TextView
                 android:id="@+id/tvTitle"
@@ -60,9 +62,9 @@
                 android:textAllCaps="true"
                 android:textColor="@color/white"
                 android:textSize="14sp"
-                android:typeface="monospace"
                 android:singleLine="true"
-                android:ellipsize="marquee"/>
+                android:ellipsize="marquee"
+				android:gravity="center_vertical"/>
 
             <rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView
                 android:id="@+id/txtUpcomingEpisode"
@@ -75,17 +77,10 @@
                 android:typeface="normal"
                 android:singleLine="true"
                 android:ellipsize="marquee"
-                android:marqueeRepeatLimit="marquee_forever"/>
+                android:marqueeRepeatLimit="marquee_forever"
+				android:gravity="center_vertical"/>
 
     </LinearLayout>
-
-    <ImageView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_action_more"
-        android:clickable="true"
-        android:id="@+id/ivMore"
-        android:layout_gravity="top|right"/>
 
     <RelativeLayout
         android:layout_width="match_parent"

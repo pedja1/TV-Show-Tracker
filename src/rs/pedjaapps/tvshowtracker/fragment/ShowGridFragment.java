@@ -133,7 +133,7 @@ public abstract class ShowGridFragment extends Fragment
         @Override
         protected void onPostExecute(List<Show> result)
         {
-			System.out.println(result);
+			
 			pbLoading.setVisibility(View.GONE);
 			if(result == null || result.isEmpty())
             {
@@ -146,6 +146,7 @@ public abstract class ShowGridFragment extends Fragment
 				adapter.clear();
 				for (Show s : result)
 				{
+					System.out.println(s.getUpcomingEpisode());
 					adapter.add(s);
 				}
 				adapter.notifyDataSetChanged();

@@ -27,9 +27,10 @@ public class TrendingShowsFragment extends ShowGridFragment
             JSONUtility.Response response = JSONUtility.parseTrendingShows();
             if (response.getStatus())
             {
-                ShowMemCache.getInstance().addListToCache(ShowMemCache.ListKey.trending, response.getShowList());
-				Utility.calculateUpcomingEpisodes(response.getShowList());
-                return response.getShowList();
+				shows = response.getShowList();
+                ShowMemCache.getInstance().addListToCache(ShowMemCache.ListKey.trending, shows);
+				Utility.calculateUpcomingEpisodes(shows);
+                return shows;
             }
             else
             {

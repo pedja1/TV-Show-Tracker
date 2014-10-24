@@ -264,10 +264,10 @@ public class Utility
                     e.setShowTitle(s.getTitle());
                     upcomingEpisodes.add(e);
                     hours = e.getAirsIn();
+					s.setUpcomingEpisode(e);
                 }
             }
             s.setNextEpisodeHours(hours);
-            s.setUpcomingEpisode(nextEpisode);
             //s.setWatchedPercent(watchedPercent(s.getEpisodes()));
         }
         Collections.sort(upcomingEpisodes, new Comparators.EpisodeHourComparator());
@@ -280,12 +280,13 @@ public class Utility
     }
 
 
-    public static String generateUpcomingEpisodeText(Episode upcomingEpisode)
+    public static String generateUpcomingEpisodeText(Episode upcomingEpisode, boolean includeShowName)
     {
-        return upcomingEpisode.getTitle() + " (" + upcomingEpisode.getShowTitle() + " " + "S"
-                + upcomingEpisode.getSeason() + "E" + upcomingEpisode.getEpisode() + " )" + " - "
-                + MainApp.getContext().getString(R.string.airs) + " "
-                + generateEpisodeAirsTime(upcomingEpisode);
+        return upcomingEpisode.getTitle() 
+		+ (includeShowName ? (" (" + upcomingEpisode.getShowTitle() + " " + "S"
+        + upcomingEpisode.getSeason() + "E" + upcomingEpisode.getEpisode() + " )") : "")
+		+ " - " + MainApp.getContext().getString(R.string.airs) + " "
+        + generateEpisodeAirsTime(upcomingEpisode);
     }
 
     public static String generateEpisodeAirsTime(Episode episode)
