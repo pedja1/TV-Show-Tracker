@@ -100,46 +100,6 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
         //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
-        /*viewHolder.ivMore.setOnClickListener(new View.OnClickListener()
-        {
-            @Override
-            public void onClick(View view)
-            {
-                PopupMenu menu = new PopupMenu(context, viewHolder.ivMore);
-                menu.inflate(show instanceof ShowNoDao ? R.menu.show_options : R.menu.show_options_fav);
-                menu.setOnMenuItemClickListener(new PopupMenu.OnMenuItemClickListener()
-                {
-                    @Override
-                    public boolean onMenuItemClick(MenuItem menuItem)
-                    {
-                        switch (menuItem.getItemId())
-                        {
-                            case R.id.update:
-                                break;
-                       
-                            case R.id.delete:
-                                Utility.showDeleteDialog(context, show, new DialogInterface.OnClickListener()
-                                {
-                                    @Override
-                                    public void onClick(DialogInterface dialogInterface, int i)
-                                    {
-                                        Utility.deleteShowFromDb(show);
-                                        //((MainActivity)getContext()).refreshShows();
-                                        //TODO refresh shows
-                                    }
-                                });
-                                break;
-                            case R.id.add:
-                                break;
-                            case R.id.watchlist:
-                                break;
-                        }
-                        return true;
-                    }
-                });
-                menu.show();
-            }
-        });*/
 
         if(show instanceof ShowNoDao)
         {
