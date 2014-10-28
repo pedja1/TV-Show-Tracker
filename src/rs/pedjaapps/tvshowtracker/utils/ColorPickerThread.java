@@ -17,13 +17,8 @@
 package rs.pedjaapps.tvshowtracker.utils;
 
 import android.graphics.Bitmap;
+import android.graphics.Color;
 import android.os.Process;
-
-import com.wms.wamoos.MainApp;
-import com.wms.wamoos.model.AppUser;
-import com.wms.wamoos.model.AppUserBase;
-import com.wms.wamoos.model.PostParams;
-import com.wms.wamoos.model.UserCacheCollection;
 
 import java.util.concurrent.BlockingQueue;
 
@@ -32,7 +27,7 @@ public class ColorPickerThread extends Thread
     /**
      * The queue of requests to service.
      */
-    private final BlockingQueue<Bitmap> mQueue;
+    private final BlockingQueue<ColorPickerHelper.Holder> mQueue;
     /**
      * Used for telling us to die.
      */
@@ -44,7 +39,7 @@ public class ColorPickerThread extends Thread
      *
      * @param queue    Queue of incoming requests for triage
      */
-    public ColorPickerThread(BlockingQueue<Bitmap> queue)
+    public ColorPickerThread(BlockingQueue<ColorPickerHelper.Holder> queue)
     {
         mQueue = queue;
     }
@@ -63,13 +58,14 @@ public class ColorPickerThread extends Thread
     public void run()
     {
         Process.setThreadPriority(Process.THREAD_PRIORITY_BACKGROUND);
-        int userId;
+        ColorPickerHelper.Holder holder;
         while (true)
         {
             try
             {
                 // Take a request from the queue.
-                userId = mQueue.take();
+                holder = mQueue.take();
+                ColorPickerHelper.getInstance().startProcessing(holder.show.getTvdb_id());
             }
             catch (InterruptedException e)
             {
@@ -82,35 +78,28 @@ public class ColorPickerThread extends Thread
             }
 
             MyTimer timer = new MyTimer();
-            UserCacheCollection.getInstance().processingUser(userId);
-            PostParams pp = new PostParams();
-            // sending my mail, id of the user i want data for, my id
-            pp.setParamsForGetUserData(
-                    AppUser.getInstance().getEmail(),
-                    AppUser.getInstance().getMemberId(),
-                    userId,
-                    DisplayHelper.Screen.width,
-                    DisplayHelper.Screen.height);
-            String result = Internet.getInstance().httpPost(AppData.URL_NEARBY_USER_DATA + MainApp.getInstance().getLanguage(), pp);
-            AppUserBase user = AppUserBase.getFromJSONString(result);
-            if(user != null)
+
+            Bitmap bitmap = holder.bitmap;
+            if(bitmap != null)
             {
-                UserCacheCollection.getInstance().addToCache(userId, user);
-            }
-            if(UserCacheCollection.getInstance().lock != null)synchronized (UserCacheCollection.getInstance().lock)
-            {
-                try
+                Bitmap scaled = Bitmap.createScaledBitmap(bitmap, 1, 1, true);
+                int tmp = scaled.getPixel(0, 0);
+                final int color = Color.argb(100, Color.red(tmp), Color.green(tmp), Color.blue(tmp));
+                final ColorPickerHelper.Holder finalHolder = holder;
+                ColorPickerHelper.getInstance().uiHandler.post(new Runnable()
                 {
-                    if(UserCacheCollection.getInstance().lock == userId)
-                        UserCacheCollection.getInstance().lock.notify();
-                }
-                catch (Exception e)
-                {
-                    if(AppData.DEBUG_MODE)e.printStackTrace();
-                }
+                    @Override
+                    public void run()
+                    {
+                        finalHolder.view.setBackgroundColor(color);
+                        finalHolder.view.setTag(finalHolder.show.getTvdb_id());
+                        finalHolder.show.setPosterMainColor(color);
+                    }
+                });
             }
-            UserCacheCollection.getInstance().finishedProcessingUser(userId);
-            timer.log("UserCacheThread: downloaded user in:");
+            ColorPickerHelper.getInstance().finishProcessing(holder.show.getTvdb_id());
+
+            timer.log("ColorPickerThread: picked color in");
         }
     }
 }

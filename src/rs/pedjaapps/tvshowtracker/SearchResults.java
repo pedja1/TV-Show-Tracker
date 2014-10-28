@@ -1,20 +1,22 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.app.*;
-import android.content.*;
-import android.os.*;
+import android.app.SearchManager;
+import android.content.Intent;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Bundle;
 import android.preference.PreferenceManager;
-import android.provider.*;
-import android.view.*;
-import android.widget.*;
-import android.widget.AdapterView.*;
+import android.view.View;
+import android.view.Window;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemClickListener;
+import android.widget.ListView;
+import android.widget.Toast;
 
-import java.util.*;
+import java.util.List;
 
-import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.SearchAdapter;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
@@ -22,7 +24,6 @@ public class SearchResults extends BaseActivity
 {
     ListView searchListView;
     SearchAdapter searchAdapter;
-    String profile;
     SharedPreferences prefs;
 
     @Override
@@ -33,7 +34,6 @@ public class SearchResults extends BaseActivity
 
         setContentView(R.layout.search_result);
         prefs = PreferenceManager.getDefaultSharedPreferences(this);
-        profile = prefs.getString("profile", "Default");
 
         searchListView = (ListView) findViewById(R.id.list);
         View emptyView = getLayoutInflater().inflate(R.layout.search_results_empty_view, null);
@@ -44,7 +44,7 @@ public class SearchResults extends BaseActivity
 
         searchListView.setAdapter(searchAdapter);
 
-        //handleIntent(getIntent());
+        handleIntent(getIntent());
 
         searchListView.setOnItemClickListener(new OnItemClickListener()
         {
@@ -88,45 +88,6 @@ public class SearchResults extends BaseActivity
             {
                 Toast.makeText(this, getString(R.string.no_net), Toast.LENGTH_LONG).show();
                 finish();
-            }
-        }
-    }
-
-    public class DownloadShow extends AsyncTask<String, Integer[], JSONUtility.Response>
-    {
-        ProgressDialog pd;
-
-        @Override
-        protected JSONUtility.Response doInBackground(String... args)
-        {
-            return JSONUtility.parseShow(args[0], true);
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            Utility.setKeepScreenOn(SearchResults.this, true);
-            pd = new ProgressDialog(SearchResults.this);
-            pd.setIndeterminate(true);
-            pd.setCancelable(false);
-            pd.setCanceledOnTouchOutside(false);
-            pd.setMessage(getString(R.string.download_show));
-            pd.show();
-        }
-
-        @Override
-        protected void onPostExecute(JSONUtility.Response result)
-        {
-            pd.dismiss();
-            Utility.setKeepScreenOn(SearchResults.this, false);
-            if(!result.getStatus())
-            {
-                Utility.showToast(MainApp.getContext(), result.getErrorMessage());
-            }
-            else
-            {
-                finish();
-                Utility.setRefresh(true);
             }
         }
     }

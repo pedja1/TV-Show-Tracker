@@ -103,5 +103,6 @@
     <string name="add_to_watchlist">Add to Watchlist</string>
     <string name="my_watchlist">My Watchlist</string>
     <string name="prompt_username">Username</string>
+    <string name="next_ep_no_info">No information about next episode.</string>
 
 </resources>

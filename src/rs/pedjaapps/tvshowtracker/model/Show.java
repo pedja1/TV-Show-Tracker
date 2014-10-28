@@ -55,6 +55,7 @@ public class Show {
     private int watchedPercent;
     private long nextEpisodeHours;
     private Episode upcomingEpisode;
+    private int posterMainColor = -1;
     // KEEP FIELDS END
 
     public Show() {
@@ -427,6 +428,16 @@ public class Show {
     public void setUpcomingEpisode(Episode upcomingEpisode)
     {
         this.upcomingEpisode = upcomingEpisode;
+    }
+
+    public int getPosterMainColor()
+    {
+        return posterMainColor;
+    }
+
+    public void setPosterMainColor(int posterMainColor)
+    {
+        this.posterMainColor = posterMainColor;
     }
 
     // KEEP METHODS END

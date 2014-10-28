@@ -2,18 +2,17 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
-import android.widget.PopupMenu;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.android.volley.Response;
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
 
@@ -24,6 +23,7 @@ import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
+import rs.pedjaapps.tvshowtracker.utils.ColorPickerHelper;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
@@ -83,12 +83,11 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         viewHolder.tvTitle.setText(show.getTitle());
         if(show.getUpcomingEpisode() != null)
 		{
-			viewHolder.upcomingEpisodeView.setVisibility(View.VISIBLE);
 			viewHolder.upcomingEpisodeView.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode(), false));
 		}
 		else
 		{
-			viewHolder.upcomingEpisodeView.setVisibility(View.GONE);
+            viewHolder.upcomingEpisodeView.setText(R.string.next_ep_no_info);
 		}
 
         FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewHolder.ivPoster.getLayoutParams();
@@ -99,6 +98,15 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
+        viewHolder.ivPoster.setImageListener(new Response.Listener<BitmapDrawable>()
+        {
+            @Override
+            public void onResponse(BitmapDrawable response)
+            {
+                ColorPickerHelper.getInstance().setColorFromBitmap(response.getBitmap(), show, viewHolder.llTitleContainer);
+            }
+        });
+        if(show.getPosterMainColor() != -1)viewHolder.llTitleContainer.setBackgroundColor(show.getPosterMainColor());
         //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
 
         if(show instanceof ShowNoDao)
@@ -150,6 +158,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         public NetworkImageViewPlus ivPoster;
         //ImageView ivMore;
 		TextView tvWatchedPercent, tvFavorite, tvTitle;
+        LinearLayout llTitleContainer;
 
         public ViewHolder(View itemView)
         {
@@ -160,6 +169,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
             //ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
             tvWatchedPercent = (TextView) itemView.findViewById(R.id.tvWatchedPercent);
             tvFavorite = (TextView) itemView.findViewById(R.id.tvFavorite);
+            llTitleContainer = (LinearLayout)itemView.findViewById(R.id.llTitleContainer);
         }
     }
 
