@@ -3,16 +3,14 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 import android.content.Context;
 import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.FrameLayout;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.android.volley.Response;
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
 
@@ -23,7 +21,6 @@ import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
-import rs.pedjaapps.tvshowtracker.utils.ColorPickerHelper;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
@@ -80,34 +77,49 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     {
         final Show show = shows.get(position);
 
-        viewHolder.tvTitle.setText(show.getTitle());
+        //viewHolder.tvTitle.setText(show.getTitle());
         if(show.getUpcomingEpisode() != null)
 		{
-			viewHolder.upcomingEpisodeView.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode(), false));
+			viewHolder.tvNextEpisode.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode(), false));
 		}
 		else
 		{
-            viewHolder.upcomingEpisodeView.setText(R.string.next_ep_no_info);
+            viewHolder.tvNextEpisode.setText(R.string.next_ep_no_info);
 		}
 
-        FrameLayout.LayoutParams params = (FrameLayout.LayoutParams) viewHolder.ivPoster.getLayoutParams();
-        params.width = posterWidth;
-        params.height = (int) (posterWidth * IMAGE_RATIO);
-        viewHolder.ivPoster.setLayoutParams(params);
+        viewHolder.ivPoster.post(new Runnable()
+        {
+            public void run()
+            {
+                RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) viewHolder.ivPoster.getLayoutParams();
+                //params.width = posterWidth;
+                //params.height = (int) (posterWidth * IMAGE_RATIO);
+                //viewHolder.ivPoster.setLayoutParams(params);
+                viewHolder.ivPoster.setMinimumHeight((int) (params.width * IMAGE_RATIO));
+            }
+        });
 
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
-        viewHolder.ivPoster.setImageListener(new Response.Listener<BitmapDrawable>()
+        /*viewHolder.ivPoster.setImageListener(new Response.Listener<BitmapDrawable>()
         {
             @Override
             public void onResponse(BitmapDrawable response)
             {
-                ColorPickerHelper.getInstance().setColorFromBitmap(response.getBitmap(), show, viewHolder.llTitleContainer);
+                Palette.generateAsync(response.getBitmap(), new Palette.PaletteAsyncListener()
+                {
+                    public void onGenerated(Palette palette)
+                    {
+                        int color = palette.getDarkVibrantColor(context.getResources().getColor(R.color.primary));
+                        viewHolder.llTitleContainer.setBackgroundColor(color);
+                        show.setPosterMainColor(color);
+                    }
+                });
             }
         });
         if(show.getPosterMainColor() != -1)viewHolder.llTitleContainer.setBackgroundColor(show.getPosterMainColor());
-        //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);
+        //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);*/
 
         if(show instanceof ShowNoDao)
         {
@@ -154,17 +166,17 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public AutoScrollingTextView upcomingEpisodeView;
+        public AutoScrollingTextView tvNextEpisode;
         public NetworkImageViewPlus ivPoster;
         //ImageView ivMore;
-		TextView tvWatchedPercent, tvFavorite, tvTitle;
+		TextView tvWatchedPercent, tvFavorite/*, tvTitle*/;
         LinearLayout llTitleContainer;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
-            upcomingEpisodeView = (AutoScrollingTextView) itemView.findViewById(R.id.txtUpcomingEpisode);
-            tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
+            tvNextEpisode = (AutoScrollingTextView) itemView.findViewById(R.id.tvNextEpisode);
+            //tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             ivPoster = (NetworkImageViewPlus) itemView.findViewById(R.id.imgSeriesImage);
             //ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
             tvWatchedPercent = (TextView) itemView.findViewById(R.id.tvWatchedPercent);
@@ -193,22 +205,22 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         @Override
         public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
         {
-            int margin =  view.getContext().getResources().getDimensionPixelOffset(R.dimen.dp3);
+            /*int margin =  view.getContext().getResources().getDimensionPixelOffset(R.dimen.dp5);
             int columnCount = view.getContext().getResources().getInteger(R.integer.main_column_num);
             int position = ((RecyclerView.LayoutParams)view.getLayoutParams()).getViewPosition();
             int remainder = position % columnCount;
             if (position % columnCount == 0)
             {
-                outRect.set(0, 0, margin, margin);
+                outRect.set(margin * 2, position < columnCount ? margin * 2 : 0, margin, margin);
             }
             else if (position % columnCount == columnCount - 1)
             {
-                outRect.set(margin, 0, 0, margin);
+                outRect.set(margin, position < columnCount ? margin * 2 : 0, margin * 2, margin);
             }
             else
             {
-                outRect.set(0, 0, 0, margin);
-            }
+                outRect.set(0, position < columnCount ? margin * 2 : 0, 0, margin);
+            }*/
         }
     }
 
