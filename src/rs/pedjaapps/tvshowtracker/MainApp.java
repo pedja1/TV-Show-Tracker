@@ -57,8 +57,9 @@ public class MainApp extends Application
         {
             user = new User();
             user.setUsername("-");
+            user.setPassword("-");
             user.setAvatar("http://slurm.trakt.us/images/avatar-large.jpg");
-            userDao.insert(user);
+            userDao.insertOrReplace(user);
             return user;
         }
         return user;

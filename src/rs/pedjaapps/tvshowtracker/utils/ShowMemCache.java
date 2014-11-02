@@ -14,8 +14,8 @@ public class ShowMemCache
 {
     private static ShowMemCache instance;
 	
-	private static final long DEF_MAX_SHOW_CACHE_AGE = 24 * 60 * 60 * 60 * 1000;//24h
-	private static final long DEF_MAX_LIST_CACHE_AGE = 24 * 60 * 60 * 60 * 1000;//24h
+	private static final long DEF_MAX_SHOW_CACHE_AGE = 24 * 60 * 60 * 60 * 1000l;//24h
+	private static final long DEF_MAX_LIST_CACHE_AGE = 24 * 60 * 60 * 60 * 1000l;//24h
 	
 	private long maxShowCacheAge = DEF_MAX_SHOW_CACHE_AGE;
 	private long maxListCacheAge = DEF_MAX_LIST_CACHE_AGE;

@@ -24,17 +24,18 @@ public class UserDao extends AbstractDao<User, String> {
     */
     public static class Properties {
         public final static Property Username = new Property(0, String.class, "username", true, "USERNAME");
-        public final static Property Full_name = new Property(1, String.class, "full_name", false, "FULL_NAME");
-        public final static Property Gender = new Property(2, String.class, "gender", false, "GENDER");
-        public final static Property Age = new Property(3, Integer.class, "age", false, "AGE");
-        public final static Property Location = new Property(4, String.class, "location", false, "LOCATION");
-        public final static Property About = new Property(5, String.class, "about", false, "ABOUT");
-        public final static Property Joined = new Property(6, Long.class, "joined", false, "JOINED");
-        public final static Property Last_login = new Property(7, Long.class, "last_login", false, "LAST_LOGIN");
-        public final static Property Avatar = new Property(8, String.class, "avatar", false, "AVATAR");
-        public final static Property Url = new Property(9, String.class, "url", false, "URL");
-        public final static Property Share_text_watched = new Property(10, String.class, "share_text_watched", false, "SHARE_TEXT_WATCHED");
-        public final static Property Share_text_watching = new Property(11, String.class, "share_text_watching", false, "SHARE_TEXT_WATCHING");
+        public final static Property Password = new Property(1, String.class, "password", false, "PASSWORD");
+        public final static Property Full_name = new Property(2, String.class, "full_name", false, "FULL_NAME");
+        public final static Property Gender = new Property(3, String.class, "gender", false, "GENDER");
+        public final static Property Age = new Property(4, Integer.class, "age", false, "AGE");
+        public final static Property Location = new Property(5, String.class, "location", false, "LOCATION");
+        public final static Property About = new Property(6, String.class, "about", false, "ABOUT");
+        public final static Property Joined = new Property(7, Long.class, "joined", false, "JOINED");
+        public final static Property Last_login = new Property(8, Long.class, "last_login", false, "LAST_LOGIN");
+        public final static Property Avatar = new Property(9, String.class, "avatar", false, "AVATAR");
+        public final static Property Url = new Property(10, String.class, "url", false, "URL");
+        public final static Property Share_text_watched = new Property(11, String.class, "share_text_watched", false, "SHARE_TEXT_WATCHED");
+        public final static Property Share_text_watching = new Property(12, String.class, "share_text_watching", false, "SHARE_TEXT_WATCHING");
     };
 
     private DaoSession daoSession;
@@ -54,17 +55,18 @@ public class UserDao extends AbstractDao<User, String> {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'USER' (" + //
                 "'USERNAME' TEXT PRIMARY KEY NOT NULL ," + // 0: username
-                "'FULL_NAME' TEXT," + // 1: full_name
-                "'GENDER' TEXT," + // 2: gender
-                "'AGE' INTEGER," + // 3: age
-                "'LOCATION' TEXT," + // 4: location
-                "'ABOUT' TEXT," + // 5: about
-                "'JOINED' INTEGER," + // 6: joined
-                "'LAST_LOGIN' INTEGER," + // 7: last_login
-                "'AVATAR' TEXT," + // 8: avatar
-                "'URL' TEXT," + // 9: url
-                "'SHARE_TEXT_WATCHED' TEXT," + // 10: share_text_watched
-                "'SHARE_TEXT_WATCHING' TEXT);"); // 11: share_text_watching
+                "'PASSWORD' TEXT NOT NULL ," + // 1: password
+                "'FULL_NAME' TEXT," + // 2: full_name
+                "'GENDER' TEXT," + // 3: gender
+                "'AGE' INTEGER," + // 4: age
+                "'LOCATION' TEXT," + // 5: location
+                "'ABOUT' TEXT," + // 6: about
+                "'JOINED' INTEGER," + // 7: joined
+                "'LAST_LOGIN' INTEGER," + // 8: last_login
+                "'AVATAR' TEXT," + // 9: avatar
+                "'URL' TEXT," + // 10: url
+                "'SHARE_TEXT_WATCHED' TEXT," + // 11: share_text_watched
+                "'SHARE_TEXT_WATCHING' TEXT);"); // 12: share_text_watching
     }
 
     /** Drops the underlying database table. */
@@ -78,60 +80,61 @@ public class UserDao extends AbstractDao<User, String> {
     protected void bindValues(SQLiteStatement stmt, User entity) {
         stmt.clearBindings();
         stmt.bindString(1, entity.getUsername());
+        stmt.bindString(2, entity.getPassword());
  
         String full_name = entity.getFull_name();
         if (full_name != null) {
-            stmt.bindString(2, full_name);
+            stmt.bindString(3, full_name);
         }
  
         String gender = entity.getGender();
         if (gender != null) {
-            stmt.bindString(3, gender);
+            stmt.bindString(4, gender);
         }
  
         Integer age = entity.getAge();
         if (age != null) {
-            stmt.bindLong(4, age);
+            stmt.bindLong(5, age);
         }
  
         String location = entity.getLocation();
         if (location != null) {
-            stmt.bindString(5, location);
+            stmt.bindString(6, location);
         }
  
         String about = entity.getAbout();
         if (about != null) {
-            stmt.bindString(6, about);
+            stmt.bindString(7, about);
         }
  
         Long joined = entity.getJoined();
         if (joined != null) {
-            stmt.bindLong(7, joined);
+            stmt.bindLong(8, joined);
         }
  
         Long last_login = entity.getLast_login();
         if (last_login != null) {
-            stmt.bindLong(8, last_login);
+            stmt.bindLong(9, last_login);
         }
  
         String avatar = entity.getAvatar();
         if (avatar != null) {
-            stmt.bindString(9, avatar);
+            stmt.bindString(10, avatar);
         }
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(10, url);
+            stmt.bindString(11, url);
         }
  
         String share_text_watched = entity.getShare_text_watched();
         if (share_text_watched != null) {
-            stmt.bindString(11, share_text_watched);
+            stmt.bindString(12, share_text_watched);
         }
  
         String share_text_watching = entity.getShare_text_watching();
         if (share_text_watching != null) {
-            stmt.bindString(12, share_text_watching);
+            stmt.bindString(13, share_text_watching);
         }
     }
 
@@ -152,17 +155,18 @@ public class UserDao extends AbstractDao<User, String> {
     public User readEntity(Cursor cursor, int offset) {
         User entity = new User( //
             cursor.getString(offset + 0), // username
-            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // full_name
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // gender
-            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // age
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // location
-            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // about
-            cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6), // joined
-            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // last_login
-            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // avatar
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // url
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // share_text_watched
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11) // share_text_watching
+            cursor.getString(offset + 1), // password
+            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // full_name
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // gender
+            cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4), // age
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // location
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // about
+            cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7), // joined
+            cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8), // last_login
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // avatar
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // url
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // share_text_watched
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12) // share_text_watching
         );
         return entity;
     }
@@ -171,17 +175,18 @@ public class UserDao extends AbstractDao<User, String> {
     @Override
     public void readEntity(Cursor cursor, User entity, int offset) {
         entity.setUsername(cursor.getString(offset + 0));
-        entity.setFull_name(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
-        entity.setGender(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setAge(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setLocation(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setAbout(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
-        entity.setJoined(cursor.isNull(offset + 6) ? null : cursor.getLong(offset + 6));
-        entity.setLast_login(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
-        entity.setAvatar(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
-        entity.setUrl(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setShare_text_watched(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setShare_text_watching(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setPassword(cursor.getString(offset + 1));
+        entity.setFull_name(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
+        entity.setGender(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setAge(cursor.isNull(offset + 4) ? null : cursor.getInt(offset + 4));
+        entity.setLocation(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setAbout(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setJoined(cursor.isNull(offset + 7) ? null : cursor.getLong(offset + 7));
+        entity.setLast_login(cursor.isNull(offset + 8) ? null : cursor.getLong(offset + 8));
+        entity.setAvatar(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setUrl(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setShare_text_watched(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setShare_text_watching(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
      }
     
     /** @inheritdoc */

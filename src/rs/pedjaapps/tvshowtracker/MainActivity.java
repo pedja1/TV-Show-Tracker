@@ -1,7 +1,9 @@
 package rs.pedjaapps.tvshowtracker;
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -28,6 +30,7 @@ import rs.pedjaapps.tvshowtracker.adapter.NavigationDrawerAdapter;
 import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
 import rs.pedjaapps.tvshowtracker.fragment.TrendingShowsFragment;
 import rs.pedjaapps.tvshowtracker.model.NDItem;
+import rs.pedjaapps.tvshowtracker.network.TraktSyncService;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener
@@ -120,7 +123,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+            selectItem(1);
         }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -129,6 +132,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
         //searchView.setQueryRefinementEnabled(true);
+
+
+        Intent intent = new Intent(this, TraktSyncService.class);
+        startService(intent);
     }
 
     private void setupUser()
@@ -136,16 +143,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         String user = MainApp.getInstance().getActiveUser().getUsername();
         if(!PrefsManager.defaultUser.equals(user))
         {
-            getSupportActionBar().setSubtitle(user);
-            tvLoginLogout.setText(R.string.logout);
+            //getSupportActionBar().setSubtitle(user);
+            //tvLoginLogout.setText(R.string.logout);
         }
         else
         {
-            tvLoginLogout.setText(R.string.login);
+            //tvLoginLogout.setText(R.string.login);
         }
     }
-
-    
 
     @Override
     public void onClick(View view)
@@ -155,9 +160,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         }
     }
-
-
-    
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
@@ -256,12 +258,31 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             {
                 case REQUEST_CODE_LOGIN:
                     setupUser();
+                    //askToSync();
+                    Intent intent = new Intent(this, TraktSyncService.class);
+                    startService(intent);
                     break;
             }
         }
     }
-	
-	private void selectItem(int position) 
+
+   /* private void askToSync()
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getString(R.string.sync_with_trakt));
+        builder.setPositiveButton(android.R.string.yes, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                //todo start sync service
+            }
+        });
+        builder.setNegativeButton(android.R.string.no, null);
+        builder.show();
+    }*/
+
+    private void selectItem(int position)
 	{
         // update the main content by replacing fragments
         lvDrawer.setItemChecked(position, true);
@@ -331,14 +352,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             switch (item.id)
             {
                 case login_logout:
-                    if(PrefsManager.defaultUser.equals(MainApp.getInstance().getActiveUser().getUsername()))
-                    {
+                    //if(PrefsManager.defaultUser.equals(MainApp.getInstance().getActiveUser().getUsername()))
+                    //{
                         startActivityForResult(new Intent(this, LoginActivity.class), REQUEST_CODE_LOGIN);
-                    }
-                    else
-                    {
+                    //}
+                    //else
+                    //{
                         //new ATLogout();
-                    }
+                    //}
                     break;
                 case settings:
                     break;

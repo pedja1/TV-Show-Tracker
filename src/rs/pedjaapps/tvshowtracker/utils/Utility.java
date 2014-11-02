@@ -35,11 +35,14 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
+import rs.pedjaapps.tvshowtracker.model.Genre;
 import rs.pedjaapps.tvshowtracker.model.GenreDao;
 import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
@@ -438,6 +441,42 @@ public class Utility
 			showDao.delete(show);
 		}
 	}
+
+    /**
+     * @return true if show is added succesfully
+     * false */
+    public static boolean addShowToDb(Show show)
+    {
+        ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+        ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
+        long imageId = imageDao.insertOrReplace(show.getImage());
+        show.setImage_id(imageId);
+        show.setUsername(MainApp.getInstance().getActiveUser().getUsername());
+        long showId = showDao.insertOrReplace(show);
+
+        EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
+        for(Episode e : show.getEpisodes())
+        {
+            e.setShow_id(showId);
+        }
+        episodeDao.insertOrReplaceInTx(show.getEpisodes());
+
+        ActorDao actorDao = MainApp.getInstance().getDaoSession().getActorDao();
+        for(Actor a : show.getActors())
+        {
+            a.setShow_id(showId);
+        }
+        actorDao.insertOrReplaceInTx(show.getActors());
+
+        GenreDao gDao = MainApp.getInstance().getDaoSession().getGenreDao();
+        for(Genre g : show.getGenres())
+        {
+            g.setShow_id(showId);
+        }
+        gDao.insertOrReplaceInTx(show.getGenres());
+        MainApp.getInstance().getActiveUser().getShows().add(show);
+        return true;
+    }
 
     public enum ImageSize
     {

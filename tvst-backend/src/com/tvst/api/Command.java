@@ -12,5 +12,5 @@ package com.tvst.api;
  */
 public enum Command
 {
-    no_command, login, register, sync
+    no_command/*, login, register, sync*/
 }

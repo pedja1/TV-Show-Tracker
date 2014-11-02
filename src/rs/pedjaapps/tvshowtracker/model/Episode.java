@@ -13,7 +13,7 @@ public class Episode implements Parcelable {
 
     private Long id;
     private int season;
-    private Integer episode;
+    private int episode;
     private Integer tvdb_id;
     private String title;
     private String overview;
@@ -40,7 +40,7 @@ public class Episode implements Parcelable {
         this.id = id;
     }
 
-    public Episode(Long id, int season, Integer episode, Integer tvdb_id, String title, String overview, Long first_aired, String url, String screen, Integer rating, Integer votes, Integer loved, Integer hated, boolean watched, long show_id) {
+    public Episode(Long id, int season, int episode, Integer tvdb_id, String title, String overview, Long first_aired, String url, String screen, Integer rating, Integer votes, Integer loved, Integer hated, boolean watched, long show_id) {
         this.id = id;
         this.season = season;
         this.episode = episode;
@@ -74,11 +74,11 @@ public class Episode implements Parcelable {
         this.season = season;
     }
 
-    public Integer getEpisode() {
+    public int getEpisode() {
         return episode;
     }
 
-    public void setEpisode(Integer episode) {
+    public void setEpisode(int episode) {
         this.episode = episode;
     }
 

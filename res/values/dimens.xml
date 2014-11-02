@@ -36,5 +36,9 @@
     <dimen name="dp10">10dp</dimen>
     <dimen name="dp5">5dp</dimen>
     <dimen name="dp3">3dp</dimen>
+    <dimen name="dp72">72dp</dimen>
+    <dimen name="dp48">48dp</dimen>
+    <dimen name="dp36">36dp</dimen>
+    <dimen name="dp24">24dp</dimen>
 
 </resources>

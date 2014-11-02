@@ -15,6 +15,8 @@ public class User {
 
     /** Not-null value. */
     private String username;
+    /** Not-null value. */
+    private String password;
     private String full_name;
     private String gender;
     private Integer age;
@@ -45,8 +47,9 @@ public class User {
         this.username = username;
     }
 
-    public User(String username, String full_name, String gender, Integer age, String location, String about, Long joined, Long last_login, String avatar, String url, String share_text_watched, String share_text_watching) {
+    public User(String username, String password, String full_name, String gender, Integer age, String location, String about, Long joined, Long last_login, String avatar, String url, String share_text_watched, String share_text_watching) {
         this.username = username;
+        this.password = password;
         this.full_name = full_name;
         this.gender = gender;
         this.age = age;
@@ -74,6 +77,16 @@ public class User {
     /** Not-null value; ensure this value is available before it is saved to the database. */
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    /** Not-null value. */
+    public String getPassword() {
+        return password;
+    }
+
+    /** Not-null value; ensure this value is available before it is saved to the database. */
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getFull_name() {

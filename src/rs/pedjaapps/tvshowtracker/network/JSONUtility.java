@@ -5,6 +5,7 @@ import android.util.Log;
 import com.crashlytics.android.Crashlytics;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.net.URLEncoder;
@@ -24,6 +25,8 @@ import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
+import rs.pedjaapps.tvshowtracker.model.User;
+import rs.pedjaapps.tvshowtracker.model.UserDao;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
@@ -41,8 +44,9 @@ public class JSONUtility
         runtime, status, fanart, poster, certification, imdb_id, tvdb_id, tvrage_id, last_updated, ratings,
         percentage, loved, hated, actors, people, name, character, headshot, genres, seasons, episodes,
         season, episode, screen, error, error_message, error_code, id, email, first_name, last_name, avatar,
-        password, message, success
-		}
+        password, message, success, profile, username, full_name, gender, age, location, about, joined,
+        last_login, sharing_text, watched, watching
+	}
 
     public enum RequestKey
     {
@@ -57,9 +61,32 @@ public class JSONUtility
             JSONObject jsonObject = new JSONObject(response.responseData);
             if (Key.success.toString().equals(jsonObject.optString(Key.status.toString())))
             {
-                String email = jsonObject.getString(Key.email.toString());
-                PrefsManager.setActiveUser(email);
-                //MainApp.getInstance().setActiveUser(email);
+                User user = new User();
+                JSONObject jProfile = jsonObject.optJSONObject(Key.profile.toString());
+                user.setUsername(jProfile.optString(Key.username.toString()));
+                user.setPassword(params.getPostParameters().get(1).getValue());
+                user.setFull_name(jProfile.optString(Key.full_name.toString()));
+                user.setGender(jProfile.optString(Key.gender.toString()));
+                user.setLocation(jProfile.optString(Key.location.toString()));
+                user.setAge(jProfile.optInt(Key.age.toString()));
+                user.setAbout(jProfile.optString(Key.about.toString()));
+                user.setJoined(jProfile.optLong(Key.joined.toString()));
+                user.setLast_login(jProfile.optLong(Key.last_login.toString()));
+                user.setAvatar(jProfile.optString(Key.avatar.toString()));
+                user.setUrl(jProfile.optString(Key.url.toString()));
+
+                JSONObject jShare = jsonObject.optJSONObject(Key.sharing_text.toString());
+                if(jShare != null)
+                {
+                    user.setShare_text_watched(jShare.optString(Key.watched.toString()));
+                    user.setShare_text_watching(jShare.optString(Key.watching.toString()));
+                }
+
+                UserDao userDao = MainApp.getInstance().getDaoSession().getUserDao();
+                userDao.insertOrReplace(user);
+
+                PrefsManager.setActiveUser(user.getUsername());
+                MainApp.getInstance().setActiveUser(user);
             }
             else
             {
@@ -77,6 +104,64 @@ public class JSONUtility
             return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode(Response.ErrorCode.internal);
         }
         return new Response().setErrorMessage(null).setErrorCode(null).setStatus(true);
+    }
+
+    public static Response addToLibrary(Show show)
+    {
+        JSONObject reuestJson = new JSONObject();
+        try
+        {
+            reuestJson.put(Key.username.toString(), MainApp.getInstance().getActiveUser().getUsername());
+            reuestJson.put(Key.password.toString(), MainApp.getInstance().getActiveUser().getPassword());
+            reuestJson.put(Key.imdb_id.toString(), show.getImdb_id());
+            reuestJson.put(Key.tvdb_id.toString(), show.getTvdb_id());
+            reuestJson.put(Key.tvdb_id.toString(), show.getTvdb_id());
+            reuestJson.put(Key.title.toString(), show.getTitle());
+            reuestJson.put(Key.year.toString(), show.getYear());
+            JSONArray episodes = new JSONArray();
+            for(Episode episode : show.getEpisodes())
+            {
+                if(episode.isWatched())
+                {
+                    JSONObject jEpisode = new JSONObject();
+                    jEpisode.put(Key.season.toString(), episode.getSeason());
+                    jEpisode.put(Key.episode.toString(), episode.getEpisode());
+                    episodes.put(jEpisode);
+                }
+            }
+            reuestJson.put(Key.episodes.toString(), episodes);
+        }
+        catch (JSONException e)
+        {
+            if(BuildConfig.DEBUG)e.printStackTrace();
+        }
+
+        Internet.Response response = Internet.getInstance().httpPost(Constants.REQUEST_URL_ADD_TO_LIBRARY, reuestJson.toString());
+        try
+        {
+            JSONObject jsonObject = new JSONObject(response.responseData);
+            if (!Key.success.toString().equals(jsonObject.optString(Key.status.toString())))
+            {
+                return new Response()
+                        .setErrorCode(Response.ErrorCode.fromString(jsonObject.optString(Key.status.toString())))
+                        .setErrorMessage(jsonObject.optString(Key.error.toString()))
+                        .setStatus(false);
+            }
+            else
+            {
+                return new Response()
+                        .setErrorCode(Response.ErrorCode.fromString(jsonObject.optString(Key.status.toString())))
+                        .setErrorMessage(jsonObject.optString(Key.message.toString()))
+                        .setStatus(true);
+            }
+        }
+        catch (Exception e)
+        {
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            Crashlytics.logException(e);
+            return new Response().setStatus(false).setErrorMessage(e.getMessage()).setErrorCode(Response.ErrorCode.internal);
+        }
     }
 
     public static List<Show> parseSearchResults(String query)
@@ -181,6 +266,62 @@ public class JSONUtility
         }
         return new Response().setStatus(true).setResponseObject(shows);
     }
+
+    public static Response parseCollectionResponse()
+    {
+        List<Show> shows = new ArrayList<Show>();
+        Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_COLLECTION + MainApp.getInstance().getActiveUser().getUsername() + "/min");
+        if (!checkResponse(response))
+            return new Response()
+                    .setStatus(false)
+                    .setErrorCode(Response.ErrorCode.internet);
+        try
+        {
+            JSONArray jsonArray = new JSONArray(response.responseData);
+            for (int i = 0; i < jsonArray.length(); i++)
+            {
+                ShowNoDao show = new ShowNoDao();
+                JSONObject jsonObject = jsonArray.getJSONObject(i);
+                show.setTvdb_id(jsonObject.optInt(Key.tvdb_id.toString()));
+                show.setTitle(jsonObject.getString(Key.title.toString()));
+                List<Episode> episodes = new ArrayList<>();
+                if (jsonObject.has(Key.seasons.toString()))
+                {
+                    JSONArray seasons = jsonObject.getJSONArray(Key.seasons.toString());
+                    for (int s = 0; s < seasons.length(); s++)
+                    {
+                        JSONObject seasonObjec = seasons.getJSONObject(s);
+                        int season = seasonObjec.optInt(Key.season.toString());
+                        if (seasonObjec.has(Key.episodes.toString()))
+                        {
+                            JSONArray jEpisodes = seasonObjec.getJSONArray(Key.episodes.toString());
+                            for (int e = 0; e < jEpisodes.length(); e++)
+                            {
+                                int jEpisode = jEpisodes.optInt(e);
+                                Episode episode = new Episode();
+                                episode.setSeason(season);
+                                episode.setEpisode(jEpisode);
+                                episodes.add(episode);
+                            }
+                        }
+                    }
+                }
+                show.setEpisodes(episodes);
+                shows.add(show);
+            }
+        }
+        catch (Exception e)
+        {
+            if (BuildConfig.DEBUG)e.printStackTrace();
+            if (BuildConfig.DEBUG)Log.e(Constants.LOG_TAG, "JSONUtility " + e.getMessage());
+            Crashlytics.logException(e);
+            return new Response()
+                    .setStatus(false)
+                    .setErrorCode(Response.ErrorCode.internet);
+        }
+        return new Response().setStatus(true).setResponseObject(shows);
+    }
+
 
     public static Response parseShow(String tvdbId, boolean insertInDb)
     {
@@ -366,7 +507,7 @@ public class JSONUtility
     {
 		public enum ErrorCode
 		{
-			unknown, internet, database, internal;
+			success, unknown, internet, database, internal;
 
             public static ErrorCode fromString(String value)
             {

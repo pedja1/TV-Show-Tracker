@@ -2,11 +2,13 @@ package rs.pedjaapps.tvshowtracker.adapter;
 
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,13 +16,16 @@ import android.widget.TextView;
 import com.android.volley.cache.plus.SimpleImageLoader;
 import com.android.volley.ui.NetworkImageViewPlus;
 
+import java.util.Arrays;
 import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
+import rs.pedjaapps.tvshowtracker.fragment.ShowGridFragment;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
+import rs.pedjaapps.tvshowtracker.network.ShowWorkerService;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
@@ -31,6 +36,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     public static final float IMAGE_RATIO = 1.6f;
 
     Context context;
+    ShowGridFragment fragment;
 
     List<Show> shows;
 
@@ -38,9 +44,10 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
 
     int posterWidth;
 
-    public ShowsAdapter(final Context context, List<Show> shows)
+    public ShowsAdapter(ShowGridFragment fragment, List<Show> shows)
     {
-        this.context = context;
+        this.fragment = fragment;
+        this.context = fragment.getActivity();
         this.shows = shows;
 
         posterWidth = (DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num));
@@ -77,17 +84,18 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     {
         final Show show = shows.get(position);
 
-        //viewHolder.tvTitle.setText(show.getTitle());
-        if(show.getUpcomingEpisode() != null)
+        viewHolder.tvNextEpisode.setText(show.getTitle());
+        /*if(show.getUpcomingEpisode() != null)
 		{
 			viewHolder.tvNextEpisode.setText(Utility.generateUpcomingEpisodeText(show.getUpcomingEpisode(), false));
 		}
 		else
 		{
             viewHolder.tvNextEpisode.setText(R.string.next_ep_no_info);
-		}
+		}*/
 
-        viewHolder.ivPoster.post(new Runnable()
+        viewHolder.itemView.setMinimumHeight((int) (posterWidth * IMAGE_RATIO));
+        /*viewHolder.ivPoster.post(new Runnable()
         {
             public void run()
             {
@@ -97,7 +105,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
                 //viewHolder.ivPoster.setLayoutParams(params);
                 viewHolder.ivPoster.setMinimumHeight((int) (params.width * IMAGE_RATIO));
             }
-        });
+        });*/
 
         viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
         viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
@@ -125,12 +133,24 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         {
             viewHolder.tvFavorite.setVisibility(View.GONE);
             viewHolder.tvWatchedPercent.setVisibility(View.GONE);
+            viewHolder.ivAdd.setVisibility(View.VISIBLE);
+            if (show.isShowAdded())
+            {
+                viewHolder.ivAdd.setImageResource(R.drawable.ic_action_check);
+                viewHolder.ivAdd.setEnabled(false);
+            }
+            else
+            {
+                viewHolder.ivAdd.setImageResource(R.drawable.ic_action_favorite);
+                viewHolder.ivAdd.setEnabled(true);
+            }
         }
         else
         {
             viewHolder.tvFavorite.setVisibility(View.VISIBLE);
             viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
             viewHolder.tvWatchedPercent.setVisibility(View.VISIBLE);
+            viewHolder.ivAdd.setVisibility(View.GONE);
         }
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener()
@@ -141,6 +161,27 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
                 if(onItemClickListener != null)onItemClickListener.onItemClick(show, position);
             }
         });
+
+        viewHolder.ivAdd.setOnClickListener(new View.OnClickListener()
+        {
+            @Override
+            public void onClick(View v)
+            {
+                Utility.showToast(context, context.getString(R.string.show_will_be_downloaded, show.getTitle()));
+                show.setShowAdded(true);
+                viewHolder.ivAdd.setImageResource(R.drawable.ic_action_check);
+                viewHolder.ivAdd.setEnabled(false);
+                Intent intent = new Intent(context, ShowWorkerService.class);
+                intent.setAction(ShowWorkerService.INTENT_ACTION_DOWNLOAD_SHOW);
+                intent.putExtra(ShowWorkerService.INTENT_EXTRA_TVDB_ID, show.getTvdb_id());
+                context.startService(intent);
+            }
+        });
+
+        /*if(position == getItemCount() - 1)//last item
+        {
+            fragment.loadMore();
+        }*/
     }
 
     @Override
@@ -159,29 +200,39 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         shows.clear();
     }
 
-    public void add(Show s)
+    public void add(boolean clear, Show... s)
     {
-        shows.add(s);
+        addAll(Arrays.asList(s), clear);
+    }
+
+    public void add(Show... s)
+    {
+        add(false, s);
+    }
+
+    public void addAll(List<Show> list, boolean clear)
+    {
+        if (clear)shows.clear();
+        shows.addAll(list);
+        notifyDataSetChanged();
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder
     {
-        public AutoScrollingTextView tvNextEpisode;
+        public TextView tvNextEpisode;
         public NetworkImageViewPlus ivPoster;
-        //ImageView ivMore;
+        ImageView ivAdd;
 		TextView tvWatchedPercent, tvFavorite/*, tvTitle*/;
-        LinearLayout llTitleContainer;
 
         public ViewHolder(View itemView)
         {
             super(itemView);
-            tvNextEpisode = (AutoScrollingTextView) itemView.findViewById(R.id.tvNextEpisode);
+            tvNextEpisode = (TextView) itemView.findViewById(R.id.tvNextEpisode);
             //tvTitle = (TextView) itemView.findViewById(R.id.tvTitle);
             ivPoster = (NetworkImageViewPlus) itemView.findViewById(R.id.imgSeriesImage);
-            //ivMore = (ImageView) itemView.findViewById(R.id.ivMore);
+            ivAdd = (ImageView) itemView.findViewById(R.id.ivAdd);
             tvWatchedPercent = (TextView) itemView.findViewById(R.id.tvWatchedPercent);
             tvFavorite = (TextView) itemView.findViewById(R.id.tvFavorite);
-            llTitleContainer = (LinearLayout)itemView.findViewById(R.id.llTitleContainer);
         }
     }
 

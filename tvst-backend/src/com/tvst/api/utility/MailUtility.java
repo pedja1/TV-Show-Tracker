@@ -31,15 +31,15 @@ public class MailUtility
                 + "Thank you for your registration.<br> To verify your account please click this link:<br>"
                 + user.getRegistration_key() + "</body></html>";
         Properties props = new Properties();
-        props.setProperty("mail.smtp.host", "mail.pedjaapps.net");
-        /*props.setProperty("mail.smtp.port", "587");
+        props.setProperty("mail.smtp.host", "pedjaapps.net");
+        props.setProperty("mail.smtp.port", "587");
         props.setProperty("mail.smtp.auth", "true");
         props.setProperty("mail.smtp.starttls.enable", "true");
 
-        Authenticator auth = new SMTPAuthenticator("login", "password");//TODO change*/
+        Authenticator auth = new SMTPAuthenticator("noreply@pedjaapps.net", "noreply78tyghj65");
 
-        //Session session = Session.getInstance(props, auth);
-        Session session = Session.getDefaultInstance(props);
+        Session session = Session.getInstance(props, auth);
+        //Session session = Session.getDefaultInstance(props);
 
         MimeMessage msg = new MimeMessage(session);
         msg.setText(message);

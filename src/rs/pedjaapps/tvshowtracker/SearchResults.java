@@ -51,7 +51,7 @@ public class SearchResults extends BaseActivity
             @Override
             public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
             {
-                int tvdbId =  searchAdapter.getItem(position).getTvdb_id();
+                long tvdbId =  searchAdapter.getItem(position).getTvdb_id();
                 /*ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
                 QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
                 queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(tvdbId));

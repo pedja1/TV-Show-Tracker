@@ -20,6 +20,8 @@ import java.util.List;
 
 import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
+import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
+import rs.pedjaapps.tvshowtracker.fragment.ShowGridFragment;
 import rs.pedjaapps.tvshowtracker.model.Actor;
 import rs.pedjaapps.tvshowtracker.model.ActorDao;
 import rs.pedjaapps.tvshowtracker.model.Episode;
@@ -124,13 +126,12 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 
     public class ATLoadShow extends AsyncTask<String, Void, Show>
 	{
-
         @Override
 		protected Show doInBackground(String... args)
 		{
 			ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
 			QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-			
+
             Show cachedShow = ShowMemCache.getInstance().getCachedShow(mTvdbId == -1 ? (mImdbId == null ? showName : mImdbId) : mTvdbId + "");
             if(cachedShow == null)
             {
@@ -438,36 +439,13 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 			return;
 		}
 		
-		ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
-		long imageId = imageDao.insertOrReplace(show.getImage());
-		show.setImage_id(imageId);
-        show.setUsername(MainApp.getInstance().getActiveUser().getUsername());
-		long showId = showDao.insertOrReplace(show);
-		
-		EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
-		for(Episode e : show.getEpisodes())
-		{
-			e.setShow_id(showId);
-		}
-		episodeDao.insertOrReplaceInTx(show.getEpisodes());
-		
-		ActorDao actorDao = MainApp.getInstance().getDaoSession().getActorDao();
-		for(Actor a : show.getActors())
-		{
-			a.setShow_id(showId);
-		}
-		actorDao.insertOrReplaceInTx(show.getActors());
-		
-		GenreDao gDao = MainApp.getInstance().getDaoSession().getGenreDao();
-		for(Genre g : show.getGenres())
-		{
-			g.setShow_id(showId);
-		}
-		gDao.insertOrReplaceInTx(show.getGenres());
+		Utility.addShowToDb(show);
 		
 		isInMyShows = true;
 		invalidateOptionsMenu();
 		Utility.showToast(this, R.string.show_added_to_fav);
+
+		ShowGridFragment.sendRefreshBroadcast(MyShowsFragment.LIST_TYPE);
 	}
 
 	private static int getLastAiredEpisodePosition(

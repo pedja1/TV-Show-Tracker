@@ -21,16 +21,30 @@ import de.greenrobot.daogenerator.Property;
 import de.greenrobot.daogenerator.Schema;
 import de.greenrobot.daogenerator.ToMany;
 
-public class DatingDaoGenerator
+public class MDaoGenerator
 {
 
     public static void main(String[] args) throws Exception
     {
-        Schema schema = new Schema(2, "rs.pedjaapps.tvshowtracker.model");
+        Schema schema = new Schema(3, "rs.pedjaapps.tvshowtracker.model");
 
         addShow(schema);
+        addSyncLog(schema);
 
         new DaoGenerator().generateAll(schema, "./src");
+    }
+
+    private static void addSyncLog(Schema schema)
+    {
+        Entity syncLog = schema.addEntity("SyncLog");
+        syncLog.setHasKeepSections(true);
+        syncLog.addIdProperty();
+        syncLog.addStringProperty("status");
+        syncLog.addStringProperty("message");
+        syncLog.addIntProperty("type");
+        syncLog.addStringProperty("show_title");
+        syncLog.addDateProperty("time");
+
     }
 
     private static void addShow(Schema schema)
@@ -38,6 +52,7 @@ public class DatingDaoGenerator
         Entity user = schema.addEntity("User");
         user.setHasKeepSections(true);
         user.addStringProperty("username").primaryKey().notNull();
+        user.addStringProperty("password").notNull();
         user.addStringProperty("full_name");
         user.addStringProperty("gender");
         user.addIntProperty("age");
@@ -53,8 +68,7 @@ public class DatingDaoGenerator
 
         Entity show = schema.addEntity("Show");
         show.setHasKeepSections(true);
-        show.addIdProperty();
-        show.addIntProperty("tvdb_id").notNull();
+        show.addLongProperty("tvdb_id").primaryKey().notNull();
         show.addStringProperty("title");
         show.addIntProperty("year");
         show.addStringProperty("url");
@@ -120,7 +134,7 @@ public class DatingDaoGenerator
         episode.setHasKeepSections(true);
         episode.addIdProperty();
         episode.addIntProperty("season").notNull();
-        episode.addIntProperty("episode");
+        episode.addIntProperty("episode").notNull();
         episode.addIntProperty("tvdb_id");
         episode.addStringProperty("title");
         episode.addStringProperty("overview");

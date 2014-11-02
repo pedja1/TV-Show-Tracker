@@ -28,29 +28,28 @@ public class ShowDao extends AbstractDao<Show, Long> {
      * Can be used for QueryBuilder and for referencing column names.
     */
     public static class Properties {
-        public final static Property Id = new Property(0, Long.class, "id", true, "_id");
-        public final static Property Tvdb_id = new Property(1, int.class, "tvdb_id", false, "TVDB_ID");
-        public final static Property Title = new Property(2, String.class, "title", false, "TITLE");
-        public final static Property Year = new Property(3, Integer.class, "year", false, "YEAR");
-        public final static Property Url = new Property(4, String.class, "url", false, "URL");
-        public final static Property First_aired = new Property(5, Long.class, "first_aired", false, "FIRST_AIRED");
-        public final static Property Country = new Property(6, String.class, "country", false, "COUNTRY");
-        public final static Property Overview = new Property(7, String.class, "overview", false, "OVERVIEW");
-        public final static Property Runtime = new Property(8, Integer.class, "runtime", false, "RUNTIME");
-        public final static Property Status = new Property(9, String.class, "status", false, "STATUS");
-        public final static Property Network = new Property(10, String.class, "network", false, "NETWORK");
-        public final static Property Air_day = new Property(11, String.class, "air_day", false, "AIR_DAY");
-        public final static Property Air_time = new Property(12, String.class, "air_time", false, "AIR_TIME");
-        public final static Property Certification = new Property(13, String.class, "certification", false, "CERTIFICATION");
-        public final static Property Imdb_id = new Property(14, String.class, "imdb_id", false, "IMDB_ID");
-        public final static Property Tvrage_id = new Property(15, Integer.class, "tvrage_id", false, "TVRAGE_ID");
-        public final static Property Last_updated = new Property(16, Long.class, "last_updated", false, "LAST_UPDATED");
-        public final static Property Rating = new Property(17, Integer.class, "rating", false, "RATING");
-        public final static Property Votes = new Property(18, Integer.class, "votes", false, "VOTES");
-        public final static Property Loved = new Property(19, Integer.class, "loved", false, "LOVED");
-        public final static Property Hated = new Property(20, Integer.class, "hated", false, "HATED");
-        public final static Property Username = new Property(21, String.class, "username", false, "USERNAME");
-        public final static Property Image_id = new Property(22, Long.class, "image_id", false, "IMAGE_ID");
+        public final static Property Tvdb_id = new Property(0, long.class, "tvdb_id", true, "TVDB_ID");
+        public final static Property Title = new Property(1, String.class, "title", false, "TITLE");
+        public final static Property Year = new Property(2, Integer.class, "year", false, "YEAR");
+        public final static Property Url = new Property(3, String.class, "url", false, "URL");
+        public final static Property First_aired = new Property(4, Long.class, "first_aired", false, "FIRST_AIRED");
+        public final static Property Country = new Property(5, String.class, "country", false, "COUNTRY");
+        public final static Property Overview = new Property(6, String.class, "overview", false, "OVERVIEW");
+        public final static Property Runtime = new Property(7, Integer.class, "runtime", false, "RUNTIME");
+        public final static Property Status = new Property(8, String.class, "status", false, "STATUS");
+        public final static Property Network = new Property(9, String.class, "network", false, "NETWORK");
+        public final static Property Air_day = new Property(10, String.class, "air_day", false, "AIR_DAY");
+        public final static Property Air_time = new Property(11, String.class, "air_time", false, "AIR_TIME");
+        public final static Property Certification = new Property(12, String.class, "certification", false, "CERTIFICATION");
+        public final static Property Imdb_id = new Property(13, String.class, "imdb_id", false, "IMDB_ID");
+        public final static Property Tvrage_id = new Property(14, Integer.class, "tvrage_id", false, "TVRAGE_ID");
+        public final static Property Last_updated = new Property(15, Long.class, "last_updated", false, "LAST_UPDATED");
+        public final static Property Rating = new Property(16, Integer.class, "rating", false, "RATING");
+        public final static Property Votes = new Property(17, Integer.class, "votes", false, "VOTES");
+        public final static Property Loved = new Property(18, Integer.class, "loved", false, "LOVED");
+        public final static Property Hated = new Property(19, Integer.class, "hated", false, "HATED");
+        public final static Property Username = new Property(20, String.class, "username", false, "USERNAME");
+        public final static Property Image_id = new Property(21, Long.class, "image_id", false, "IMAGE_ID");
     };
 
     private DaoSession daoSession;
@@ -70,29 +69,28 @@ public class ShowDao extends AbstractDao<Show, Long> {
     public static void createTable(SQLiteDatabase db, boolean ifNotExists) {
         String constraint = ifNotExists? "IF NOT EXISTS ": "";
         db.execSQL("CREATE TABLE " + constraint + "'SHOW' (" + //
-                "'_id' INTEGER PRIMARY KEY ," + // 0: id
-                "'TVDB_ID' INTEGER NOT NULL ," + // 1: tvdb_id
-                "'TITLE' TEXT," + // 2: title
-                "'YEAR' INTEGER," + // 3: year
-                "'URL' TEXT," + // 4: url
-                "'FIRST_AIRED' INTEGER," + // 5: first_aired
-                "'COUNTRY' TEXT," + // 6: country
-                "'OVERVIEW' TEXT," + // 7: overview
-                "'RUNTIME' INTEGER," + // 8: runtime
-                "'STATUS' TEXT," + // 9: status
-                "'NETWORK' TEXT," + // 10: network
-                "'AIR_DAY' TEXT," + // 11: air_day
-                "'AIR_TIME' TEXT," + // 12: air_time
-                "'CERTIFICATION' TEXT," + // 13: certification
-                "'IMDB_ID' TEXT," + // 14: imdb_id
-                "'TVRAGE_ID' INTEGER," + // 15: tvrage_id
-                "'LAST_UPDATED' INTEGER," + // 16: last_updated
-                "'RATING' INTEGER," + // 17: rating
-                "'VOTES' INTEGER," + // 18: votes
-                "'LOVED' INTEGER," + // 19: loved
-                "'HATED' INTEGER," + // 20: hated
-                "'USERNAME' TEXT NOT NULL ," + // 21: username
-                "'IMAGE_ID' INTEGER);"); // 22: image_id
+                "'TVDB_ID' INTEGER PRIMARY KEY NOT NULL ," + // 0: tvdb_id
+                "'TITLE' TEXT," + // 1: title
+                "'YEAR' INTEGER," + // 2: year
+                "'URL' TEXT," + // 3: url
+                "'FIRST_AIRED' INTEGER," + // 4: first_aired
+                "'COUNTRY' TEXT," + // 5: country
+                "'OVERVIEW' TEXT," + // 6: overview
+                "'RUNTIME' INTEGER," + // 7: runtime
+                "'STATUS' TEXT," + // 8: status
+                "'NETWORK' TEXT," + // 9: network
+                "'AIR_DAY' TEXT," + // 10: air_day
+                "'AIR_TIME' TEXT," + // 11: air_time
+                "'CERTIFICATION' TEXT," + // 12: certification
+                "'IMDB_ID' TEXT," + // 13: imdb_id
+                "'TVRAGE_ID' INTEGER," + // 14: tvrage_id
+                "'LAST_UPDATED' INTEGER," + // 15: last_updated
+                "'RATING' INTEGER," + // 16: rating
+                "'VOTES' INTEGER," + // 17: votes
+                "'LOVED' INTEGER," + // 18: loved
+                "'HATED' INTEGER," + // 19: hated
+                "'USERNAME' TEXT NOT NULL ," + // 20: username
+                "'IMAGE_ID' INTEGER);"); // 21: image_id
     }
 
     /** Drops the underlying database table. */
@@ -105,112 +103,107 @@ public class ShowDao extends AbstractDao<Show, Long> {
     @Override
     protected void bindValues(SQLiteStatement stmt, Show entity) {
         stmt.clearBindings();
- 
-        Long id = entity.getId();
-        if (id != null) {
-            stmt.bindLong(1, id);
-        }
-        stmt.bindLong(2, entity.getTvdb_id());
+        stmt.bindLong(1, entity.getTvdb_id());
  
         String title = entity.getTitle();
         if (title != null) {
-            stmt.bindString(3, title);
+            stmt.bindString(2, title);
         }
  
         Integer year = entity.getYear();
         if (year != null) {
-            stmt.bindLong(4, year);
+            stmt.bindLong(3, year);
         }
  
         String url = entity.getUrl();
         if (url != null) {
-            stmt.bindString(5, url);
+            stmt.bindString(4, url);
         }
  
         Long first_aired = entity.getFirst_aired();
         if (first_aired != null) {
-            stmt.bindLong(6, first_aired);
+            stmt.bindLong(5, first_aired);
         }
  
         String country = entity.getCountry();
         if (country != null) {
-            stmt.bindString(7, country);
+            stmt.bindString(6, country);
         }
  
         String overview = entity.getOverview();
         if (overview != null) {
-            stmt.bindString(8, overview);
+            stmt.bindString(7, overview);
         }
  
         Integer runtime = entity.getRuntime();
         if (runtime != null) {
-            stmt.bindLong(9, runtime);
+            stmt.bindLong(8, runtime);
         }
  
         String status = entity.getStatus();
         if (status != null) {
-            stmt.bindString(10, status);
+            stmt.bindString(9, status);
         }
  
         String network = entity.getNetwork();
         if (network != null) {
-            stmt.bindString(11, network);
+            stmt.bindString(10, network);
         }
  
         String air_day = entity.getAir_day();
         if (air_day != null) {
-            stmt.bindString(12, air_day);
+            stmt.bindString(11, air_day);
         }
  
         String air_time = entity.getAir_time();
         if (air_time != null) {
-            stmt.bindString(13, air_time);
+            stmt.bindString(12, air_time);
         }
  
         String certification = entity.getCertification();
         if (certification != null) {
-            stmt.bindString(14, certification);
+            stmt.bindString(13, certification);
         }
  
         String imdb_id = entity.getImdb_id();
         if (imdb_id != null) {
-            stmt.bindString(15, imdb_id);
+            stmt.bindString(14, imdb_id);
         }
  
         Integer tvrage_id = entity.getTvrage_id();
         if (tvrage_id != null) {
-            stmt.bindLong(16, tvrage_id);
+            stmt.bindLong(15, tvrage_id);
         }
  
         Long last_updated = entity.getLast_updated();
         if (last_updated != null) {
-            stmt.bindLong(17, last_updated);
+            stmt.bindLong(16, last_updated);
         }
  
         Integer rating = entity.getRating();
         if (rating != null) {
-            stmt.bindLong(18, rating);
+            stmt.bindLong(17, rating);
         }
  
         Integer votes = entity.getVotes();
         if (votes != null) {
-            stmt.bindLong(19, votes);
+            stmt.bindLong(18, votes);
         }
  
         Integer loved = entity.getLoved();
         if (loved != null) {
-            stmt.bindLong(20, loved);
+            stmt.bindLong(19, loved);
         }
  
         Integer hated = entity.getHated();
         if (hated != null) {
-            stmt.bindLong(21, hated);
+            stmt.bindLong(20, hated);
         }
-        stmt.bindString(22, entity.getUsername());
+        stmt.bindString(21, entity.getUsername());
  
         Long image_id = entity.getImage_id();
         if (image_id != null) {
-            stmt.bindLong(23, image_id);
+            stmt.bindLong(22, image_id);
         }
     }
 
@@ -223,36 +216,35 @@ public class ShowDao extends AbstractDao<Show, Long> {
     /** @inheritdoc */
     @Override
     public Long readKey(Cursor cursor, int offset) {
-        return cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0);
+        return cursor.getLong(offset + 0);
     }    
 
     /** @inheritdoc */
     @Override
     public Show readEntity(Cursor cursor, int offset) {
         Show entity = new Show( //
-            cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0), // id
-            cursor.getInt(offset + 1), // tvdb_id
-            cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2), // title
-            cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3), // year
-            cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4), // url
-            cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5), // first_aired
-            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // country
-            cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7), // overview
-            cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8), // runtime
-            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // status
-            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // network
-            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // air_day
-            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // air_time
-            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // certification
-            cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14), // imdb_id
-            cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15), // tvrage_id
-            cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16), // last_updated
-            cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // rating
-            cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18), // votes
-            cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19), // loved
-            cursor.isNull(offset + 20) ? null : cursor.getInt(offset + 20), // hated
-            cursor.getString(offset + 21), // username
-            cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22) // image_id
+            cursor.getLong(offset + 0), // tvdb_id
+            cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1), // title
+            cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2), // year
+            cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3), // url
+            cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4), // first_aired
+            cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5), // country
+            cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6), // overview
+            cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7), // runtime
+            cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8), // status
+            cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9), // network
+            cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10), // air_day
+            cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11), // air_time
+            cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12), // certification
+            cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13), // imdb_id
+            cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14), // tvrage_id
+            cursor.isNull(offset + 15) ? null : cursor.getLong(offset + 15), // last_updated
+            cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16), // rating
+            cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17), // votes
+            cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18), // loved
+            cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19), // hated
+            cursor.getString(offset + 20), // username
+            cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21) // image_id
         );
         return entity;
     }
@@ -260,35 +252,34 @@ public class ShowDao extends AbstractDao<Show, Long> {
     /** @inheritdoc */
     @Override
     public void readEntity(Cursor cursor, Show entity, int offset) {
-        entity.setId(cursor.isNull(offset + 0) ? null : cursor.getLong(offset + 0));
-        entity.setTvdb_id(cursor.getInt(offset + 1));
-        entity.setTitle(cursor.isNull(offset + 2) ? null : cursor.getString(offset + 2));
-        entity.setYear(cursor.isNull(offset + 3) ? null : cursor.getInt(offset + 3));
-        entity.setUrl(cursor.isNull(offset + 4) ? null : cursor.getString(offset + 4));
-        entity.setFirst_aired(cursor.isNull(offset + 5) ? null : cursor.getLong(offset + 5));
-        entity.setCountry(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
-        entity.setOverview(cursor.isNull(offset + 7) ? null : cursor.getString(offset + 7));
-        entity.setRuntime(cursor.isNull(offset + 8) ? null : cursor.getInt(offset + 8));
-        entity.setStatus(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
-        entity.setNetwork(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
-        entity.setAir_day(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
-        entity.setAir_time(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
-        entity.setCertification(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
-        entity.setImdb_id(cursor.isNull(offset + 14) ? null : cursor.getString(offset + 14));
-        entity.setTvrage_id(cursor.isNull(offset + 15) ? null : cursor.getInt(offset + 15));
-        entity.setLast_updated(cursor.isNull(offset + 16) ? null : cursor.getLong(offset + 16));
-        entity.setRating(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
-        entity.setVotes(cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18));
-        entity.setLoved(cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19));
-        entity.setHated(cursor.isNull(offset + 20) ? null : cursor.getInt(offset + 20));
-        entity.setUsername(cursor.getString(offset + 21));
-        entity.setImage_id(cursor.isNull(offset + 22) ? null : cursor.getLong(offset + 22));
+        entity.setTvdb_id(cursor.getLong(offset + 0));
+        entity.setTitle(cursor.isNull(offset + 1) ? null : cursor.getString(offset + 1));
+        entity.setYear(cursor.isNull(offset + 2) ? null : cursor.getInt(offset + 2));
+        entity.setUrl(cursor.isNull(offset + 3) ? null : cursor.getString(offset + 3));
+        entity.setFirst_aired(cursor.isNull(offset + 4) ? null : cursor.getLong(offset + 4));
+        entity.setCountry(cursor.isNull(offset + 5) ? null : cursor.getString(offset + 5));
+        entity.setOverview(cursor.isNull(offset + 6) ? null : cursor.getString(offset + 6));
+        entity.setRuntime(cursor.isNull(offset + 7) ? null : cursor.getInt(offset + 7));
+        entity.setStatus(cursor.isNull(offset + 8) ? null : cursor.getString(offset + 8));
+        entity.setNetwork(cursor.isNull(offset + 9) ? null : cursor.getString(offset + 9));
+        entity.setAir_day(cursor.isNull(offset + 10) ? null : cursor.getString(offset + 10));
+        entity.setAir_time(cursor.isNull(offset + 11) ? null : cursor.getString(offset + 11));
+        entity.setCertification(cursor.isNull(offset + 12) ? null : cursor.getString(offset + 12));
+        entity.setImdb_id(cursor.isNull(offset + 13) ? null : cursor.getString(offset + 13));
+        entity.setTvrage_id(cursor.isNull(offset + 14) ? null : cursor.getInt(offset + 14));
+        entity.setLast_updated(cursor.isNull(offset + 15) ? null : cursor.getLong(offset + 15));
+        entity.setRating(cursor.isNull(offset + 16) ? null : cursor.getInt(offset + 16));
+        entity.setVotes(cursor.isNull(offset + 17) ? null : cursor.getInt(offset + 17));
+        entity.setLoved(cursor.isNull(offset + 18) ? null : cursor.getInt(offset + 18));
+        entity.setHated(cursor.isNull(offset + 19) ? null : cursor.getInt(offset + 19));
+        entity.setUsername(cursor.getString(offset + 20));
+        entity.setImage_id(cursor.isNull(offset + 21) ? null : cursor.getLong(offset + 21));
      }
     
     /** @inheritdoc */
     @Override
     protected Long updateKeyAfterInsert(Show entity, long rowId) {
-        entity.setId(rowId);
+        entity.setTvdb_id(rowId);
         return rowId;
     }
     
@@ -296,7 +287,7 @@ public class ShowDao extends AbstractDao<Show, Long> {
     @Override
     public Long getKey(Show entity) {
         if(entity != null) {
-            return entity.getId();
+            return entity.getTvdb_id();
         } else {
             return null;
         }

@@ -23,6 +23,7 @@ import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class MyShowsFragment extends ShowGridFragment
 {
+	public static final int LIST_TYPE = 1001;
 
 	LinearLayout llUpcomingEpisode;
     Episode upcomingEpisode;
@@ -54,14 +55,19 @@ public class MyShowsFragment extends ShowGridFragment
         builder.setSpan(new ImageSpan(getActivity(), R.drawable.ic_action_search_dark), 22, 23, Spannable.SPAN_INCLUSIVE_INCLUSIVE);
       	return builder;
 	}
-	
+
+	@Override
+	protected int listType()
+	{
+		return LIST_TYPE;
+	}
+
 	@Override
 	protected List<Show> getShows()
     {
         long startTime = System.currentTimeMillis();
 		SortOrder sort = PrefsManager.getSortOrder();
-        ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-        List<Show> shows = showDao.loadAll();
+        List<Show> shows = MainApp.getInstance().getActiveUser().getShows();
 
 		upcomingEpisode = Utility.calculateUpcomingEpisodes(shows);
 

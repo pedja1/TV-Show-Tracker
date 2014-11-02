@@ -10,7 +10,7 @@ public class PostParams
 
     public enum Key
     {
-        email, password
+        username, password
     }
     private final ArrayList<NameValuePair> postParameters;
 
@@ -26,7 +26,7 @@ public class PostParams
 
     public void setParamsForLogin(String email, String password)
     {
-        postParameters.add(new BasicNameValuePair(Key.email.toString(), email));
+        postParameters.add(new BasicNameValuePair(Key.username.toString(), email));
         postParameters.add(new BasicNameValuePair(Key.password.toString(), password));
     }
 

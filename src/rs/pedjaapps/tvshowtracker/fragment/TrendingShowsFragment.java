@@ -9,6 +9,7 @@ import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public class TrendingShowsFragment extends ShowGridFragment
 {
+    public static final int LIST_TYPE = 1002;
     String noShowsMessage;
 
     public static TrendingShowsFragment newInstance()
@@ -50,6 +51,12 @@ public class TrendingShowsFragment extends ShowGridFragment
     protected CharSequence noShowsString()
     {
         return noShowsMessage;
+    }
+
+    @Override
+    protected int listType()
+    {
+        return LIST_TYPE;
     }
 
 }

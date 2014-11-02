@@ -16,6 +16,12 @@ import android.widget.TextView;
 import org.apache.commons.codec.binary.Hex;
 import org.apache.commons.codec.digest.DigestUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import rs.pedjaapps.tvshowtracker.model.Show;
+import rs.pedjaapps.tvshowtracker.model.ShowDao;
+import rs.pedjaapps.tvshowtracker.network.Internet;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.network.PostParams;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
@@ -27,7 +33,7 @@ import rs.pedjaapps.tvshowtracker.widget.FloatLabeledEditText;
  * A login screen that offers login via email/password.
  */
 @TargetApi(Build.VERSION_CODES.KITKAT)
-public class LoginActivity extends Activity
+public class LoginActivity extends Activity implements OnClickListener
 {
 
     /**
@@ -84,6 +90,8 @@ public class LoginActivity extends Activity
         });
         pbLoading = (ProgressBar)findViewById(R.id.pbLoading);
 
+        TextView tvSkip = (TextView) findViewById(R.id.tvSkip);
+        tvSkip.setOnClickListener(this);
     }
 
     private boolean hasKat()
@@ -160,6 +168,17 @@ public class LoginActivity extends Activity
         pbLoading.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
+    @Override
+    public void onClick(View v)
+    {
+        switch (v.getId())
+        {
+            case R.id.tvSkip:
+                finish();
+                break;
+        }
+    }
+
     /**
      * Represents an asynchronous login/registration task used to authenticate
      * the user.
@@ -180,7 +199,7 @@ public class LoginActivity extends Activity
         protected JSONUtility.Response doInBackground(Void... params)
         {
             PostParams postParams = new PostParams();
-            postParams.setParamsForLogin(mEmail, new String(Hex.encodeHex(DigestUtils.sha(mPassword))));
+            postParams.setParamsForLogin(mEmail, new String(Hex.encodeHex(DigestUtils.sha(mPassword)))/*AeSimpleSHA1.SHA1(mPassword)*/);
             return JSONUtility.parseLoginResponse(postParams);
         }
 
@@ -202,6 +221,15 @@ public class LoginActivity extends Activity
                 }
                 else
                 {
+                    ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
+                    List<Show> shows = new ArrayList<>(showDao.loadAll());//copy all shows to new list
+                    showDao.deleteAll();//clear all shows
+                    String username = MainApp.getInstance().getActiveUser().getUsername();
+                    for(Show show : shows)
+                    {
+                        if("-".equals(show.getUsername()))show.setUsername(username);
+                    }
+                    showDao.insertInTx(shows);
                     setResult(RESULT_OK);
                     finish();
                 }
