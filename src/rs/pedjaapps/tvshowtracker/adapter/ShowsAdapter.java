@@ -75,7 +75,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
     {
         final LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
 
-        View view = inflater.inflate(R.layout.shows_list_row, null);
+        View view = inflater.inflate(R.layout.shows_list_row, viewGroup, false);
         return new ViewHolder(view);
     }
 

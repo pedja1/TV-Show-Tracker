@@ -51,7 +51,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	
 	ShowDetailsPagerAdapter mShowDetailsPagerAdapter;
 	ViewPager mViewPager;
-	private int mTvdbId;
+	private long mTvdbId;
     private String mImdbId, showName;
     private Show show;
     private boolean isInMyShows;
@@ -91,7 +91,7 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
         // Show the Up button in the action bar.
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-		mTvdbId = getIntent().getIntExtra(EXTRA_TVDB_ID, -1);
+		mTvdbId = getIntent().getLongExtra(EXTRA_TVDB_ID, -1);
         mImdbId = getIntent().getStringExtra(EXTRA_IMDB_ID);
         showName = getIntent().getStringExtra(EXTRA_SHOW_NAME);
 
