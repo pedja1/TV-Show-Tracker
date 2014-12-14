@@ -23,6 +23,6 @@
     android:gravity="center_vertical"
     android:paddingLeft="16dp"
     android:paddingRight="16dp"
-    android:background="?android:attr/activatedBackgroundIndicator"
+    android:textColor="@drawable/drawer_item_selector"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
     android:drawablePadding="20dp"/>

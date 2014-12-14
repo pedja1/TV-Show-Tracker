@@ -14,10 +14,12 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.SearchView;
@@ -45,7 +47,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     //SlidingMenu sideMenu;
     
 	private DrawerLayout mDrawerLayout;
-    private RelativeLayout mDrawerContent;
+    private LinearLayout mDrawerContent;
     private ListView lvDrawer;
     NavigationDrawerAdapter ndAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
@@ -70,10 +72,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 
         setContentView(R.layout.activity_main);
 
+        Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+
 		mTitle = mDrawerTitle = getTitle();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerContent = (RelativeLayout) findViewById(R.id.left_drawer);
+        mDrawerContent = (LinearLayout) findViewById(R.id.left_drawer);
         lvDrawer = (ListView) findViewById(R.id.lvDrawer);
 
         // set a custom shadow that overlays the main content when the drawer opens
@@ -91,6 +96,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         ndAdapter = new NavigationDrawerAdapter(this, menuItems);
         lvDrawer.setAdapter(ndAdapter);
         lvDrawer.setOnItemClickListener(this);
+
+
 
 
         // ActionBarDrawerToggle ties together the the proper interactions
