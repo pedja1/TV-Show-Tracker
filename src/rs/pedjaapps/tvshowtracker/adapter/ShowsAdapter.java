@@ -9,8 +9,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.android.volley.cache.plus.SimpleImageLoader;
@@ -28,7 +26,6 @@ import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 import rs.pedjaapps.tvshowtracker.network.ShowWorkerService;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
-import rs.pedjaapps.tvshowtracker.widget.AutoScrollingTextView;
 
 public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder>
 {
@@ -52,7 +49,8 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
 
         posterWidth = (DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num));
 
-		mImageFetcher = new SimpleImageLoader(context.getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+		mImageFetcher = new SimpleImageLoader(context.getApplicationContext(), MainApp.getInstance().cacheParams);
+        mImageFetcher.setDefaultDrawable(R.drawable.noimage_poster_actor);
         //set max image size to screen width divided by number of columns and multiplied by aspect ratio(so that we actually get height of poster)
         mImageFetcher.setMaxImageSize((int) (posterWidth * IMAGE_RATIO));
 

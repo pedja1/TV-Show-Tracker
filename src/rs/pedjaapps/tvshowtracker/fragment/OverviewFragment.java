@@ -10,7 +10,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import rs.pedjaapps.tvshowtracker.widget.NotifyingScrollView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
@@ -29,6 +28,7 @@ import rs.pedjaapps.tvshowtracker.model.Genre;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
+import rs.pedjaapps.tvshowtracker.widget.NotifyingScrollView;
 
 /**
  * Created by pedja on 1.6.14..
@@ -88,7 +88,8 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         tvWatchedEpisodes.setText(Html.fromHtml(getString(R.string.watched_episodes, generateWatchedEpisodes(show.getEpisodes()))));
         final NetworkImageViewPlus ivShowPhoto = (NetworkImageViewPlus)view.findViewById(R.id.ivShowImage);
 
-        SimpleImageLoader mImageFetcher = new SimpleImageLoader(getActivity().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+        SimpleImageLoader mImageFetcher = new SimpleImageLoader(getActivity().getApplicationContext(), MainApp.getInstance().cacheParams);
+        mImageFetcher.setDefaultDrawable(R.drawable.noimage_poster_actor);
         mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
 
         ivShowPhoto.setDefaultImageResId(R.drawable.noimage_fanart);

@@ -30,7 +30,8 @@ public final class SearchAdapter extends ArrayAdapter<Show>
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
         this.context = context;
-        mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_banner, MainApp.getInstance().cacheParams);
+        mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), MainApp.getInstance().cacheParams);
+        mImageFetcher.setDefaultDrawable(R.drawable.noimage_banner);
         mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
     }
 

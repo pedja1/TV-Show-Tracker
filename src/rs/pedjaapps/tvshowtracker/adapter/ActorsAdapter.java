@@ -27,7 +27,8 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
     {
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
-        mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), R.drawable.noimage_poster_actor, MainApp.getInstance().cacheParams);
+        mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), MainApp.getInstance().cacheParams);
+        mImageFetcher.setDefaultDrawable(R.drawable.noimage_poster_actor);
         mImageFetcher.setMaxImageSize((int) ((DisplayManager.screenWidth / 5) * IMAGE_RATIO));
     }
 
