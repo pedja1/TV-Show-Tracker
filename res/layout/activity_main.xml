@@ -20,7 +20,13 @@
             android:minHeight="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
             app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
-            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:src="@drawable/logo"/>
+        </android.support.v7.widget.Toolbar>
 
         <FrameLayout
             android:id="@+id/content_frame"
@@ -37,16 +43,16 @@
 
     <LinearLayout
         android:layout_height="match_parent"
-        android:layout_width="260dp"
+        android:layout_width="@dimen/navigation_drawer_width"
         android:layout_gravity="left|start"
         android:id="@+id/left_drawer"
         android:orientation="vertical">
 
-        <LinearLayout
+        <ImageView
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize">
-
-        </LinearLayout>
+            android:layout_height="wrap_content"
+            android:src="@drawable/drawer_header"
+            android:adjustViewBounds="true"/>
 
         <ListView
             android:layout_width="match_parent"

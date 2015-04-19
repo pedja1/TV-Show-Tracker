@@ -15,7 +15,6 @@ public class Actor implements Parcelable {
     private String name;
     private String character;
     private String image;
-    private long show_id;
 
     // KEEP FIELDS - put your custom fields here
     // KEEP FIELDS END
@@ -32,7 +31,6 @@ public class Actor implements Parcelable {
         this.name = name;
         this.character = character;
         this.image = image;
-        this.show_id = show_id;
     }
 
     public Long getId() {
@@ -67,14 +65,6 @@ public class Actor implements Parcelable {
         this.image = image;
     }
 
-    public long getShow_id() {
-        return show_id;
-    }
-
-    public void setShow_id(long show_id) {
-        this.show_id = show_id;
-    }
-
     // KEEP METHODS - put your custom methods here
     @Override
     public int describeContents()
@@ -89,7 +79,6 @@ public class Actor implements Parcelable {
         dest.writeString(this.name);
         dest.writeString(this.character);
         dest.writeString(this.image);
-        dest.writeLong(this.show_id);
     }
 
     private Actor(Parcel in)
@@ -98,7 +87,6 @@ public class Actor implements Parcelable {
         this.name = in.readString();
         this.character = in.readString();
         this.image = in.readString();
-        this.show_id = in.readLong();
     }
 
     public static Creator<Actor> CREATOR = new Creator<Actor>()

@@ -26,7 +26,7 @@
             android:adjustViewBounds="true"
             android:focusable="false"
             android:scaleType="centerCrop"
-            android:src="@drawable/noimage_banner" />
+            android:src="@drawable/no_image" />
 
         <TextView
             android:id="@+id/txtUpcomingEpisode"

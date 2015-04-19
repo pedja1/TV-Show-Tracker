@@ -38,8 +38,6 @@ public class UserDao extends AbstractDao<User, String> {
         public final static Property Share_text_watching = new Property(12, String.class, "share_text_watching", false, "SHARE_TEXT_WATCHING");
     };
 
-    private DaoSession daoSession;
-
 
     public UserDao(DaoConfig config) {
         super(config);
@@ -47,7 +45,6 @@ public class UserDao extends AbstractDao<User, String> {
     
     public UserDao(DaoConfig config, DaoSession daoSession) {
         super(config, daoSession);
-        this.daoSession = daoSession;
     }
 
     /** Creates the underlying database table. */
@@ -136,12 +133,6 @@ public class UserDao extends AbstractDao<User, String> {
         if (share_text_watching != null) {
             stmt.bindString(13, share_text_watching);
         }
-    }
-
-    @Override
-    protected void attachEntity(User entity) {
-        super.attachEntity(entity);
-        entity.__setDaoSession(daoSession);
     }
 
     /** @inheritdoc */

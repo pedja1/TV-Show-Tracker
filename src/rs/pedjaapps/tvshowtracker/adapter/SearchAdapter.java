@@ -31,7 +31,7 @@ public final class SearchAdapter extends ArrayAdapter<Show>
         this.itemLayoutResource = itemLayoutResource;
         this.context = context;
         mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), MainApp.getInstance().cacheParams);
-        mImageFetcher.setDefaultDrawable(R.drawable.noimage_banner);
+        mImageFetcher.setDefaultDrawable(R.drawable.no_image);
         mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
     }
 
@@ -50,8 +50,8 @@ public final class SearchAdapter extends ArrayAdapter<Show>
         viewHolder.tvNetwork.setText(show.getNetwork());
         viewHolder.tvAirDay.setText(show.getAir_day() + ", " + show.getAir_time());
         viewHolder.tvOverview.setText(show.getOverview());
-        viewHolder.ivBanner.setDefaultImageResId(R.drawable.noimage_banner);
-        viewHolder.ivBanner.setErrorImageResId(R.drawable.noimage_banner);
+        viewHolder.ivBanner.setDefaultImageResId(R.drawable.no_image);
+        viewHolder.ivBanner.setErrorImageResId(R.drawable.no_image);
         viewHolder.ivBanner.setImageUrl(show.getImage().getBanner(), mImageFetcher);
         return view;
     }

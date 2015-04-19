@@ -67,7 +67,7 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
                 {
                     e.setWatched(true);
                 }
-                MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplaceInTx(season.getEpisodes());
+                //TODO watched
                 notifyDataSetChanged();
             }
         });
@@ -121,7 +121,8 @@ public final class EpisodesAdapter extends ArrayAdapter<Season>
                     public void onClick(View view)
                     {
                         e.setWatched(childHolder.cbWatched.isChecked());
-                        MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplace(e);
+                        //TODO wtched
+                        //MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplace(e);
                     }
                 });
             }

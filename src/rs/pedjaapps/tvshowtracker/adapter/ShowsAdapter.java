@@ -22,15 +22,13 @@ import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.fragment.ShowGridFragment;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
-import rs.pedjaapps.tvshowtracker.network.ShowWorkerService;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
 
 public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHolder>
 {
 	SimpleImageLoader mImageFetcher;
-    public static final float IMAGE_RATIO = 1.6f;
+    public static final float IMAGE_RATIO = 1.5f;
 
     Context context;
     ShowGridFragment fragment;
@@ -50,7 +48,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         posterWidth = (DisplayManager.screenWidth / context.getResources().getInteger(R.integer.main_column_num));
 
 		mImageFetcher = new SimpleImageLoader(context.getApplicationContext(), MainApp.getInstance().cacheParams);
-        mImageFetcher.setDefaultDrawable(R.drawable.noimage_poster_actor);
+        mImageFetcher.setDefaultDrawable(R.drawable.no_image);
         //set max image size to screen width divided by number of columns and multiplied by aspect ratio(so that we actually get height of poster)
         mImageFetcher.setMaxImageSize((int) (posterWidth * IMAGE_RATIO));
 
@@ -92,7 +90,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
             viewHolder.tvNextEpisode.setText(R.string.next_ep_no_info);
 		}*/
 
-        viewHolder.itemView.setMinimumHeight((int) (posterWidth * IMAGE_RATIO));
+        viewHolder.ivPoster.setMinimumHeight((int) (posterWidth * IMAGE_RATIO));
         /*viewHolder.ivPoster.post(new Runnable()
         {
             public void run()
@@ -105,9 +103,9 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
             }
         });*/
 
-        viewHolder.ivPoster.setDefaultImageResId(R.drawable.noimage_poster_actor);
-        viewHolder.ivPoster.setErrorImageResId(R.drawable.noimage_poster_actor);
-        viewHolder.ivPoster.setImageUrl(show.getImage() != null ? Utility.generatePosterUrl(Utility.ImageSize.LARGE_POSTER, show.getImage().getPoster()) : "", mImageFetcher);
+        viewHolder.ivPoster.setDefaultImageResId(R.drawable.no_image);
+        viewHolder.ivPoster.setErrorImageResId(R.drawable.no_image);
+        viewHolder.ivPoster.setImageUrl(show.getImage() != null ? show.getImage().getPoster() : "", mImageFetcher);
         /*viewHolder.ivPoster.setImageListener(new Response.Listener<BitmapDrawable>()
         {
             @Override
@@ -127,8 +125,8 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
         if(show.getPosterMainColor() != -1)viewHolder.llTitleContainer.setBackgroundColor(show.getPosterMainColor());
         //mImageFetcher.get(show.getImage().getPoster(), viewHolder.ivPoster);*/
 
-        if(show instanceof ShowNoDao)
-        {
+        //TODO add to fav, is in fav
+
             viewHolder.tvFavorite.setVisibility(View.GONE);
             viewHolder.tvWatchedPercent.setVisibility(View.GONE);
             viewHolder.ivAdd.setVisibility(View.VISIBLE);
@@ -142,14 +140,7 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
                 viewHolder.ivAdd.setImageResource(R.drawable.ic_action_favorite);
                 viewHolder.ivAdd.setEnabled(true);
             }
-        }
-        else
-        {
-            viewHolder.tvFavorite.setVisibility(View.VISIBLE);
-            viewHolder.tvWatchedPercent.setText(calcWatchedPerc(show));
-            viewHolder.tvWatchedPercent.setVisibility(View.VISIBLE);
-            viewHolder.ivAdd.setVisibility(View.GONE);
-        }
+
 
         viewHolder.itemView.setOnClickListener(new View.OnClickListener()
         {
@@ -169,10 +160,11 @@ public final class ShowsAdapter extends RecyclerView.Adapter<ShowsAdapter.ViewHo
                 show.setShowAdded(true);
                 viewHolder.ivAdd.setImageResource(R.drawable.ic_action_check);
                 viewHolder.ivAdd.setEnabled(false);
-                Intent intent = new Intent(context, ShowWorkerService.class);
+                /*Intent intent = new Intent(context, ShowWorkerService.class);
                 intent.setAction(ShowWorkerService.INTENT_ACTION_DOWNLOAD_SHOW);
                 intent.putExtra(ShowWorkerService.INTENT_EXTRA_TVDB_ID, show.getTvdb_id());
-                context.startService(intent);
+                context.startService(intent);*/
+                //TODO add to fav
             }
         });
 

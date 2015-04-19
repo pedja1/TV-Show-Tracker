@@ -15,26 +15,10 @@ import android.widget.ProgressBar;
 
 import com.viewpagerindicator.LinePageIndicator;
 
-import java.util.Date;
-import java.util.List;
-
-import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.adapter.ShowDetailsPagerAdapter;
-import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
-import rs.pedjaapps.tvshowtracker.fragment.ShowGridFragment;
-import rs.pedjaapps.tvshowtracker.model.Actor;
-import rs.pedjaapps.tvshowtracker.model.ActorDao;
-import rs.pedjaapps.tvshowtracker.model.Episode;
-import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
-import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Genre;
-import rs.pedjaapps.tvshowtracker.model.GenreDao;
-import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.utils.AsyncTask;
-import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
 import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
@@ -54,7 +38,6 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	private long mTvdbId;
     private String mImdbId, showName;
     private Show show;
-    private boolean isInMyShows;
 
     public static final String EXTRA_TVDB_ID = "tvdb_id";
     public static final String EXTRA_IMDB_ID = "imdb_id";
@@ -129,65 +112,32 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
         @Override
 		protected Show doInBackground(String... args)
 		{
-			ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-			QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-
             Show cachedShow = ShowMemCache.getInstance().getCachedShow(mTvdbId == -1 ? (mImdbId == null ? showName : mImdbId) : mTvdbId + "");
             if(cachedShow == null)
             {
                 if (mTvdbId != -1)
-                {
-                    //try db first
-                    queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(mTvdbId));
-                    Show show = queryBuilder.unique();
-                    //no show in db, download
-                    if (show == null)
-                    {
-                        JSONUtility.Response response = JSONUtility.parseShow(mTvdbId + "", false);
-                        ShowMemCache.getInstance().addShowToCache(mTvdbId + "", response.getShow());
-                        return response.getShow();
-                    }
-                    else
-                    {
-                        isInMyShows = true;
-                        return show;
-                    }
+				{
+					JSONUtility.Response response = JSONUtility.parseShow(mTvdbId + "");
+					ShowMemCache.getInstance().addShowToCache(mTvdbId + "", response.getShow());
+					return response.getShow();
+
                 }
                 else if (showName != null)
                 {
                     //cant query db by name
-                    JSONUtility.Response response = JSONUtility.parseShow(showName, false);
+                    JSONUtility.Response response = JSONUtility.parseShow(showName);
                     ShowMemCache.getInstance().addShowToCache(showName, response.getShow());
                     return response.getShow();
                 }
                 else
                 {
-                    queryBuilder.where(ShowDao.Properties.Imdb_id.eq(mImdbId));
-                    Show show = queryBuilder.unique();
-                    //no show in db, download
-                    if (show == null)
-                    {
-                        JSONUtility.Response response = JSONUtility.parseShow(mImdbId + "", false);
-                        ShowMemCache.getInstance().addShowToCache(mImdbId, response.getShow());
-                        return response.getShow();
-                    }
-                    else
-                    {
-                        isInMyShows = true;
-                        return show;
-                    }
+					JSONUtility.Response response = JSONUtility.parseShow(mImdbId + "");
+					ShowMemCache.getInstance().addShowToCache(mImdbId, response.getShow());
+					return response.getShow();
                 }
             }
             else
             {
-				//check db anyway
-				queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(cachedShow.getTvdb_id()));
-				Show show = queryBuilder.unique();
-				if(show != null)
-				{
-					isInMyShows = true;
-					return show;
-				}
                 return cachedShow;
             }
         }
@@ -385,8 +335,8 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 	public boolean onPrepareOptionsMenu(Menu menu)
 	{
 		MenuItem item = menu.findItem(0);
-		item.setIcon(isInMyShows ? R.drawable.ic_action_fav : R.drawable.ic_action_not_fav);
-		item.setTitle(isInMyShows ? R.string.remove_from_fav : R.string.add_to_fav);
+		/*item.setIcon(isInMyShows ? R.drawable.ic_action_fav : R.drawable.ic_action_not_fav);
+		item.setTitle(isInMyShows ? R.string.remove_from_fav : R.string.add_to_fav);*/
 		item.setVisible(show != null);
 		return super.onPrepareOptionsMenu(menu);
 	}
@@ -400,14 +350,14 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 			NavUtils.navigateUpFromSameTask(this);
 			return true;
 		case 0:
-			if(isInMyShows)
+			/*if(isInMyShows)
 			{
 				removeShowFromDb();
 			}
 			else
 			{
 				addShowToDb();
-			}
+			}*/
 			return true;
 		case 1:
 			//startActivity(new Intent(this, BannerActivity.class).putExtra(
@@ -417,96 +367,6 @@ public class ShowDetailsActivity extends BaseActivity implements Drawable.Callba
 		return super.onOptionsItemSelected(item);
 	}
 
-	private void removeShowFromDb()
-	{
-		Utility.deleteShowFromDb(show);
-		
-		isInMyShows = false;
-		invalidateOptionsMenu();
-		Utility.showToast(this, R.string.show_removeed_from_fav);
-	}
-
-	private void addShowToDb()
-	{
-		ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-		QueryBuilder<Show> queryBuilder = showDao.queryBuilder();
-		queryBuilder.where(ShowDao.Properties.Tvdb_id.eq(show.getTvdb_id()));
-		
-		if(queryBuilder.unique() != null)
-		{
-			isInMyShows = true;
-			invalidateOptionsMenu();
-			return;
-		}
-		
-		Utility.addShowToDb(show);
-		
-		isInMyShows = true;
-		invalidateOptionsMenu();
-		Utility.showToast(this, R.string.show_added_to_fav);
-
-		ShowGridFragment.sendRefreshBroadcast(MyShowsFragment.LIST_TYPE);
-	}
-
-	private static int getLastAiredEpisodePosition(
-			List<EpisodeItem> episodeItems)
-	{
-		int n = episodeItems.size() - 1;
-		for (int i = episodeItems.size() - 1; i > 0; i--)
-		{
-			// for(int i = 0; i<episodeItems.size(); i++){
-			try
-			{
-				Date firstAired = Constants.df.parse(episodeItems.get(i)
-						.getFirstAired());
-				if (new Date().after(firstAired))
-				{
-					return n;
-				}
-				else
-				{
-					n--;
-				}
-
-			}
-			catch (Exception ex)
-			{
-				n--;
-			}
-		}
-		return -1;
-	}
-
-	private static int getNextEpisodePosition(List<EpisodeItem> episodeItems)
-	{
-		int n = 0;
-
-		for (EpisodeItem episodeItem : episodeItems)
-		{
-			try
-			{
-				Date firstAired = Constants.df.parse(episodeItem
-						.getFirstAired());
-				if (new Date().before(firstAired)
-						|| (new Date().getTime() / (1000 * 60 * 60 * 24)) == (firstAired
-								.getTime() / (1000 * 60 * 60 * 24)))
-				{
-					return n;
-				}
-				else
-				{
-					n++;
-				}
-
-			}
-			catch (Exception ex)
-			{
-				n++;
-			}
-		}
-		return -1;
-	}
-	
 	public void onDestroy()
 	{
 		super.onDestroy();

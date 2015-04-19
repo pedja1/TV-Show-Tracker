@@ -20,8 +20,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
-import rs.pedjaapps.tvshowtracker.network.Internet;
 import rs.pedjaapps.tvshowtracker.network.JSONUtility;
 import rs.pedjaapps.tvshowtracker.network.PostParams;
 import rs.pedjaapps.tvshowtracker.utils.Utility;
@@ -221,15 +219,6 @@ public class LoginActivity extends Activity implements OnClickListener
                 }
                 else
                 {
-                    ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-                    List<Show> shows = new ArrayList<>(showDao.loadAll());//copy all shows to new list
-                    showDao.deleteAll();//clear all shows
-                    String username = MainApp.getInstance().getActiveUser().getUsername();
-                    for(Show show : shows)
-                    {
-                        if("-".equals(show.getUsername()))show.setUsername(username);
-                    }
-                    showDao.insertInTx(shows);
                     setResult(RESULT_OK);
                     finish();
                 }

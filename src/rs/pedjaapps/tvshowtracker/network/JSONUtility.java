@@ -15,22 +15,13 @@ import java.util.List;
 import rs.pedjaapps.tvshowtracker.BuildConfig;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.model.Actor;
-import rs.pedjaapps.tvshowtracker.model.ActorDao;
 import rs.pedjaapps.tvshowtracker.model.Episode;
-import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
-import rs.pedjaapps.tvshowtracker.model.Genre;
-import rs.pedjaapps.tvshowtracker.model.GenreDao;
 import rs.pedjaapps.tvshowtracker.model.Image;
-import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
-import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 import rs.pedjaapps.tvshowtracker.model.User;
 import rs.pedjaapps.tvshowtracker.model.UserDao;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
-import rs.pedjaapps.tvshowtracker.utils.ShowMemCache;
-import de.greenrobot.dao.query.QueryBuilder;
 
 /**
  * Created by pedja on 1/22/14.
@@ -175,7 +166,7 @@ public class JSONUtility
             JSONArray jsonArray = new JSONArray(response.responseData);
             for (int i = 0; i < jsonArray.length(); i++)
             {
-                ShowNoDao show = new ShowNoDao();
+                Show show = new Show();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
                 if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
@@ -225,33 +216,23 @@ public class JSONUtility
         try
         {
             JSONArray jsonArray = new JSONArray(response.responseData);
-			ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
             for (int i = 0; i < jsonArray.length(); i++)
             {
-                Show show = new ShowNoDao();
+                Show show = new Show();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 if (jsonObject.has(Key.tvdb_id.toString()))show.setTvdb_id(jsonObject.getInt(Key.tvdb_id.toString()));
-				QueryBuilder<Show> builder = showDao.queryBuilder();
-				builder.where(ShowDao.Properties.Tvdb_id.eq(show.getTvdb_id()));
-				Show tmp = builder.unique();
-                if (tmp == null)
-				{
-					if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
-					if (jsonObject.has(Key.images.toString()))
-					{
-						JSONObject images = jsonObject.getJSONObject(Key.images.toString());
-						Image image = new Image();
-						if (images.has(Key.poster.toString()))
-						{
-							image.setPoster(images.getString(Key.poster.toString()));
-						}
-						show.setImage(image);
-					}
-				}
-				else
-				{
-					show = tmp;
-				}
+
+                if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
+                if (jsonObject.has(Key.images.toString()))
+                {
+                    JSONObject images = jsonObject.getJSONObject(Key.images.toString());
+                    Image image = new Image();
+                    if (images.has(Key.poster.toString()))
+                    {
+                        image.setPoster(images.getString(Key.poster.toString()));
+                    }
+                    show.setImage(image);
+                }
                 shows.add(show);
             }
         }
@@ -280,7 +261,7 @@ public class JSONUtility
             JSONArray jsonArray = new JSONArray(response.responseData);
             for (int i = 0; i < jsonArray.length(); i++)
             {
-                ShowNoDao show = new ShowNoDao();
+                Show show = new Show();
                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                 show.setTvdb_id(jsonObject.optInt(Key.tvdb_id.toString()));
                 show.setTitle(jsonObject.getString(Key.title.toString()));
@@ -323,7 +304,7 @@ public class JSONUtility
     }
 
 
-    public static Response parseShow(String tvdbId, boolean insertInDb)
+    public static Response parseShow(String tvdbId)
     {
         Internet.Response response = Internet.getInstance().httpGet(Constants.REQUEST_URL_GET_SHOW_INFO + "/" + tvdbId + "/1");
         if (!checkResponse(response))
@@ -340,10 +321,10 @@ public class JSONUtility
             {
                 return new Response().setErrorMessage(jsonObject.getString(Key.error.toString())).setStatus(false);
             }
-            Show show = insertInDb ? new Show() : new ShowNoDao();
+            Show show = new Show();
             List<Episode> episodes = new ArrayList<Episode>();
             List<Actor> actors = new ArrayList<Actor>();
-            List<Genre> genres = new ArrayList<Genre>();
+            List<String> genres = new ArrayList<String>();
             if (jsonObject.has(Key.title.toString()))show.setTitle(jsonObject.getString(Key.title.toString()));
             if (jsonObject.has(Key.year.toString()))show.setYear(jsonObject.getInt(Key.year.toString()));
             if (jsonObject.has(Key.url.toString()))show.setUrl(jsonObject.getString(Key.url.toString()));
@@ -368,17 +349,6 @@ public class JSONUtility
                 if (images.has(Key.fanart.toString()))image.setFanart(images.getString(Key.fanart.toString()));
                 if (images.has(Key.poster.toString()))image.setPoster(images.getString(Key.poster.toString()));
                 show.setImage(image);
-                long imageId;
-                if (insertInDb)
-                {
-                    ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
-                    imageId = imageDao.insert(image);
-                    show.setImage_id(imageId);
-                }
-                else
-                {
-                    show.setImage(image);
-                }
             }
             if (jsonObject.has(Key.ratings.toString()))
             {
@@ -386,12 +356,6 @@ public class JSONUtility
                 if (ratings.has(Key.percentage.toString()))show.setRating(ratings.getInt(Key.percentage.toString()));
                 if (ratings.has(Key.loved.toString()))show.setLoved(ratings.getInt(Key.loved.toString()));
                 if (ratings.has(Key.hated.toString()))show.setHated(ratings.getInt(Key.hated.toString()));
-            }
-            long showId = 0;
-            if (insertInDb)
-            {
-                ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-                showId = showDao.insertOrReplace(show);
             }
             if (jsonObject.has(Key.people.toString()))
             {
@@ -410,18 +374,9 @@ public class JSONUtility
                             JSONObject images = jActor.getJSONObject(Key.images.toString());
                             if (images.has(Key.headshot.toString()))actor.setImage(images.getString(Key.headshot.toString()));
                         }
-                        actor.setShow_id(showId);
                         actors.add(actor);
                     }
-                    if (insertInDb)
-                    {
-                        ActorDao actorDao = MainApp.getInstance().getDaoSession().getActorDao();
-                        actorDao.insertOrReplaceInTx(actors);
-                    }
-                    else
-                    {
-                        ((ShowNoDao)show).setActors(actors);
-                    }
+                    show.setActors(actors);
                 }
             }
             if (jsonObject.has(Key.genres.toString()))
@@ -429,20 +384,9 @@ public class JSONUtility
                 JSONArray jGenres = jsonObject.getJSONArray(Key.genres.toString());
                 for (int g = 0; g < jGenres.length(); g++)
                 {
-                    Genre genre = new Genre();
-                    genre.setShow_id(showId);
-                    genre.setName(jGenres.getString(g));
-                    genres.add(genre);
+                    genres.add(jGenres.getString(g));
                 }
-                if (insertInDb)
-                {
-                    GenreDao genreDao = MainApp.getInstance().getDaoSession().getGenreDao();
-                    genreDao.insertOrReplaceInTx(genres);
-                }
-                else
-                {
-                    ((ShowNoDao)show).setGenres(genres);
-                }
+                show.setGenres(genres);
             }
             if (jsonObject.has(Key.seasons.toString()))
             {
@@ -472,22 +416,13 @@ public class JSONUtility
                                 if (ratings.has(Key.loved.toString()))episode.setLoved(ratings.getInt(Key.loved.toString()));
                                 if (ratings.has(Key.hated.toString()))episode.setHated(ratings.getInt(Key.hated.toString()));
                             }
-                            episode.setShow_id(showId);
                             episodes.add(episode);
                         }
-                        if (insertInDb)
-                        {
-                            EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
-                            episodeDao.insertOrReplaceInTx(episodes);
-                        }
-                        else
-                        {
-                            ((ShowNoDao)show).setEpisodes(episodes);
-                        }
+                        show.setEpisodes(episodes);
                     }
                 }
             }
-            return new Response().setErrorMessage(null).setStatus(true).setResponseObject((ShowNoDao) show);
+            return new Response().setErrorMessage(null).setStatus(true).setResponseObject(show);
         }
         catch (Exception e)
         {
@@ -560,9 +495,9 @@ public class JSONUtility
             return errorCode;
         }
 
-        public ShowNoDao getShow()
+        public Show getShow()
         {
-            return responseObject instanceof ShowNoDao ? (ShowNoDao)responseObject : null;
+            return (Show) responseObject;
         }
 		
 		/**

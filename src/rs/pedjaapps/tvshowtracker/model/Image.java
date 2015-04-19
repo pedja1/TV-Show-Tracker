@@ -11,7 +11,6 @@ import android.os.Parcelable;
  */
 public class Image implements Parcelable {
 
-    private Long id;
     private String poster;
     private String fanart;
     private String banner;
@@ -20,25 +19,6 @@ public class Image implements Parcelable {
     // KEEP FIELDS END
 
     public Image() {
-    }
-
-    public Image(Long id) {
-        this.id = id;
-    }
-
-    public Image(Long id, String poster, String fanart, String banner) {
-        this.id = id;
-        this.poster = poster;
-        this.fanart = fanart;
-        this.banner = banner;
-    }
-
-    public Long getId() {
-        return id;
-    }
-
-    public void setId(Long id) {
-        this.id = id;
     }
 
     public String getPoster() {
@@ -75,7 +55,6 @@ public class Image implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags)
     {
-        dest.writeValue(this.id);
         dest.writeString(this.poster);
         dest.writeString(this.fanart);
         dest.writeString(this.banner);
@@ -83,7 +62,6 @@ public class Image implements Parcelable {
 
     private Image(Parcel in)
     {
-        this.id = (Long) in.readValue(Long.class.getClassLoader());
         this.poster = in.readString();
         this.fanart = in.readString();
         this.banner = in.readString();

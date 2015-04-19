@@ -28,7 +28,7 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
         super(context, 0);
         this.itemLayoutResource = itemLayoutResource;
         mImageFetcher = new SimpleImageLoader(getContext().getApplicationContext(), MainApp.getInstance().cacheParams);
-        mImageFetcher.setDefaultDrawable(R.drawable.noimage_poster_actor);
+        mImageFetcher.setDefaultDrawable(R.drawable.no_image);
         mImageFetcher.setMaxImageSize((int) ((DisplayManager.screenWidth / 5) * IMAGE_RATIO));
     }
 
@@ -38,8 +38,8 @@ public final class ActorsAdapter extends ArrayAdapter<Actor>
         final View view = getWorkingView(convertView);
         final ViewHolder viewHolder = getViewHolder(view);
         final Actor actor = getItem(position);
-        viewHolder.ivActorPhoto.setDefaultImageResId(R.drawable.noimage_poster_actor);
-        viewHolder.ivActorPhoto.setErrorImageResId(R.drawable.noimage_poster_actor);
+        viewHolder.ivActorPhoto.setDefaultImageResId(R.drawable.no_image);
+        viewHolder.ivActorPhoto.setErrorImageResId(R.drawable.no_image);
         viewHolder.ivActorPhoto.setImageUrl(actor.getImage(), mImageFetcher);
         viewHolder.tvName.setText(actor.getName());
         viewHolder.tvRole.setText(actor.getCharacter());

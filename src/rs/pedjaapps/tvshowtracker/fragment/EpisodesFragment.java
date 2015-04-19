@@ -169,7 +169,8 @@ public class EpisodesFragment extends Fragment
 						public void onClick(View view)
 						{
 							e.setWatched(cbWatched.isChecked());
-							MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplace(e);
+							//MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplace(e);
+                            //TODO watched
 						}
 					});
             }
@@ -194,7 +195,8 @@ public class EpisodesFragment extends Fragment
 						cbs.get(index).setChecked(true);
 						index++;
 					}
-					MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplaceInTx(season.getEpisodes());
+                    //TODO watched
+					//MainApp.getInstance().getDaoSession().getEpisodeDao().insertOrReplaceInTx(season.getEpisodes());
 				}
 			});
 		
