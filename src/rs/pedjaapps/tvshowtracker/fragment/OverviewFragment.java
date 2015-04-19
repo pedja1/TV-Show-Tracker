@@ -23,8 +23,6 @@ import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.ShowDetailsActivity;
 import rs.pedjaapps.tvshowtracker.model.Episode;
-import rs.pedjaapps.tvshowtracker.model.EpisodeItem;
-import rs.pedjaapps.tvshowtracker.model.Genre;
 import rs.pedjaapps.tvshowtracker.model.Show;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.DisplayManager;
@@ -41,22 +39,6 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
     {
         OverviewFragment overviewFragment = new OverviewFragment();
         return overviewFragment;
-    }
-
-    private static void setProgress()
-    {
-        final List<EpisodeItem> episodes = new ArrayList<EpisodeItem>();//db.getAllEpisodes(seriesId + "", profile);
-        int episodeCount = 0;//db.getEpisodesCount(seriesId + "", profile);
-        int watched = 0;
-        for (EpisodeItem e : episodes)
-        {
-            if (e.isWatched())
-            {
-                watched++;
-            }
-        }
-        //prgWatched.setProgress((int) ((double) watched/ (double) episodeCount * 100.0));
-        //watchedText.setText(watched + "/" + episodeCount);
     }
 
     @Override
@@ -89,11 +71,11 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         final NetworkImageViewPlus ivShowPhoto = (NetworkImageViewPlus)view.findViewById(R.id.ivShowImage);
 
         SimpleImageLoader mImageFetcher = new SimpleImageLoader(getActivity().getApplicationContext(), MainApp.getInstance().cacheParams);
-        mImageFetcher.setDefaultDrawable(R.drawable.noimage_poster_actor);
+        mImageFetcher.setDefaultDrawable(R.drawable.no_image);
         mImageFetcher.setMaxImageSize((DisplayManager.screenWidth / 100 * 90));
 
-        ivShowPhoto.setDefaultImageResId(R.drawable.noimage_fanart);
-        ivShowPhoto.setErrorImageResId(R.drawable.noimage_fanart);
+        ivShowPhoto.setDefaultImageResId(R.drawable.no_image);
+        ivShowPhoto.setErrorImageResId(R.drawable.no_image);
         ivShowPhoto.setImageUrl(show.getImage().getFanart(), mImageFetcher);
         
 		TextView tvShowName = (TextView)view.findViewById(R.id.tvShowName);
@@ -132,14 +114,14 @@ public class OverviewFragment extends Fragment implements View.OnClickListener
         return watched + "/" + count;
     }
 
-    private String generateGenres(List<Genre> genres)
+    private String generateGenres(List<String> genres)
     {
         StringBuilder builder = new StringBuilder();
         int offset = 0;
-        for(Genre genre : genres)
+        for(String genre : genres)
         {
             if(offset != 0)builder.append(", ");
-            builder.append(genre.getName());
+            builder.append(genre);
             offset++;
         }
         return builder.toString();

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">TV Show Tracker</string>
+    <string name="app_name">trakt.tv</string>
     <string name="action_settings">Settings</string>
     <string name="title_overview">Details</string>
     <string name="title_episodes">Episodes</string>

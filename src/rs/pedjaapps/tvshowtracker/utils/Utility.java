@@ -11,7 +11,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.text.Html;
-import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,114 +34,124 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import de.greenrobot.dao.query.QueryBuilder;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
-import rs.pedjaapps.tvshowtracker.model.Actor;
-import rs.pedjaapps.tvshowtracker.model.ActorDao;
 import rs.pedjaapps.tvshowtracker.model.Episode;
-import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
-import rs.pedjaapps.tvshowtracker.model.Genre;
-import rs.pedjaapps.tvshowtracker.model.GenreDao;
-import rs.pedjaapps.tvshowtracker.model.ImageDao;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
 
 public class Utility
 {
-	
-	private static boolean isRefresh = true;
-	
-	public static boolean isRefresh()
-	{
-		return isRefresh;
-	}
 
-	public static void setRefresh(boolean refresh)
-	{
-		isRefresh = refresh;
-	}
-	
-	public static void setKeepScreenOn(Activity activity, boolean keepScreenOn) {
-	    if(keepScreenOn) {
-	      activity.getWindow().
-	        addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-	    } else {
-	      activity.getWindow().
-	        clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
-	    }
-	  }
+    private static boolean isRefresh = true;
+
+    public static boolean isRefresh()
+    {
+        return isRefresh;
+    }
+
+    public static void setRefresh(boolean refresh)
+    {
+        isRefresh = refresh;
+    }
+
+    public static void setKeepScreenOn(Activity activity, boolean keepScreenOn)
+    {
+        if (keepScreenOn)
+        {
+            activity.getWindow().
+                    addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+        else
+        {
+            activity.getWindow().
+                    clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
+        }
+    }
 
 
-	public static String DownloadFromUrl(String imageURL, String fileName, boolean useCached) {  //this is the downloader method
-        try {
-        	File mdbDir = new File(Environment.getExternalStorageDirectory() + "/MDb/posters");
-		      if(!mdbDir.exists()){
-		      mdbDir.mkdirs();
-		      }
-                URL url = new URL(imageURL);
-                File file = new File(fileName);
-                if(useCached){
-                if(file.exists()){
-                	return fileName;
+    public static String DownloadFromUrl(String imageURL, String fileName, boolean useCached)
+    {  //this is the downloader method
+        try
+        {
+            File mdbDir = new File(Environment.getExternalStorageDirectory() + "/MDb/posters");
+            if (!mdbDir.exists())
+            {
+                mdbDir.mkdirs();
+            }
+            URL url = new URL(imageURL);
+            File file = new File(fileName);
+            if (useCached)
+            {
+                if (file.exists())
+                {
+                    return fileName;
                 }
-                }
+            }
                 
                /* Open a connection to that URL. */
-                URLConnection ucon = url.openConnection();
+            URLConnection ucon = url.openConnection();
 
                 /*
                  * Define InputStreams to read from the URLConnection.
                  */
-                InputStream is = ucon.getInputStream();
-                BufferedInputStream bis = new BufferedInputStream(is);
+            InputStream is = ucon.getInputStream();
+            BufferedInputStream bis = new BufferedInputStream(is);
 
                 /*
                  * Read bytes to the Buffer until there is nothing more to read(-1).
                  */
-                ByteArrayBuffer baf = new ByteArrayBuffer(50);
-                int current;
-                while ((current = bis.read()) != -1) {
-                        baf.append((byte) current);
-                }
+            ByteArrayBuffer baf = new ByteArrayBuffer(50);
+            int current;
+            while ((current = bis.read()) != -1)
+            {
+                baf.append((byte) current);
+            }
 
                 /* Convert the Bytes read to a String. */
-                FileOutputStream fos = new FileOutputStream(file);
-                fos.write(baf.toByteArray());
-                fos.close();
-			return fileName;
+            FileOutputStream fos = new FileOutputStream(file);
+            fos.write(baf.toByteArray());
+            fos.close();
+            return fileName;
 
-        } catch (Exception e) {
-                Log.e("error saving image", e.getMessage());
-        	return "";
-		}
+        }
+        catch (Exception e)
+        {
+            Log.e("error saving image", e.getMessage());
+            return "";
+        }
 
-	}
-	
-	public static double parseRating(String rating){
-		try{
-			return Double.parseDouble(rating);
-		}
-		catch(Exception e)
-		{
-			return 0.0;
-		}
-	}
-	public static int parseInt(String runtime){
-		try{
-			return Integer.parseInt(runtime);
-		}
-		catch(Exception e){
-			return 0;
-		}
-	}
-	
-	public static boolean isNetworkAvailable(Context context) 
-	{
-	    return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
-	}
-	
-	public static void setListViewHeightBasedOnChildren(ListView listView)
+    }
+
+    public static double parseRating(String rating)
+    {
+        try
+        {
+            return Double.parseDouble(rating);
+        }
+        catch (Exception e)
+        {
+            return 0.0;
+        }
+    }
+
+    public static int parseInt(String runtime)
+    {
+        try
+        {
+            return Integer.parseInt(runtime);
+        }
+        catch (Exception e)
+        {
+            return 0;
+        }
+    }
+
+    public static boolean isNetworkAvailable(Context context)
+    {
+        return ((ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE)).getActiveNetworkInfo() != null;
+    }
+
+    public static void setListViewHeightBasedOnChildren(ListView listView)
     {
         ListAdapter listAdapter = listView.getAdapter();
         if (listAdapter != null)
@@ -156,7 +165,7 @@ public class Utility
             }
             ViewGroup.LayoutParams params = listView.getLayoutParams();
             params.height = totalHeight
-				+ (listView.getDividerHeight() * (listAdapter.getCount() - 1));
+                    + (listView.getDividerHeight() * (listAdapter.getCount() - 1));
             listView.setLayoutParams(params);
             System.out.println(totalHeight);
         }
@@ -247,12 +256,13 @@ public class Utility
             List<Episode> episodes = s.getEpisodes();
             if (status != null && !status.equals("Ended") && episodes != null && !episodes.isEmpty())
             {
-                for(Episode e : episodes)
+                for (Episode e : episodes)
                 {
-                    if(e.getFirst_aired() != null && e.getFirst_aired() > 0)
+                    if (e.getFirst_aired() != null && e.getFirst_aired() > 0)
                     {
                         long tmp = (e.getFirst_aired() - nowSeconds) / 3600;//convert seconds to hours
-                        if(tmp <= 0)tmp = Long.MAX_VALUE;//if hour is negative means we are already past that time
+                        if (tmp <= 0)
+                            tmp = Long.MAX_VALUE;//if hour is negative means we are already past that time
                         e.setAirsIn(tmp);
                     }
                     else
@@ -262,19 +272,19 @@ public class Utility
                 }
                 Collections.sort(episodes, new Comparators.EpisodeHourComparator());
                 Episode e = episodes.get(0);
-                if(e.getAirsIn() != Long.MAX_VALUE)
+                if (e.getAirsIn() != Long.MAX_VALUE)
                 {
                     e.setShowTitle(s.getTitle());
                     upcomingEpisodes.add(e);
                     hours = e.getAirsIn();
-					s.setUpcomingEpisode(e);
+                    s.setUpcomingEpisode(e);
                 }
             }
             s.setNextEpisodeHours(hours);
             //s.setWatchedPercent(watchedPercent(s.getEpisodes()));
         }
         Collections.sort(upcomingEpisodes, new Comparators.EpisodeHourComparator());
-        if(!upcomingEpisodes.isEmpty())
+        if (!upcomingEpisodes.isEmpty())
         {
             nextEpisode = upcomingEpisodes.get(0);
         }
@@ -285,11 +295,11 @@ public class Utility
 
     public static String generateUpcomingEpisodeText(Episode upcomingEpisode, boolean includeShowName)
     {
-        return upcomingEpisode.getTitle() 
-		+ (includeShowName ? (" (" + upcomingEpisode.getShowTitle() + " " + "S"
-        + upcomingEpisode.getSeason() + "E" + upcomingEpisode.getEpisode() + " )") : "")
-		+ " - " + MainApp.getContext().getString(R.string.airs) + " "
-        + generateEpisodeAirsTime(upcomingEpisode);
+        return upcomingEpisode.getTitle()
+                + (includeShowName ? (" (" + upcomingEpisode.getShowTitle() + " " + "S"
+                + upcomingEpisode.getSeason() + "E" + upcomingEpisode.getEpisode() + " )") : "")
+                + " - " + MainApp.getContext().getString(R.string.airs) + " "
+                + generateEpisodeAirsTime(upcomingEpisode);
     }
 
     public static String generateEpisodeAirsTime(Episode episode)
@@ -299,19 +309,19 @@ public class Utility
         int hours = (int) airTime;
         int days = hours / 24;
 
-        if(hours <= 1)
+        if (hours <= 1)
         {
             return MainApp.getContext().getString(R.string.less_than_an_hour);
         }
-        else if(hours < 24)
+        else if (hours < 24)
         {
             return MainApp.getContext().getString(R.string.hours, hours);
         }
-        else if(hours < 48)
+        else if (hours < 48)
         {
             return MainApp.getContext().getString(R.string.tomorow);
         }
-        else if(days < 365)
+        else if (days < 365)
         {
             return MainApp.getContext().getString(R.string.days, days);
         }
@@ -323,26 +333,26 @@ public class Utility
 
     public static String generateEpisodeAiredTime(long airTime)
     {
-        if(airTime == 0)return null;
+        if (airTime == 0) return null;
         int hours = (int) ((airTime - (new Date().getTime() / 1000)) / 3600);
         int days = hours / 24;
 
         if (hours > 0)
         {
             String prefix = MainApp.getContext().getString(R.string.airs);
-            if(hours <= 1)
+            if (hours <= 1)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.less_than_an_hour);
             }
-            else if(hours < 24)
+            else if (hours < 24)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.hours, hours);
             }
-            else if(hours < 48)
+            else if (hours < 48)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.tomorow);
             }
-            else if(days < 365)
+            else if (days < 365)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.days, days);
             }
@@ -354,19 +364,19 @@ public class Utility
         else
         {
             String prefix = MainApp.getContext().getString(R.string.aired);
-            if(hours >= -1)
+            if (hours >= -1)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.less_than_an_hour_ago);
             }
-            else if(hours > -24)
+            else if (hours > -24)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.hours_ago, Math.abs(hours));
             }
-            else if(hours > -48)
+            else if (hours > -48)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.yesterday);
             }
-            else if(days > -365)
+            else if (days > -365)
             {
                 return prefix + " " + MainApp.getContext().getString(R.string.days_ago, Math.abs(days));
             }
@@ -394,7 +404,7 @@ public class Utility
 
     /**
      * Check if email is in valid format(eg. test@gmail.com)
-     * */
+     */
     public static boolean isEmailValid(String email)
     {
         Pattern p = Pattern.compile(".+@.+\\.[a-z]+");
@@ -404,10 +414,11 @@ public class Utility
 
     /**
      * Generate actual path of the {@link android.net.Uri} by looking in the MediaStore
-     * @param uri uri to resolve
+     *
+     * @param uri      uri to resolve
      * @param activity context
      * @return actual path or null if media isn't in database or other error occurs
-     * */
+     */
     public static String getActualPathFromUri(Uri uri, Activity activity)
     {
         String[] projection = {MediaStore.Images.Media.DATA};
@@ -424,108 +435,5 @@ public class Utility
             return null;
         }
     }
-	
-	public static void deleteShowFromDb(Show show)
-	{
-		ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-		EpisodeDao eDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
-		ActorDao aDao = MainApp.getInstance().getDaoSession().getActorDao();
-		GenreDao gDao = MainApp.getInstance().getDaoSession().getGenreDao();
-		ImageDao iDao = MainApp.getInstance().getDaoSession().getImageDao();
-		if(show != null)
-		{
-			eDao.deleteInTx(show.getEpisodes());
-			aDao.deleteInTx(show.getActors());
-			gDao.deleteInTx(show.getGenres());
-			iDao.delete(show.getImage());
-			showDao.delete(show);
-		}
-	}
 
-    /**
-     * @return true if show is added succesfully
-     * false */
-    public static boolean addShowToDb(Show show)
-    {
-        ShowDao showDao = MainApp.getInstance().getDaoSession().getShowDao();
-        ImageDao imageDao = MainApp.getInstance().getDaoSession().getImageDao();
-        long imageId = imageDao.insertOrReplace(show.getImage());
-        show.setImage_id(imageId);
-        show.setUsername(MainApp.getInstance().getActiveUser().getUsername());
-        long showId = showDao.insertOrReplace(show);
-
-        EpisodeDao episodeDao = MainApp.getInstance().getDaoSession().getEpisodeDao();
-        for(Episode e : show.getEpisodes())
-        {
-            e.setShow_id(showId);
-        }
-        episodeDao.insertOrReplaceInTx(show.getEpisodes());
-
-        ActorDao actorDao = MainApp.getInstance().getDaoSession().getActorDao();
-        for(Actor a : show.getActors())
-        {
-            a.setShow_id(showId);
-        }
-        actorDao.insertOrReplaceInTx(show.getActors());
-
-        GenreDao gDao = MainApp.getInstance().getDaoSession().getGenreDao();
-        for(Genre g : show.getGenres())
-        {
-            g.setShow_id(showId);
-        }
-        gDao.insertOrReplaceInTx(show.getGenres());
-        MainApp.getInstance().getActiveUser().getShows().add(show);
-        return true;
-    }
-
-    public enum ImageSize
-    {
-        /**
-         * uncompressed image (poster = 1000x1500, fanart = 1920x1080, some of 1280x720, episode = 400x225,
-         * banner = 758x140)*/
-        UNCOMPRESSED,
-
-        /**
-         * Small posters are 138x203, all the grid views use this size.*/
-        SMALL_POSTER,
-
-        /**
-         * Large posters are 300x450, the movie summary page uses this size.*/
-        LARGE_POSTER,
-
-        /**
-         * Large fanart is 940x529, the show summary uses these.*/
-        SMALL_FANART,
-
-        /**
-         * Small fanart is 218x123, these are used in place of missing episode images.*/
-        LARGE_FANART,
-
-        /**
-         * Small episodes are 218x123, these are used in things like charts and season pages.*/
-        SMALL_EPISODE
-    }
-
-    public static String generatePosterUrl(ImageSize imageSize, String url)
-    {
-        if(TextUtils.isEmpty(url))return url;
-        String append = "";
-        switch (imageSize)
-        {
-            case SMALL_POSTER:
-                append = "-138";
-                break;
-            case LARGE_POSTER:
-                append = "-300";
-                break;
-            case UNCOMPRESSED:
-                break;
-            default:
-                Log.w(Constants.LOG_TAG, "Unsupported image size for poster, using uncompressed");
-                break;
-        }
-        String urlNoExt = url.substring(0, url.lastIndexOf("."));
-        String extension = url.substring(url.lastIndexOf("."), url.length());
-        return urlNoExt + append + extension;
-    }
 }

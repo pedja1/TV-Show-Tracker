@@ -3,7 +3,6 @@ package rs.pedjaapps.tvshowtracker.utils;
 import java.util.List;
 import java.util.concurrent.ConcurrentHashMap;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowNoDao;
 
 /**
  * Created by pedja on 22.8.14. 13.18.
@@ -40,7 +39,7 @@ public class ShowMemCache
         return instance;
     }
 
-    public void addShowToCache(String key, ShowNoDao show)
+    public void addShowToCache(String key, Show show)
     {
         if(show == null || key == null)return;
 		CacheObject co = new CacheObject(System.currentTimeMillis(), show);
@@ -101,10 +100,10 @@ public class ShowMemCache
 	private class CacheObject
 	{
 		long addedTs;
-		ShowNoDao show;
+		Show show;
 		List<Show> list;
 
-		public CacheObject(long addedTs, ShowNoDao show)
+		public CacheObject(long addedTs, Show show)
 		{
 			this.addedTs = addedTs;
 			this.show = show;

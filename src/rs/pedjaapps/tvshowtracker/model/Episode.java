@@ -25,7 +25,6 @@ public class Episode implements Parcelable {
     private Integer loved;
     private Integer hated;
     private boolean watched;
-    private long show_id;
 
     // KEEP FIELDS - put your custom fields here
     private boolean isEpisode;//episode or season, for adapter
@@ -55,7 +54,6 @@ public class Episode implements Parcelable {
         this.loved = loved;
         this.hated = hated;
         this.watched = watched;
-        this.show_id = show_id;
     }
 
     public Long getId() {
@@ -170,14 +168,6 @@ public class Episode implements Parcelable {
         this.watched = watched;
     }
 
-    public long getShow_id() {
-        return show_id;
-    }
-
-    public void setShow_id(long show_id) {
-        this.show_id = show_id;
-    }
-
     // KEEP METHODS - put your custom methods here
     @Override
     public int describeContents()
@@ -202,7 +192,6 @@ public class Episode implements Parcelable {
         dest.writeValue(this.loved);
         dest.writeValue(this.hated);
         dest.writeByte(watched ? (byte) 1 : (byte) 0);
-        dest.writeLong(this.show_id);
     }
 
     private Episode(Parcel in)
@@ -221,7 +210,6 @@ public class Episode implements Parcelable {
         this.loved = (Integer) in.readValue(Integer.class.getClassLoader());
         this.hated = (Integer) in.readValue(Integer.class.getClassLoader());
         this.watched = in.readByte() != 0;
-        this.show_id = in.readLong();
     }
 
     public static Creator<Episode> CREATOR = new Creator<Episode>()

@@ -73,20 +73,6 @@
                 android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
         </activity>
         <activity
-            android:name="rs.pedjaapps.tvshowtracker.ProfilesActivity"
-            android:label="@string/title_activity_profiles"
-            android:parentActivityName="rs.pedjaapps.tvshowtracker.MainActivity" >
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="rs.pedjaapps.tvshowtracker.MainActivity" />
-
-            <intent-filter>
-                <action android:name="rs.pedjaapps.tvshowtracker.ProfilesActivity" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="rs.pedjaapps.tvshowtracker.About"
             android:label="@string/title_activity_about"
             android:theme="@android:style/Theme.Holo.Dialog" >
@@ -175,15 +161,6 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name="rs.pedjaapps.tvshowtracker.network.ShowWorkerService"
-            android:enabled="true"
-            android:exported="false" >
-        </service>
-        <service
-            android:name="rs.pedjaapps.tvshowtracker.network.TraktSyncService"
-            android:exported="false" >
-        </service>
     </application>
 
 </manifest>

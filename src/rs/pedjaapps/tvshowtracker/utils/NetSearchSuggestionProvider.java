@@ -34,7 +34,7 @@ public class NetSearchSuggestionProvider extends ContentProvider
 		
 		for (Show show : shows)
 		{
-			String[] tmp = {show.getTvdb_id() + "", R.drawable.noimage_poster_actor + "", show.getTitle() + " (" + show.getYear() + ")", show.getNetwork()};
+			String[] tmp = {show.getTvdb_id() + "", R.drawable.no_image + "", show.getTitle() + " (" + show.getYear() + ")", show.getNetwork()};
 			cursor.addRow(tmp);
 		}
 		return cursor;

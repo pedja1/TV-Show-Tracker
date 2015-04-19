@@ -3,7 +3,6 @@ package rs.pedjaapps.tvshowtracker.utils;
 import java.util.Comparator;
 
 import rs.pedjaapps.tvshowtracker.model.Episode;
-import rs.pedjaapps.tvshowtracker.model.EpisodeDao;
 import rs.pedjaapps.tvshowtracker.model.Season;
 import rs.pedjaapps.tvshowtracker.model.Show;
 

@@ -1,9 +1,7 @@
 package rs.pedjaapps.tvshowtracker;
 
-import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
@@ -21,7 +19,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -32,7 +29,6 @@ import rs.pedjaapps.tvshowtracker.adapter.NavigationDrawerAdapter;
 import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
 import rs.pedjaapps.tvshowtracker.fragment.TrendingShowsFragment;
 import rs.pedjaapps.tvshowtracker.model.NDItem;
-import rs.pedjaapps.tvshowtracker.network.TraktSyncService;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener, AdapterView.OnItemClickListener
@@ -51,9 +47,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     private ListView lvDrawer;
     NavigationDrawerAdapter ndAdapter;
     private ActionBarDrawerToggle mDrawerToggle;
-
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
 	
 	private List<NDItem> menuItems;
 
@@ -75,8 +68,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         Toolbar toolbar = (Toolbar)findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-		mTitle = mDrawerTitle = getTitle();
-
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerContent = (LinearLayout) findViewById(R.id.left_drawer);
         lvDrawer = (ListView) findViewById(R.id.lvDrawer);
@@ -87,6 +78,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         //tvLoginLogout = (TextView)findViewById(R.id.tvMenuLoginLogout);
         //tvLoginLogout.setOnClickListener(this);
@@ -109,12 +101,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
 			R.string.drawer_closed  /* "close drawer" description for accessibility */
         ) {
             public void onDrawerClosed(View view) {
-                getSupportActionBar().setTitle(mTitle);
                 supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
             public void onDrawerOpened(View drawerView) {
-                getSupportActionBar().setTitle(mDrawerTitle);
                 supportInvalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
@@ -130,7 +120,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
-            selectItem(1);
+            selectItem(0);
         }
 
         SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
@@ -139,10 +129,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
         searchView.setIconifiedByDefault(false);
         //searchView.setQueryRefinementEnabled(true);
-
-
-        Intent intent = new Intent(this, TraktSyncService.class);
-        startService(intent);
     }
 
     private void setupUser()
@@ -173,13 +159,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
     {
         System.out.println("onCreateOptionsMenu");
         //this.menu = menu;
-        MenuItem item = menu.add(0, 0, 0, getString(R.string.add))
+        /*MenuItem item = menu.add(0, 0, 0, getString(R.string.add))
                 .setIcon(R.drawable.ic_action_search)
                 .setActionView(searchView);
         MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM
                 | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
         item = menu.add(0, 3, 3, getString(R.string.update_all)).setIcon(R.drawable.ic_action_sync);
-        MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM);
+        MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
         return super.onCreateOptionsMenu(menu);
     }
 	
@@ -265,9 +251,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
             {
                 case REQUEST_CODE_LOGIN:
                     setupUser();
-                    //askToSync();
-                    Intent intent = new Intent(this, TraktSyncService.class);
-                    startService(intent);
                     break;
             }
         }
@@ -319,12 +302,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         getSupportActionBar().setSubtitle(menuItem.title);
         mDrawerLayout.closeDrawer(mDrawerContent);
         currentItem = position;
-    }
-
-    @Override
-    public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
     }
 
     /**
@@ -385,12 +362,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener, 
         item.iconRes = R.drawable.ic_action_people;
 		items.add(item);
 		
-		item = new NDItem();
+		/*item = new NDItem();
 		item.title = getString(R.string.my_shows);
 		item.id = NDItem.Id.my_shows;
 		item.type = NDItem.TYPE_MAIN;
         item.iconRes = R.drawable.ic_action_favorite;
-		items.add(item);
+		items.add(item);*/
 
         item = new NDItem();
         item.title = getString(R.string.my_watchlist);

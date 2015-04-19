@@ -4,6 +4,8 @@ import java.text.SimpleDateFormat;
 
 public class Constants
 {
+    public static final String CLIENT_ID = "21d99c083e81a2906244853ecec854b15ae2a50cc9387ce337f26165f1f10995";
+    public static final String CLIENT_SECRET = "d5715cdcc16836378409d7c42f9821a19051fccc41d80bcd49cd81cbd7a5f7c5";
     public static final String TRAKT_API_KEY = "f18fce5c75ed1f25aef95c3626ba8935";
     public static final String REQUEST_URL_SEARCH = "http://api.trakt.tv/search/shows.json/" + TRAKT_API_KEY;
 	public static final String REQUEST_URL_TRENDING = "http://api.trakt.tv/shows/trending.json/" + TRAKT_API_KEY;

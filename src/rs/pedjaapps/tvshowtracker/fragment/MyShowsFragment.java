@@ -9,13 +9,14 @@ import android.view.View;
 import android.widget.LinearLayout;
 import rs.pedjaapps.tvshowtracker.widget.PoppyViewHelper;
 import android.widget.TextView;
+
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import rs.pedjaapps.tvshowtracker.MainApp;
 import rs.pedjaapps.tvshowtracker.R;
 import rs.pedjaapps.tvshowtracker.model.Episode;
 import rs.pedjaapps.tvshowtracker.model.Show;
-import rs.pedjaapps.tvshowtracker.model.ShowDao;
 import rs.pedjaapps.tvshowtracker.utils.Comparators;
 import rs.pedjaapps.tvshowtracker.utils.Constants;
 import rs.pedjaapps.tvshowtracker.utils.PrefsManager;
@@ -67,7 +68,8 @@ public class MyShowsFragment extends ShowGridFragment
     {
         long startTime = System.currentTimeMillis();
 		SortOrder sort = PrefsManager.getSortOrder();
-        List<Show> shows = MainApp.getInstance().getActiveUser().getShows();
+        List<Show> shows = new ArrayList<>();//MainApp.getInstance().getActiveUser().getShows();
+		//TODO my shows
 
 		upcomingEpisode = Utility.calculateUpcomingEpisodes(shows);
 
