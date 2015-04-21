@@ -51,7 +51,7 @@ android {
     }
 
     sourceSets {
-        main {
+        /*main {
             manifest.srcFile 'AndroidManifest.xml'
             java.srcDirs = ['src', 'src-gen']
             resources.srcDirs = ['src']
@@ -61,7 +61,7 @@ android {
             assets.srcDirs = ['assets']
         }
 
-        androidTest.setRoot('tests')
+        androidTest.setRoot('tests')*/
     }
 
     packagingOptions {
@@ -76,18 +76,18 @@ android {
 }
 
 dependencies {
-    compile project (":volleyplus:library")
+	compile project(':TV-Show-Tracker:volleyplus:library')
+    //compile project (":volleyplus:library")
     compile 'de.greenrobot:greendao:1.3.7'
     // compile 'com.google.android.gms:play-services:4.+'
     compile 'com.android.support:appcompat-v7:22.0.0'
-    compile files("libs/httpclientandroidlib-1.2.1.jar")
     compile 'com.crashlytics.android:crashlytics:1.1.13'
     compile 'commons-codec:commons-codec:1.4'
     compile 'com.viewpagerindicator:viewpagerindicator:2.4.1@aar'
-    compile 'com.nineoldandroids:library:2.4.0'
+    //compile 'com.nineoldandroids:library:2.4.0'
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.android.support:palette-v7:22.0.0'
     compile 'com.android.support:cardview-v7:22.0.0'
-    compile 'com.wu-man:android-oauth-client:0.0.3'
+    //compile 'com.wu-man:android-oauth-client:0.0.3'
 
 }
