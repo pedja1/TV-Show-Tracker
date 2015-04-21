@@ -129,7 +129,7 @@ public class PoppyViewHelper
                         translationY = mScrollDirection == SCROLL_TO_TOP ? -mPoppyViewHeight : 0;
                         break;
                 }
-                ViewPropertyAnimator.animate(mPoppyView).setDuration(300).translationY(translationY);
+                mPoppyView.animate().setDuration(300).translationY(translationY);
             }
         });
     }

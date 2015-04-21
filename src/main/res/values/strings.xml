@@ -28,7 +28,6 @@
     <string name="unsupported_encoding">Network Error: Unsupported encoding</string>
     <string name="url_malformed">Network Error: URL is malformed</string>
     <string name="io_error">Network Error: I/O error</string>
-    <string name="unknown_error">Unknown error occurred</string>
     <string name="no_results">No Results</string>
     <string name="_default">Default</string>
     <string name="user">User</string>
@@ -116,6 +115,13 @@
 	<string name="network_error">Error connecting to server.</string>
 	<string name="no_connection_dialog_message">An internet connection is required to continue.\n\nPlease check if your device is connected and try again</string>
     <string name="no_connection_dialog_title">No Connection</string>
-    <string name="please_wait">Please wait...</string>
     <string name="unknown_error">An error occurred, please try again.</string>
+    <string name="movies">Movies</string>
+    <string name="shows">Shows</string>
+    <string name="recommendations">Recommendations</string>
+    <string name="popular">Popular</string>
+    <string name="trending">Trending</string>
+    <string name="updated">Updated</string>
+    <string name="related">Related</string>
+    <string name="search">Search</string>
 </resources>

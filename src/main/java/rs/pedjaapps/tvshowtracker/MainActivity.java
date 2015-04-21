@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import rs.pedjaapps.tvshowtracker.adapter.NavigationDrawerAdapter;
+import rs.pedjaapps.tvshowtracker.fragment.FragmentMovies;
 import rs.pedjaapps.tvshowtracker.fragment.MyShowsFragment;
 import rs.pedjaapps.tvshowtracker.fragment.TrendingShowsFragment;
 import rs.pedjaapps.tvshowtracker.model.NDItem;
@@ -159,12 +160,9 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, A
     {
         System.out.println("onCreateOptionsMenu");
         //this.menu = menu;
-        /*MenuItem item = menu.add(0, 0, 0, getString(R.string.add))
-                .setIcon(R.drawable.ic_action_search)
-                .setActionView(searchView);
-        MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM
-                | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
-        item = menu.add(0, 3, 3, getString(R.string.update_all)).setIcon(R.drawable.ic_action_sync);
+        MenuItem item = menu.add(0, 0, 0, getString(R.string.search)).setIcon(R.drawable.ic_action_search).setActionView(searchView);
+        MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_COLLAPSE_ACTION_VIEW);
+        /*item = menu.add(0, 3, 3, getString(R.string.update_all)).setIcon(R.drawable.ic_action_sync);
         MenuItemCompat.setShowAsAction(item, MenuItem.SHOW_AS_ACTION_IF_ROOM);*/
         return super.onCreateOptionsMenu(menu);
     }
@@ -282,12 +280,15 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, A
 		
 		switch(menuItem.id)
 		{
-			case trending:
+            case movies:
+                fragment = FragmentMovies.newInstance();
+                break;
+			/*case trending:
 				fragment = TrendingShowsFragment.newInstance();
 				break;
 			case my_shows:
 				fragment = MyShowsFragment.newInstance();
-				break;
+				break;*/
 		}
 
 		if(fragment != null)
@@ -356,24 +357,27 @@ public class MainActivity extends AbsActivity implements View.OnClickListener, A
 	{
 		List<NDItem> items = new ArrayList<>();
 		NDItem item = new NDItem();
-		item.title = getString(R.string.trending_shows);
-		item.id = NDItem.Id.trending;
+		item.title = getString(R.string.movies);
+		item.id = NDItem.Id.movies;
 		item.type = NDItem.TYPE_MAIN;
-        item.iconRes = R.drawable.ic_action_people;
 		items.add(item);
-		
-		/*item = new NDItem();
-		item.title = getString(R.string.my_shows);
-		item.id = NDItem.Id.my_shows;
-		item.type = NDItem.TYPE_MAIN;
-        item.iconRes = R.drawable.ic_action_favorite;
-		items.add(item);*/
 
         item = new NDItem();
-        item.title = getString(R.string.my_watchlist);
-        item.id = NDItem.Id.my_watchlist;
+        item.title = getString(R.string.shows);
+        item.id = NDItem.Id.shows;
         item.type = NDItem.TYPE_MAIN;
-        item.iconRes = R.drawable.ic_action_watchlist;
+        items.add(item);
+
+        item = new NDItem();
+        item.title = getString(R.string.calendar);
+        item.id = NDItem.Id.calendar;
+        item.type = NDItem.TYPE_MAIN;
+        items.add(item);
+
+        item = new NDItem();
+        item.title = getString(R.string.recommendations);
+        item.id = NDItem.Id.recommendations;
+        item.type = NDItem.TYPE_MAIN;
         items.add(item);
 
         item = new NDItem();

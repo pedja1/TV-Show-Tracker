@@ -15,7 +15,7 @@
   limitations under the License.
   -->
 
-<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+<!--<TextView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -25,4 +25,17 @@
     android:paddingRight="16dp"
     android:textColor="@drawable/drawer_item_selector"
     android:minHeight="?android:attr/listPreferredItemHeightSmall"
-    android:drawablePadding="20dp"/>
+    android:drawablePadding="20dp"/>-->
+
+<TextView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@android:id/text1"
+    android:layout_width="match_parent"
+    android:layout_height="48dp"
+    android:gravity="center_vertical"
+    app:theme="@style/Theme.AppCompat.Light"
+    android:drawablePadding="20dp"
+    android:textSize="18sp"
+    android:textColor="@drawable/drawer_item_selector"
+    android:paddingLeft="20dp"/>

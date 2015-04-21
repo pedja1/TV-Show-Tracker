@@ -76,7 +76,7 @@ android {
 }
 
 dependencies {
-	compile project(':TV-Show-Tracker:volleyplus:library')
+	compile project(':volleyplus:library')
     //compile project (":volleyplus:library")
     compile 'de.greenrobot:greendao:1.3.7'
     // compile 'com.google.android.gms:play-services:4.+'
@@ -88,6 +88,11 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:22.0.0'
     compile 'com.android.support:palette-v7:22.0.0'
     compile 'com.android.support:cardview-v7:22.0.0'
-    //compile 'com.wu-man:android-oauth-client:0.0.3'
+    compile ('com.jpardogo.materialtabstrip:library:1.0.6'){
+        exclude module: 'support-v4'
+    }
+    compile ('com.wu-man:android-oauth-client:0.0.3'){
+        exclude module: 'support-v4'
+    }
 
 }

@@ -8,10 +8,10 @@ public class NDItem
 
 	public enum Id
 	{
-		undefined, trending, login_logout, my_watchlist, settings, my_shows
+		undefined, movies, shows, login_logout, settings, calendar, recommendations
 	}
 	
 	public String title;
-	public int iconRes, type;
+	public int type;
 	public Id id = Id.undefined;
 }

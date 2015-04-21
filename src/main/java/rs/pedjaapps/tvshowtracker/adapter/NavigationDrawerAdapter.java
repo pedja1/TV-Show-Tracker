@@ -85,7 +85,7 @@ public class NavigationDrawerAdapter extends ArrayAdapter<NDItem>
             if (convertView == null)
             {
                 LayoutInflater vi = LayoutInflater.from(parent.getContext());
-                convertView = vi.inflate(R.layout.drawer_list_item, parent, false);
+                convertView = vi.inflate(itemViewType == NDItem.TYPE_MAIN ? R.layout.drawer_list_item : R.layout.drawer_list_item_opt, parent, false);
                 holder = new ViewHolder();
                 holder.mTextView = (TextView) convertView.findViewById(android.R.id.text1);
                 convertView.setTag(holder);
@@ -96,14 +96,14 @@ public class NavigationDrawerAdapter extends ArrayAdapter<NDItem>
             }
             holder.mTextView.setText(item.title);
 
-            if (itemViewType == NDItem.TYPE_MAIN)
+            /*if (itemViewType == NDItem.TYPE_MAIN)
             {
                 holder.mTextView.setCompoundDrawablesWithIntrinsicBounds(item.iconRes, 0, 0, 0);
             }
             else
             {
                 holder.mTextView.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
-            }
+            }*/
         }
         return convertView;
     }
