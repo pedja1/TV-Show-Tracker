@@ -30,8 +30,8 @@ import android.util.*;
 import android.view.*;
 import android.view.ViewTreeObserver.*;
 import android.widget.*;
-import com.astuetz.pagerslidingtabstrip.*;
 import java.util.*;
+import rs.pedjaapps.tvshowtracker.*;
 
 import android.support.v4.util.Pair;
 
